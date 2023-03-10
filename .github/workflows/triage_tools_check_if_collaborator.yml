@@ -7,6 +7,7 @@ on:
         description: 'Which username to check if part of org?'
         required: true
         type: string
+
     secrets:
       ADD_TO_TRIAGE_BOARD_TOKEN:
         required: true
@@ -19,7 +20,6 @@ jobs:
     steps:
     - name: Check if collaborator
       id: is-collaborator
-      if: ${{ inputs.check-if-collaborator }}
       run: |
         gh api graphql -f query='
           query($org: String!, $repo: String!, $user: String!) {
