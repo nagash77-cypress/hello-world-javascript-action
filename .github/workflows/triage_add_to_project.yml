@@ -35,8 +35,11 @@ jobs:
       PROJECT_NUMBER: 1
       GITHUB_TOKEN: ${{ secrets.ADD_TO_TRIAGE_BOARD_TOKEN }}
     needs: check-collaborator
-    if: ${{ needs.check-collaborator.outputs.is-collaborator == 'false' }}
+    #if: ${{ needs.check-collaborator.outputs.is-collaborator == 'false' }}
     steps:
+      - name: Output Run Data
+        run: |
+          echo ${{ needs.check-collaborator.outputs.is-collaborator }}
       - uses: actions/add-to-project@v0.4.0
         # only add issues/prs from outside contributors to the project
         if: ${{ env.IS_COLLABORATOR == 0 }}
