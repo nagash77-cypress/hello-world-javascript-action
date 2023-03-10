@@ -7,9 +7,9 @@ on:
       ADD_TO_TRIAGE_BOARD_TOKEN:
         required: true
     inputs:
-      skip-collaborator:
-        description: 'Skip Collaborator Check'
-        default: false
+      check-if-collaborator:
+        description: 'Make Collaborator Check'
+        default: true
         required: false
         type: boolean
   issues:
@@ -28,20 +28,9 @@ jobs:
     env:
       PROJECT_NUMBER: 1
       GITHUB_TOKEN: ${{ secrets.ADD_TO_TRIAGE_BOARD_TOKEN }}
+    needs: check-collaborator
+    if: ${{ needs.check-collaborator.outputs.is-collaborator == 'false' }}
     steps:
-      - name: is-collaborator
-        if: ${{ !inputs.skip-collaborator }}
-        run: |
-          gh api graphql -f query='
-            query($org: String!, $repo: String!, $user: String!) {
-              repository(owner: $org, name: $repo) {
-                collaborators(query: $user, first: 1) {
-                  totalCount
-                }
-              }
-            } ' -f org=${{ github.repository_owner }} -f repo=${{ github.event.repository.name }} -f user=${{ github.event.pull_request.user.login || github.event.issue.user.login }} > collaborators.json
-
-          echo 'IS_COLLABORATOR='$(jq -r '.data.repository.collaborators.totalCount' collaborators.json) >> $GITHUB_ENV
       - uses: actions/add-to-project@v0.4.0
         # only add issues/prs from outside contributors to the project
         if: ${{ env.IS_COLLABORATOR == 0 }}
