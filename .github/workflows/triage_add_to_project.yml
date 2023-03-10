@@ -25,7 +25,7 @@ jobs:
     steps:
       - name: Step 1
         run: echo "Starting workflow"
-        
+
   add-to-triage-project:
     name: Add to triage project
     runs-on: ubuntu-latest
@@ -34,8 +34,8 @@ jobs:
     env:
       PROJECT_NUMBER: 1
       GITHUB_TOKEN: ${{ secrets.ADD_TO_TRIAGE_BOARD_TOKEN }}
-    needs: check-collaborator
-    if: ${{ needs.check-collaborator.outputs.is-collaborator == 'false' }}
+    needs: triage_tools_check_if_collaborator
+    if: ${{ needs.triage_tools_check_if_collaborator.outputs.is-collaborator == 'false' }}
     steps:
       - uses: actions/add-to-project@v0.4.0
         # only add issues/prs from outside contributors to the project
