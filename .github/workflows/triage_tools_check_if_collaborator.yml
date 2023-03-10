@@ -3,7 +3,7 @@ on:
   # makes this workflow reusable
   workflow_call:
     inputs:
-      user-name:
+      username:
         description: 'Which username to check if part of org?'
         required: true
         type: string
@@ -28,7 +28,7 @@ jobs:
                 totalCount
               }
             }
-          } ' -f org=${{ github.repository_owner }} -f repo=${{ github.event.repository.name }} -f user=${{ inputs.user-name }} > collaborators.json
+          } ' -f org=${{ github.repository_owner }} -f repo=${{ github.event.repository.name }} -f user=${{ inputs.username }} > collaborators.json
 
         if [[ $(jq -r '.data.repository.collaborators.totalCount' <<< "$result") -eq 1 ]]; then
           echo "::set-output name=is-collaborator::true"

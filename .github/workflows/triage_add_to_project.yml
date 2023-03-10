@@ -20,12 +20,12 @@ on:
       - opened
 
 jobs:
-  initial-job:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Step 1
-        run: echo "Starting workflow"
-
+  check-collaborator:
+    uses: nagash77-cypress/hello-world-javascript-action/.github/workflows/triage_tools_check_if_collaborator.yml@develop
+    with:
+      username: true
+    secrets: inherit
+    
   add-to-triage-project:
     name: Add to triage project
     runs-on: ubuntu-latest
@@ -34,8 +34,8 @@ jobs:
     env:
       PROJECT_NUMBER: 1
       GITHUB_TOKEN: ${{ secrets.ADD_TO_TRIAGE_BOARD_TOKEN }}
-    needs: nagash77-cypress/hello-world-javascript-action/.github/workflows/triage_tools_check_if_collaborator.yml@develop
-    if: ${{ needs.triage_tools_check_if_collaborator.outputs.is-collaborator == 'false' }}
+    needs: check-collaborator
+    if: ${{ needs.check-collaborator.outputs.is-collaborator == 'false' }}
     steps:
       - uses: actions/add-to-project@v0.4.0
         # only add issues/prs from outside contributors to the project
