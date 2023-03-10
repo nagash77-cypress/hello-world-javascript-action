@@ -6,6 +6,12 @@ on:
     secrets:
       ADD_TO_TRIAGE_BOARD_TOKEN:
         required: true
+    inputs:
+      skip-collaborator:
+        description: 'Skip Collaborator Check'
+        default: false
+        required: false
+        type: boolean
   issues:
     types:
       - opened
@@ -20,10 +26,11 @@ jobs:
     permissions:
       issues: write
     env:
-      PROJECT_NUMBER: 9
+      PROJECT_NUMBER: 1
       GITHUB_TOKEN: ${{ secrets.ADD_TO_TRIAGE_BOARD_TOKEN }}
     steps:
       - name: is-collaborator
+        if: ${{ !inputs.skip-collaborator }}
         run: |
           gh api graphql -f query='
             query($org: String!, $repo: String!, $user: String!) {
