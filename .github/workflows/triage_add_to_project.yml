@@ -45,6 +45,7 @@ jobs:
           echo "check-collaborator: ${{ toJSON(needs.check-collaborator) }}"
           echo "check-collaborator.outputs: ${{ toJSON(needs.check-collaborator.outputs) }}"
           echo "envs: ${{ toJSON(env) }}"
+          echo "${{ GITHUB_OUTPUT }}"
       - uses: actions/add-to-project@v0.4.0
         # only add issues/prs from outside contributors to the project
         if: ${{ env.IS_COLLABORATOR == 0 }}
