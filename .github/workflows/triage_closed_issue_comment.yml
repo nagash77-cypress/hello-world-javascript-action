@@ -80,7 +80,7 @@ jobs:
       - name: Move issue to New Issue status
         env:
           GITHUB_TOKEN: ${{ secrets.ADD_TO_TRIAGE_BOARD_TOKEN }}
-        if: env.STATUS == 'Closed'
+        if: env.STATUS == 'Closed' || env.STATUS == ''
         run: |
           gh api graphql -f query='
             mutation (
