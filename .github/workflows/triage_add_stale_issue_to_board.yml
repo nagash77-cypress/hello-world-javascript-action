@@ -12,10 +12,10 @@ jobs:
         contains(github.event.pull_request.labels.*.name, 'stale') ||
         contains(github.event.issue.labels.*.name, 'stale')
       )
-    uses: cypress-io/cypress/.github/workflows/triage_add_to_project.yml@develop
+    uses: nagash77-cypress/hello-world-javascript-action/.github/workflows/triage_add_to_project.yml@develop
     secrets: inherit
   update-status-to-awaiting-response:
-    uses: cypress-io/cypress/.github/workflows/triage_update_status.yml@develop
+    uses: nagash77-cypress/hello-world-javascript-action/.github/workflows/triage_update_status.yml@develop
     with:
       status: 'Awaiting Response'
     secrets: inherit
