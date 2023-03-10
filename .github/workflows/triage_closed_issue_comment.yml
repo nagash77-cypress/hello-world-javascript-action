@@ -105,7 +105,7 @@ jobs:
             }' -f project=$PROJECT_ID -f item=$PROJECT_ITEM_ID -f status_field=$STATUS_FIELD_ID -f status_value=$NEW_ISSUE_OPTION_ID
     outputs:
       issue-status: ${{ env.STATUS }}
-      comment-added-after-close: $${{ env.COMMENT_ADDED_AFTER_CLOSE }}
+      comment-added-after-close: ${{ env.COMMENT_ADDED_AFTER_CLOSE }}
   
   Move-archived-issue-back-onto-the-board:
     needs: move-to-new-issue-status
