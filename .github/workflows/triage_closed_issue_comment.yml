@@ -77,10 +77,10 @@ jobs:
           echo 'STATUS_FIELD_ID='$(jq -r '.data.organization.projectV2.field | .id' project_data.json) >> $GITHUB_ENV
           echo 'STATUS='$(jq -r '.data.organization.repository.issue.projectItems.nodes[].fieldValueByName | select(.field.project.number == ${{ env.PROJECT_NUMBER }}) | .name' project_data.json) >> $GITHUB_ENV
           echo 'NEW_ISSUE_OPTION_ID='$(jq -r '.data.organization.projectV2.field.options[] | select(.name== "New Issue") | .id' project_data.json) >> $GITHUB_ENV
-      - name: Move issue to New Issue status
+      - name: Move Closed issue to New Issue status
         env:
           GITHUB_TOKEN: ${{ secrets.ADD_TO_TRIAGE_BOARD_TOKEN }}
-        if: env.STATUS == 'Closed' || env.STATUS == ''
+        if: env.STATUS == 'Closed'
         run: |
           gh api graphql -f query='
             mutation (
@@ -102,3 +102,8 @@ jobs:
                 }
               }
             }' -f project=$PROJECT_ID -f item=$PROJECT_ITEM_ID -f status_field=$STATUS_FIELD_ID -f status_value=$NEW_ISSUE_OPTION_ID
+  Move-archived-issue-back-onto-the-board:
+    needs: move-to-new-issue-status
+    if: env.STATUS == ''
+    uses: nagash77-cypress/hello-world-javascript-action/.github/workflows/triage_add_to_project.yml@develop
+    secrets: inherit
