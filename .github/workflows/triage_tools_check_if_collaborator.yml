@@ -1,0 +1,37 @@
+name: 'Set Issue Status'
+on:
+  # makes this workflow reusable
+  workflow_call:
+    inputs:
+      user-name:
+        description: 'Which username to check if part of org?'
+        required: true
+        type: string
+    secrets:
+      ADD_TO_TRIAGE_BOARD_TOKEN:
+        required: true
+
+jobs:
+  check-collaborator:
+    runs-on: ubuntu-latest
+    outputs:
+      is-collaborator: ${{ steps.is-collaborator.outputs.is-collaborator }}
+    steps:
+    - name: Check if collaborator
+      id: is-collaborator
+      if: ${{ inputs.check-if-collaborator }}
+      run: |
+        gh api graphql -f query='
+          query($org: String!, $repo: String!, $user: String!) {
+            repository(owner: $org, name: $repo) {
+              collaborators(query: $user, first: 1) {
+                totalCount
+              }
+            }
+          } ' -f org=${{ github.repository_owner }} -f repo=${{ github.event.repository.name }} -f user=${{ inputs.user-name }} > collaborators.json
+
+        if [[ $(jq -r '.data.repository.collaborators.totalCount' <<< "$result") -eq 1 ]]; then
+          echo "::set-output name=is-collaborator::true"
+        else
+          echo "::set-output name=is-collaborator::false"
+        fi

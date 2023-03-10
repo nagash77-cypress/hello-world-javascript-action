@@ -1,0 +1,26 @@
+name: 'Add Label to Issue'
+on:
+  # makes this workflow reusable
+  workflow_call:
+    inputs:
+      label-names:
+        description: 'Which label names should be added? This should be a comma separated list'
+        required: true
+        type: string
+    secrets:
+      ADD_TO_TRIAGE_BOARD_TOKEN:
+        required: true
+
+jobs:
+  add-label-to-issue:
+    uses: actions/github-script@v6
+    # only add label to issue for outside contributors
+    if: ${{ env.IS_COLLABORATOR == 0 }}
+    with:
+      script: |
+        github.rest.issues.addLabels({
+          issue_number: context.issue.number,
+          owner: context.repo.owner,
+          repo: context.repo.repo,
+          labels: ["${{ inputs.label-name }}"]
+        })
