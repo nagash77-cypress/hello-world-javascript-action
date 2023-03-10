@@ -39,7 +39,8 @@ jobs:
     steps:
       - name: Output Run Data
         run: |
-          echo ${{ needs.check-collaborator.outputs.is-collaborator }}
+          echo ${{ needs }}
+          echo ${{ env }}
       - uses: actions/add-to-project@v0.4.0
         # only add issues/prs from outside contributors to the project
         if: ${{ env.IS_COLLABORATOR == 0 }}
