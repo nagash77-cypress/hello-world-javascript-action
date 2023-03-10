@@ -20,6 +20,12 @@ on:
       - opened
 
 jobs:
+  initial-job:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Step 1
+        run: echo "Starting workflow"
+        
   add-to-triage-project:
     name: Add to triage project
     runs-on: ubuntu-latest
