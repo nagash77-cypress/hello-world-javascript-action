@@ -41,6 +41,8 @@ jobs:
       - name: Output Run Data
         run: |
           echo "is-collaborator: ${{ needs.check-collaborator.outputs.is-collaborator }}"
+          echo "needs: ${{ toJSON(needs) }}"
+          echo "check-collaborator: ${{ toJSON(needs.check-collaborator) }}"
           echo "check-collaborator.outputs: ${{ toJSON(needs.check-collaborator.outputs) }}"
           echo "envs: ${{ toJSON(env) }}"
       - uses: actions/add-to-project@v0.4.0
