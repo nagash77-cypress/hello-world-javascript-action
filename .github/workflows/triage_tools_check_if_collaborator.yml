@@ -7,6 +7,10 @@ on:
         description: 'Which username to check if part of org?'
         required: true
         type: string
+    outputs:
+      is-collaborator: 
+        description: "is this login a collaborator?"
+        value: ${{ jobs.check-collaborator.outputs.is-collaborator }}
 
     secrets:
       ADD_TO_TRIAGE_BOARD_TOKEN:
