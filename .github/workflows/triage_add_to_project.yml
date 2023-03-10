@@ -39,8 +39,8 @@ jobs:
     steps:
       - name: Output Run Data
         run: |
-          echo ${{ needs }}
-          echo ${{ env }}
+          echo "${{ toJSON(needs) }}"
+          echo "${{ toJSON(env) }}"
       - uses: actions/add-to-project@v0.4.0
         # only add issues/prs from outside contributors to the project
         if: ${{ env.IS_COLLABORATOR == 0 }}
