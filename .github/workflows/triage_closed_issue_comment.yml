@@ -105,8 +105,17 @@ jobs:
             }' -f project=$PROJECT_ID -f item=$PROJECT_ITEM_ID -f status_field=$STATUS_FIELD_ID -f status_value=$NEW_ISSUE_OPTION_ID
     outputs:
       issue-status: ${{ env.STATUS }}
+  
   Move-archived-issue-back-onto-the-board:
     needs: move-to-new-issue-status
     if: needs.move-to-new-issue-status.outputs.issue-status == ''
     uses: nagash77-cypress/hello-world-javascript-action/.github/workflows/triage_add_to_project.yml@develop
+    secrets: inherit
+  
+  Move-issue-to-new-issues-column:
+    needs: Move-archived-issue-back-onto-the-board
+    if: needs.Move-archived-issue-back-onto-the-board.outputs.issue-status == ''
+    uses: nagash77-cypress/hello-world-javascript-action/.github/workflows/triage_update_status.yml@develop
+    with:
+      status: 'New Issue'
     secrets: inherit
