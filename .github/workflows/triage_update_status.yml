@@ -20,9 +20,9 @@ jobs:
         env:
           STATUS: ${{ inputs.status || 'New Issue' }}
           GITHUB_TOKEN: ${{ secrets.ADD_TO_TRIAGE_BOARD_TOKEN }}
-          ORGANIZATION: 'cypress-io'
+          ORGANIZATION: 'nagash77-cypress'
           REPOSITORY: ${{ github.event.repository.name }}
-          PROJECT_NUMBER: 9
+          PROJECT_NUMBER: 1
           ISSUE_NUMBER: ${{ github.event.issue.number }}
 
         run: |
