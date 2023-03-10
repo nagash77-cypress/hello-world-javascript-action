@@ -21,10 +21,15 @@ on:
 
 jobs:
   check-collaborator:
-    uses: nagash77-cypress/hello-world-javascript-action/.github/workflows/triage_tools_check_if_collaborator.yml@develop
-    with:
-      username: ${{ github.event.pull_request.user.login || github.event.issue.user.login }}
-    secrets: inherit
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check if collaborator
+        id: check-collab
+        uses: nagash77-cypress/hello-world-javascript-action/.github/workflows/triage_tools_check_if_collaborator.yml@develop
+        with:
+          username: ${{ github.event.pull_request.user.login || github.event.issue.user.login }}
+    outputs:
+      is-collaborator: ${{ steps.check-collab.outputs.is-collaborator }}
     
   add-to-triage-project:
     name: Add to triage project
