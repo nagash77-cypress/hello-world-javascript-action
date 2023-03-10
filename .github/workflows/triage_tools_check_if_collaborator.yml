@@ -35,5 +35,5 @@ jobs:
         if [[ $(jq -r '.data.repository.collaborators.totalCount' <<< "$result") -eq 1 ]]; then
           echo "is-collaborator=true" >> $GITHUB_OUTPUT
         else
-          echo "is-collaborator=false" >> GITHUB_OUTPUT
+          echo "is-collaborator=false" >> $GITHUB_OUTPUT
         fi
