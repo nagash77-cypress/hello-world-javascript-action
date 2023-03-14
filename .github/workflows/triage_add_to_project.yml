@@ -35,7 +35,6 @@ jobs:
       issues: write
     env:
       PROJECT_NUMBER: 1
-      TICKET_NUMBER: ${{ context.issue.number || context.pull_request.number }}
       GITHUB_TOKEN: ${{ secrets.ADD_TO_TRIAGE_BOARD_TOKEN }}
     needs: check-collaborator
     if: ${{ inputs.check-if-collaborator == 'true' && needs.check-collaborator.outputs.is-collaborator == 'false'  }}
