@@ -27,6 +27,7 @@ jobs:
       username: ${{ github.event.pull_request.user.login || github.event.issue.user.login }}
     secrets: inherit
     
+    
   add-to-triage-project:
     name: Add to triage project
     runs-on: ubuntu-latest
@@ -36,30 +37,22 @@ jobs:
       PROJECT_NUMBER: 1
       GITHUB_TOKEN: ${{ secrets.ADD_TO_TRIAGE_BOARD_TOKEN }}
     needs: check-collaborator
-    #if: ${{ needs.check-collaborator.outputs.is-collaborator == 'false' }}
+    if: ${{ inputs.check-if-collaborator == 'true' && needs.check-collaborator.outputs.is-collaborator == 'false'  }}
     steps:
-      - name: Output Run Data
-        run: |
-          echo "is-collaborator: ${{ needs.check-collaborator.outputs.is-collaborator }}"
-          echo "needs: ${{ toJSON(needs) }}"
-          echo "check-collaborator: ${{ toJSON(needs.check-collaborator) }}"
-          echo "check-collaborator.outputs: ${{ toJSON(needs.check-collaborator.outputs) }}"
-          echo "envs: ${{ toJSON(env) }}"
-          echo $GITHUB_OUTPUT
       - uses: actions/add-to-project@v0.4.0
         # only add issues/prs from outside contributors to the project
         if: ${{ env.IS_COLLABORATOR == 0 }}
         with:
           project-url: https://github.com/orgs/${{github.repository_owner}}/projects/${{env.PROJECT_NUMBER}}
           github-token: ${{ secrets.ADD_TO_TRIAGE_BOARD_TOKEN }}
-     
+      
       - uses: actions/github-script@v6
         # only add label to issue for outside contributors
         if: ${{ env.IS_COLLABORATOR == 0 }}
         with:
           script: |
             github.rest.issues.addLabels({
-              issue_number: context.issue.number,
+              issue_number: ${{ context.issue.number || context.pull_request.number }},
               owner: context.repo.owner,
               repo: context.repo.repo,
               labels: ["triage"]
