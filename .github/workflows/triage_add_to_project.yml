@@ -40,7 +40,7 @@ jobs:
     steps:
       - uses: actions/add-to-project@v0.4.0
         # only add issues/prs from outside contributors to the project
-        if: ${{ inputs.check-if-collaborator == 'true' && needs.check-collaborator.outputs.is-collaborator == 'false' }}
+        if: ${{ inputs.check-if-collaborator == 'false' || needs.check-collaborator.outputs.is-collaborator == 'false' }}
         with:
           project-url: https://github.com/orgs/${{github.repository_owner}}/projects/${{env.PROJECT_NUMBER}}
           github-token: ${{ secrets.ADD_TO_TRIAGE_BOARD_TOKEN }}
