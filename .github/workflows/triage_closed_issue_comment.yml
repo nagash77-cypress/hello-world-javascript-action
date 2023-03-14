@@ -81,7 +81,7 @@ jobs:
       - name: Move Closed issue to New Issue status
         env:
           GITHUB_TOKEN: ${{ secrets.ADD_TO_TRIAGE_BOARD_TOKEN }}
-        if: env.STATUS == 'Closed' || contains(github.event.issue.labels.*.name, 'stale') || contains(github.event.pull_request.labels.*.name, 'stale')
+        if: env.STATUS == 'Closed'
         run: |
           gh api graphql -f query='
             mutation (
@@ -107,15 +107,25 @@ jobs:
       issue-status: ${{ env.STATUS }}
       comment-added-after-close: ${{ env.COMMENT_ADDED_AFTER_CLOSE }}
   
-  Move-archived-issue-back-onto-the-board:
+  Move-archived-or-stale-issue-back-onto-the-board:
     needs: move-to-new-issue-status
-    if: needs.move-to-new-issue-status.outputs.issue-status == '' && needs.move-to-new-issue-status.outputs.comment-added-after-close == '1'
+    #if the item is archived or stale we need to do the same process to add it back onto the board
+    if: |
+      (
+        needs.move-to-new-issue-status.outputs.issue-status == '' &&
+        (
+          (contains(github.event.issue.labels.*.name, 'stale') || contains(github.event.pull_request.labels.*.name, 'stale')) || 
+          needs.move-to-new-issue-status.outputs.comment-added-after-close == '1'
+        )
+      )
     uses: nagash77-cypress/hello-world-javascript-action/.github/workflows/triage_add_to_project.yml@develop
     secrets: inherit
-  
+
   Move-issue-to-new-issues-column:
-    needs: Move-archived-issue-back-onto-the-board
-    if: needs.Move-archived-issue-back-onto-the-board.outputs.issue-status == '' && needs.Move-archived-issue-back-onto-the-board.outputs.comment-added-after-close == '1'
+    needs: Move-archived-or-stale-issue-back-onto-the-board
+    if: |
+      needs.Move-archived-or-stale-issue-back-onto-the-board.outputs.issue-status == '' && 
+      needs.Move-archived-or-stale-issue-back-onto-the-board.outputs.comment-added-after-close == '1'
     uses: nagash77-cypress/hello-world-javascript-action/.github/workflows/triage_update_status.yml@develop
     with:
       status: 'New Issue'
