@@ -35,6 +35,7 @@ jobs:
       issues: write
     env:
       PROJECT_NUMBER: 1
+      TICKET_NUMBER: ${{ context.issue.number || context.pull_request.number }}
       GITHUB_TOKEN: ${{ secrets.ADD_TO_TRIAGE_BOARD_TOKEN }}
     needs: check-collaborator
     if: ${{ inputs.check-if-collaborator == 'true' && needs.check-collaborator.outputs.is-collaborator == 'false'  }}
@@ -45,15 +46,3 @@ jobs:
         with:
           project-url: https://github.com/orgs/${{github.repository_owner}}/projects/${{env.PROJECT_NUMBER}}
           github-token: ${{ secrets.ADD_TO_TRIAGE_BOARD_TOKEN }}
-      
-      - uses: actions/github-script@v6
-        # only add label to issue for outside contributors
-        if: ${{ env.IS_COLLABORATOR == 0 }}
-        with:
-          script: |
-            github.rest.issues.addLabels({
-              issue_number: ${{ context.issue.number || context.pull_request.number }},
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              labels: ["triage"]
-            })
