@@ -37,11 +37,10 @@ jobs:
       PROJECT_NUMBER: 1
       GITHUB_TOKEN: ${{ secrets.ADD_TO_TRIAGE_BOARD_TOKEN }}
     needs: check-collaborator
-    #Sif: ${{ inputs.check-if-collaborator == 'true' && needs.check-collaborator.outputs.is-collaborator == 'false'  }}
     steps:
       - uses: actions/add-to-project@v0.4.0
         # only add issues/prs from outside contributors to the project
-        if: ${{ needs.check-collaborator.outputs.is-collaborator == 'false' }}
+        if: ${{ inputs.check-if-collaborator == 'true' && needs.check-collaborator.outputs.is-collaborator == 'false' }}
         with:
           project-url: https://github.com/orgs/${{github.repository_owner}}/projects/${{env.PROJECT_NUMBER}}
           github-token: ${{ secrets.ADD_TO_TRIAGE_BOARD_TOKEN }}
