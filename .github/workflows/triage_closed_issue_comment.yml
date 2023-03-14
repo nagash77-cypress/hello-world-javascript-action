@@ -81,7 +81,7 @@ jobs:
       - name: Move Closed issue to New Issue status
         env:
           GITHUB_TOKEN: ${{ secrets.ADD_TO_TRIAGE_BOARD_TOKEN }}
-        if: env.STATUS == 'Closed' || contains(github.event.issue.labels.*.name, 'stale' || contains(github.event.pull_request.labels.*.name, 'stale'
+        if: env.STATUS == 'Closed' || contains(github.event.issue.labels.*.name, 'stale') || contains(github.event.pull_request.labels.*.name, 'stale')
         run: |
           gh api graphql -f query='
             mutation (
