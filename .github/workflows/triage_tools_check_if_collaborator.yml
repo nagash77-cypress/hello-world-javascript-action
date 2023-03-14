@@ -40,9 +40,9 @@ jobs:
         echo env
       
         if [ ${{ env.IS_COLLABORATOR == '0' }} ]; then
-          echo "is-collaborator=true" >> $GITHUB_OUTPUT
+          echo "is-collaborator=false" >> $GITHUB_OUTPUT
           echo env
         elif [ ${{ env.IS_COLLABORATOR == '1' }} ]; then
-          echo "is-collaborator=false" >> $GITHUB_OUTPUT
+          echo "is-collaborator=true" >> $GITHUB_OUTPUT
           echo env
         fi
