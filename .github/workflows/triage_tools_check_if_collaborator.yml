@@ -38,8 +38,8 @@ jobs:
 
         echo 'IS_COLLABORATOR='$(jq -r '.data.repository.collaborators.totalCount' collaborators.json) >> $GITHUB_ENV
       
-        if [ ${{ env.IS_COLLABORATOR == 0 }} ]; then
+        if [ ${{ env.IS_COLLABORATOR == '0' }} ]; then
           echo "is-collaborator=true" >> $GITHUB_OUTPUT
-        elif [ ${{ env.IS_COLLABORATOR == 1 }} ]; then
+        elif [ ${{ env.IS_COLLABORATOR == '1' }} ]; then
           echo "is-collaborator=false" >> $GITHUB_OUTPUT
         fi
