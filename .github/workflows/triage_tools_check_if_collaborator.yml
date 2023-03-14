@@ -37,9 +37,12 @@ jobs:
           } ' -f org=${{ github.repository_owner }} -f repo=${{ github.event.repository.name }} -f user=${{ inputs.username }} > collaborators.json
 
         echo 'IS_COLLABORATOR='$(jq -r '.data.repository.collaborators.totalCount' collaborators.json) >> $GITHUB_ENV
+        echo toJSON(env)
       
         if [ ${{ env.IS_COLLABORATOR == '0' }} ]; then
           echo "is-collaborator=true" >> $GITHUB_OUTPUT
+          echo toJSON(env)
         elif [ ${{ env.IS_COLLABORATOR == '1' }} ]; then
           echo "is-collaborator=false" >> $GITHUB_OUTPUT
+          echo toJSON(env)
         fi
