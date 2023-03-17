@@ -1,4 +1,10 @@
 async function handleComment(github, context) {
+    const repo = await github.repos.get({
+        owner: 'nagash77-cypress',
+        repo: 'hello-world-javascript-action'
+      });
+      
+      console.log(repo.data);
    
     // Only continue if the payload was triggered by a comment event and the comment was made by a human user
     if (!context.payload.comment || context.payload.comment.user.type === "Bot") {
