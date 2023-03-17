@@ -1,11 +1,4 @@
 async function handleComment(github, context) {
-    
-    const repo = await github.rest.repos.get({
-        owner: 'my-username',
-        repo: 'my-repo'
-      });
-      
-    console.log(repo.data);
    
     // Only continue if the payload was triggered by a comment event and the comment was made by a human user
     if (!context.payload.comment || context.payload.comment.user.type === "Bot") {
@@ -22,7 +15,7 @@ async function handleComment(github, context) {
       console.log("Comment was made by a user outside of the organization.");
   
       // Check if the issue/pull request is already on the project board
-      const cardsResponse = await github.projects.listCardsForRepo({
+      const cardsResponse = await github.rest.projects.listCards({
         column_id: 1
       });
       const card = cardsResponse.data.find(
@@ -32,7 +25,7 @@ async function handleComment(github, context) {
       // If the card is not on the board, add it to the 'New Issue' column
       if (!card) {
         console.log("Issue/pull request is not on the project board.");
-        const createCardResponse = await github.projects.createCard({
+        const createCardResponse = await github.rest.projects.createCard({
           column_id: 1,
           content_id: issueOrPullRequest.id,
           content_type: "Issue"
@@ -43,7 +36,7 @@ async function handleComment(github, context) {
       // If the card is archived, unarchive it
       if (card && card.archived) {
         console.log("Issue/pull request is archived on the project board.");
-        const updateCardResponse = await github.projects.updateCard({
+        const updateCardResponse = await github.rest.projects.updateCard({
           card_id: card.id,
           archived: false
         });
@@ -53,7 +46,7 @@ async function handleComment(github, context) {
       // Move the card to the 'New Issue' column
       if (card && !card.archived) {
         console.log("Issue/pull request is on the project board.");
-        const moveCardResponse = await github.projects.moveCard({
+        const moveCardResponse = await github.rest.projects.moveCard({
           card_id: card.id,
           column_id: 1
         });
