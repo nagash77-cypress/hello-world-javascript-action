@@ -6,7 +6,6 @@ on:
 
 jobs:
   handle-comment-scenarios:
-    needs: get-data-about-issue-and-project
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -21,12 +20,4 @@ jobs:
           node comment_workflow.js
         env:
           GITHUB_TOKEN: ${{ secrets.ADD_TO_TRIAGE_BOARD_TOKEN }}
-          BOARD_ID: 1
-          ORG_NAME: 'nagash77-cypress'
-          PROJECT_ID: ${{ needs.get-data-about-issue-and-project.outputs.project_id }}
-          PROJECT_ITEM_ID: ${{ needs.get-data-about-issue-and-project.outputs.project_item_id }}
-          STATUS_FIELD_ID: ${{ needs.get-data-about-issue-and-project.outputs.status_field_id }}
-          PROJECT_STATUS: ${{ needs.get-data-about-issue-and-project.outputs.project_status }}
-          NEW_ISSUE_OPTION_ID: ${{ needs.get-data-about-issue-and-project.outputs.new_issue_option_id }}
-  
-  
+          
