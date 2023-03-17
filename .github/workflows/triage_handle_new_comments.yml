@@ -1,5 +1,6 @@
 name: 'Triage: closed issue comment'
 on:
+
   issue_comment:
     types: [created]
 
@@ -12,12 +13,8 @@ jobs:
         run: |
           time_diff=$(($(date +%s -d "${{ github.event.comment.created_at }}" ) - $(date +%s -d "${{ github.event.issue.closed_at }}" )))
           echo 'COMMENT_ADDED_AFTER_CLOSE='$(($time_diff > 20)) >> $GITHUB_ENV
-
-      - name: Get project data for issue/PR
+      - uses: nagash77-cypress/hello-world-javascript-action/.github/workflows/triage_tools_get_project_data.yml@develop
         id: get-project-data
-        env:
-          GITHUB_TOKEN: ${{ secrets.ADD_TO_TRIAGE_BOARD_TOKEN }}
-        uses: nagash77-cypress/hello-world-javascript-action/.github/workflows/triage_tools_get_project_data.yml@develop
         # only add issues/prs from outside contributors to the project
         # if: ${{ inputs.check-if-collaborator == 'false' || needs.check-collaborator.outputs.is-collaborator == 'false' }}
         with:
