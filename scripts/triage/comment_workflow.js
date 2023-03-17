@@ -1,4 +1,12 @@
 async function handleComment(github, context) {
+    console.log(github.rest);
+    const repo = await github.repos.get({
+        owner: 'my-username',
+        repo: 'my-repo'
+      });
+      
+      console.log(repo.data);
+    console.log(context);
     // Only continue if the payload was triggered by a comment event and the comment was made by a human user
     if (!context.payload.comment || context.payload.comment.user.type === "Bot") {
       console.log("Payload does not contain a comment event made by a human user.");
