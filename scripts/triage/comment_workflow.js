@@ -1,3 +1,7 @@
+module.exports = ({github, context}) => {
+    return context.payload.client_payload.value
+  }
+  
 async function execute(github, context) {
     // Get the comment body and author
     const commentBody = context.payload.comment.body;

@@ -21,6 +21,5 @@ jobs:
         with:
           script: |
             const script = require('./scripts/triage/comment_workflow.js')
-            console.log(script({github, context}))
             script.execute(github, context);
           
