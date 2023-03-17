@@ -37,7 +37,7 @@ async function handleComment(github, context) {
       // Scenario 3: Add the 'Popular Issue' label to the issue
       if (issueOrPullRequest.reactions.total_count + issueOrPullRequest.comments > 25) {
         console.log("Issue has reached 25 comments/reactions.");
-        const addLabelResponse = await github.issues.addLabels({
+        const addLabelResponse = await github.rest.issues.addLabels({
           owner: context.repo.owner,
           repo: context.repo.repo,
           issue_number: issueOrPullRequest.number,
