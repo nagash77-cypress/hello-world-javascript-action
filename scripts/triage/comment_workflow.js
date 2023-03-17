@@ -25,6 +25,7 @@ async function handleComment(github, context) {
         org: context.payload.organization.login
       }
       const MemberResult = await github.graphql(MemberQuery, MemberVariables)
+      console.log(MemberVariables);
       console.log(MemberResult);
   
     // Only continue if the comment was made by someone outside of the organization
