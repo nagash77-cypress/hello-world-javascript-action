@@ -15,6 +15,23 @@ async function handleComment(github, context) {
     // Get the details of the issue or pull request that triggered the workflow
     const { issue, pull_request } = context.payload;
     const issueOrPullRequest = issue || pull_request;
+
+    console.log(context.payload);
+
+    const MemberQuery = `query ($login: String!, $org: String!) {
+        user(login: $login) {
+          organization(login: $org) {
+            viewerCanAdminister
+            viewerIsAMember
+          }
+        }
+      }`;
+      const MemberVariables = {
+        login: context.payload.comment.user.login,
+        org: context.repo.repo
+      }
+      const MemberResult = await github.graphql(MemberQuery, MemberVariables)
+      console.log(result)
   
     // Only continue if the comment was made by someone outside of the organization
     if (issueOrPullRequest.user.type === "User" && !issueOrPullRequest.user.site_admin) {
