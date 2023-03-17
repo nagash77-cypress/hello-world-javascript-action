@@ -20,6 +20,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.ADD_TO_TRIAGE_BOARD_TOKEN }}
         with:
           script: |
-            const script = require('scripts/triage/comment_workflow.js')
+            const script = require('./scripts/triage/comment_workflow.js')
             console.log(script({github, context}))
           
