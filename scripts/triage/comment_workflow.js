@@ -1,5 +1,5 @@
 async function handleComment(github, context) {
-    const repo = await github.repos.get({
+    const repo = await github.rest.repos.get({
         owner: 'nagash77-cypress',
         repo: 'hello-world-javascript-action'
       });
