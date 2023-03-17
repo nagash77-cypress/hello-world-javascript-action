@@ -1,11 +1,5 @@
 async function handleComment(github, context) {
-    const repo = await github.rest.repos.get({
-        owner: 'nagash77-cypress',
-        repo: 'hello-world-javascript-action'
-      });
-      
-      console.log(repo.data);
-   
+    
     // Only continue if the payload was triggered by a comment event and the comment was made by a human user
     if (!context.payload.comment || context.payload.comment.user.type === "Bot") {
       console.log("Payload does not contain a comment event made by a human user.");
@@ -16,7 +10,7 @@ async function handleComment(github, context) {
     const { issue, pull_request } = context.payload;
     const issueOrPullRequest = issue || pull_request;
 
-    console.log(context.payload);
+    console.log(context.payload.organization.login);
 
     const MemberQuery = `query ($login: String!, $org: String!) {
         user(login: $login) {
@@ -28,10 +22,10 @@ async function handleComment(github, context) {
       }`;
       const MemberVariables = {
         login: context.payload.comment.user.login,
-        org: context.repo.repo
+        org: context.payload.organization.login
       }
       const MemberResult = await github.graphql(MemberQuery, MemberVariables)
-      console.log(result)
+      console.log(MemberResult);
   
     // Only continue if the comment was made by someone outside of the organization
     if (issueOrPullRequest.user.type === "User" && !issueOrPullRequest.user.site_admin) {
