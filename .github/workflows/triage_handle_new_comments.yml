@@ -1,0 +1,91 @@
+name: 'Triage: closed issue comment'
+on:
+  # makes this workflow reusable
+  workflow_call:
+    secrets:
+      ADD_TO_TRIAGE_BOARD_TOKEN:
+        required: true
+  
+  issue_comment:
+    types: [created]
+
+jobs:
+  get-data-about-issue-and-project:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Make sure comment was added more than 20 seconds after issue closed
+        id: is-user-a-collaborator
+        run: |
+          time_diff=$(($(date +%s -d "${{ github.event.comment.created_at }}" ) - $(date +%s -d "${{ github.event.issue.closed_at }}" )))
+          echo 'COMMENT_ADDED_AFTER_CLOSE='$(($time_diff > 20)) >> $GITHUB_ENV
+
+      - name: Get project data for issue/PR
+        id: get-project-data
+        env:
+          GITHUB_TOKEN: ${{ secrets.ADD_TO_TRIAGE_BOARD_TOKEN }}
+        uses: nagash77-cypress/hello-world-javascript-action/.github/workflows/triage_tools_get_project_data.yml@develop
+        # only add issues/prs from outside contributors to the project
+        # if: ${{ inputs.check-if-collaborator == 'false' || needs.check-collaborator.outputs.is-collaborator == 'false' }}
+        with:
+          organization: 'nagash77-cypress'
+          project: 1
+          ticket_number: ${{ github.event.issue.number || github.event.pull_request.number }}
+          project-url: https://github.com/orgs/${{github.repository_owner}}/projects/${{env.PROJECT_NUMBER}}
+          github-token: ${{ secrets.ADD_TO_TRIAGE_BOARD_TOKEN }}
+    outputs:
+      project_id: ${{ steps.get-project-data.outputs.project_id }}
+      project_item_id: ${{ steps.get-project-data.outputs.project_item_id }}
+      status_field_id: ${{ steps.get-project-data.outputs.status_field_id }}
+      project_status: ${{ steps.get-project-data.outputs.project_status }}
+      new_issue_option_id: ${{ steps.get-project-data.outputs.new_issue_option_id }}
+
+        
+  handle-comment-scenarios:
+    needs: get-data-about-issue-and-project
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+      - name: Run triage script
+        run: |
+          cd scripts/triage
+          node comment_workflow.js
+        env:
+          GITHUB_TOKEN: ${{ secrets.ADD_TO_TRIAGE_BOARD_TOKEN }}
+          BOARD_ID: 1
+          ORG_NAME: 'nagash77-cypress'
+          PROJECT_ID: ${{ needs.get-data-about-issue-and-project.outputs.project_id }}
+          PROJECT_ITEM_ID: ${{ needs.get-data-about-issue-and-project.outputs.project_item_id }}
+          STATUS_FIELD_ID: ${{ needs.get-data-about-issue-and-project.outputs.status_field_id }}
+          PROJECT_STATUS: ${{ needs.get-data-about-issue-and-project.outputs.project_status }}
+          NEW_ISSUE_OPTION_ID: ${{ needs.get-data-about-issue-and-project.outputs.new_issue_option_id }}
+  
+  Move-archived-or-stale-issue-back-onto-the-board:
+    needs: move-to-new-issue-status
+    #if the item is archived or stale we need to do the same process to add it back onto the board
+    if: |
+      (
+        needs.move-to-new-issue-status.outputs.issue-status == '' && 
+        false == true &&
+        (
+          (contains(github.event.issue.labels.*.name, 'stale') || contains(github.event.pull_request.labels.*.name, 'stale')) || 
+          needs.move-to-new-issue-status.outputs.comment-added-after-close == '1'
+        )
+      )
+    uses: nagash77-cypress/hello-world-javascript-action/.github/workflows/triage_tools_add_to_project.yml@develop
+    secrets: inherit
+
+  Move-issue-to-new-issues-column:
+    needs: Move-archived-or-stale-issue-back-onto-the-board
+    if: |
+      needs.Move-archived-or-stale-issue-back-onto-the-board.outputs.issue-status == '' && 
+      false == true &&
+      needs.Move-archived-or-stale-issue-back-onto-the-board.outputs.comment-added-after-close == '1'
+    uses: nagash77-cypress/hello-world-javascript-action/.github/workflows/triage_tools_update_status.yml@develop
+    with:
+      status: 'New Issue'
+    secrets: inherit

@@ -1,0 +1,110 @@
+name: 'Get Project Data for Issue/PR'
+on:
+  # makes this workflow reusable
+  workflow_call:
+    secrets:
+      ADD_TO_TRIAGE_BOARD_TOKEN:
+        required: true
+    inputs:
+      check-if-collaborator:
+        description: 'Make Collaborator Check'
+        default: true
+        required: false
+        type: boolean
+      organization:
+        description: 'Github Org ID'
+        default: 'nagash77-cypress'
+        required: false
+        type: string
+      project:
+        description: 'Project ID'
+        default: '1'
+        required: false
+        type: string
+      ticket_number:
+        description: 'The ID of the issue or PR'
+        required: true
+        type: string
+    outputs:
+      project_id: 
+        description: "What status is the issue"
+        value:  ${{ jobs.get-project-data.outputs.project_id }}
+      project_item_id:
+        description: 'the id of the item on the project board'
+        value: ${{ jobs.get-project-data.outputs.project_item_id }}
+      status_field_id:
+        description: 'the field id of the current status of the issue on the board.  Ie: New Issue, Routed, etc'
+        value: ${{ jobs.get-project-data.outputs.status_field_id }}
+      project_status:
+        description: 'The readable name of the status of the issue/PR'
+        value: ${{ jobs.get-project-data.outputs.project_status }}
+      new_issue_option_id:
+        description: 'The field id for New Issue ont he project board'
+        value: ${{ jobs.get-project-data.outputs.new_issue_option_id }}
+
+jobs:
+  get-project-data:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get project data for issue/PR
+        id: get-project-data
+        env:
+          GITHUB_TOKEN: ${{ secrets.ADD_TO_TRIAGE_BOARD_TOKEN }}
+          ORGANIZATION: ${{ inputs.organization }}
+          REPOSITORY: ${{ github.event.repository.name }}
+          PROJECT_NUMBER: ${{ inputs.project }}
+          ISSUE_NUMBER: ${{ inputs.ticket_number }}
+        
+        run: |
+          gh api graphql -f query='
+            query($org: String!, $repo: String!, $project: Int!, $issue: Int!) {
+              organization(login: $org) {
+                repository(name: $repo) {
+                  issue(number: $issue) {
+                    projectItems(first: 10, includeArchived: false) {
+                      nodes {
+                        id
+                        fieldValueByName(name: "Status") {
+                          ... on ProjectV2ItemFieldSingleSelectValue {
+                            name
+                            field {
+                              ... on ProjectV2SingleSelectField {
+                                project {
+                                  ... on ProjectV2 {
+                                    id
+                                    number
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+                projectV2(number: $project) {
+                  field(name: "Status") {
+                    ... on ProjectV2SingleSelectField {
+                      id
+                      options {
+                        id
+                        name
+                      }
+                    }
+                  }
+                }
+              }
+            }' -f org=$ORGANIZATION -f repo=$REPOSITORY -F issue=$ISSUE_NUMBER -F project=$PROJECT_NUMBER > project_data.json
+
+          echo 'PROJECT_ID='$(jq -r '.data.organization.repository.issue.projectItems.nodes[].fieldValueByName.field.project | select(.number == ${{ env.PROJECT_NUMBER }}) | .id' project_data.json) >> $GITHUB_OUTPUT
+          echo 'PROJECT_ITEM_ID='$(jq -r '.data.organization.repository.issue.projectItems.nodes[] | select(.fieldValueByName.field.project.number == ${{ env.PROJECT_NUMBER }}) | .id' project_data.json) >> $GITHUB_OUTPUT
+          echo 'STATUS_FIELD_ID='$(jq -r '.data.organization.projectV2.field | .id' project_data.json) >> $GITHUB_OUTPUT
+          echo 'STATUS='$(jq -r '.data.organization.repository.issue.projectItems.nodes[].fieldValueByName | select(.field.project.number == ${{ env.PROJECT_NUMBER }}) | .name' project_data.json) >> $GITHUB_OUTPUT
+          echo 'NEW_ISSUE_OPTION_ID='$(jq -r '.data.organization.projectV2.field.options[] | select(.name== "New Issue") | .id' project_data.json) >> $GITHUB_OUTPUT
+    outputs:
+      project_id: ${{ steps.get-project-data.outputs.PROJECT_ID }}
+      project_item_id: ${{ steps.get-project-data.outputs.PROJECT_ITEM_ID }}
+      status_field_id: ${{ steps.get-project-data.outputs.STATUS_FIELD_ID }}
+      project_status: ${{ steps.get-project-data.outputs.STATUS }}
+      new_issue_option_id: ${{ steps.get-project-data.outputs.NEW_ISSUE_OPTION_ID }}

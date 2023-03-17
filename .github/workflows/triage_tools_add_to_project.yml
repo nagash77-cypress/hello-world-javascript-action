@@ -1,4 +1,4 @@
-name: 'Triage: add issue/PR to project'
+name: 'add issue/PR to project board'
 
 on:
   # makes this workflow reusable
@@ -12,12 +12,21 @@ on:
         default: true
         required: false
         type: boolean
-  issues:
-    types:
-      - opened
-  pull_request_target:
-    types:
-      - opened
+      organization:
+        description: 'Github Org ID'
+        default: 'nagash77-cypress'
+        required: false
+        type: string
+      project:
+        description: 'Project ID'
+        default: '1'
+        required: false
+        type: string
+    outputs:
+      status_of_ticket_project_board: 
+        description: "What status is the issue"
+        value: '' #TODO: figure out if this value is useful
+
 
 jobs:
   check-collaborator:
@@ -34,7 +43,7 @@ jobs:
     permissions:
       issues: write
     env:
-      PROJECT_NUMBER: 1
+      PROJECT_NUMBER: ${{ inputs.project }}
       GITHUB_TOKEN: ${{ secrets.ADD_TO_TRIAGE_BOARD_TOKEN }}
     needs: check-collaborator
     steps:

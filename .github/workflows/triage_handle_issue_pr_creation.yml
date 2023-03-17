@@ -1,0 +1,20 @@
+name: 'Handle creation of new issue or PR'
+
+on:
+  issues:
+    types:
+      - opened
+  pull_request_target:
+    types:
+      - opened
+
+jobs:
+  add-issue-triage-board:
+    name: Add Issue/PR to Triage Board
+    uses: nagash77-cypress/hello-world-javascript-action/.github/workflows/triage_tools_add_to_project.yml@develop
+    with:
+      username: ${{ github.event.pull_request.user.login || github.event.issue.user.login }}
+      check-if-collaborator: true
+      organization: 'nagash77-cypress'
+      project: '1'
+    secrets: inherit
