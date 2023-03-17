@@ -9,15 +9,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
           node-version: '16'
-      - name: Run triage script
-        run: |
-          cd scripts/triage
-          node comment_workflow.js
+      - name: Run comment_workflow.js Script
+        uses: actions/github-script@v6
         env:
           GITHUB_TOKEN: ${{ secrets.ADD_TO_TRIAGE_BOARD_TOKEN }}
+        with:
+          script: |
+            const script = require('/scripts/triage/comment_workflow.js')
+            console.log(script({github, context}))
           
