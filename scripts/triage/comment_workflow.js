@@ -1,6 +1,6 @@
 async function handleComment(github, context) {
     
-    const repo = await github.repos.get({
+    const repo = await github.rest.repos.get({
         owner: 'my-username',
         repo: 'my-repo'
       });
