@@ -1,37 +1,38 @@
-const { Octokit } = require("@octokit/rest");
-
-const octokit = new Octokit({
-  auth: process.env.GITHUB_TOKEN,
-});
-
-const boardId = process.env.BOARD_ID;
-const orgName = process.env.ORG_NAME;
-const projectStatus = process.env.PROJECT_STATUS;
-
-switch (projectStatus) {
-    case "New Issue":
-        // Do something if the project status is Backlog
-        console.log(`Unknown project status: ${projectStatus}`);
-        break;
-    case "Investigating":
-        // Do something if the project status is To do
-        console.log(`Unknown project status: ${projectStatus}`);
-        break;
-    case "Awaiting Response":
-        // Do something if the project status is In progress
-        console.log(`Unknown project status: ${projectStatus}`);
-        break;
-    case "Closed":
-        // Do something if the project status is Done
-        console.log(`Unknown project status: ${projectStatus}`);
-        break;
-    case "Closed":
-        // Do something if the project status is Done
-        console.log(`Unknown project status: ${projectStatus}`);
-        break;
-    default:
-        console.log(`Unknown project status: ${projectStatus}`);
-}
-
-// Use the orgName, boardId, and other environment variables as needed
-// to update the issue or PR status, label, author, etc.
+async function execute(github, context) {
+    // Get the comment body and author
+    const commentBody = context.payload.comment.body;
+    const commentAuthor = context.payload.comment.user.login;
+    
+    // Get a reference to the Octokit client
+    const octokit = github.getOctokit();
+    
+    // If the comment author is a collaborator, add a "collaborator" label to the issue
+    const { data: collaborators } = await octokit.rest.repos.listCollaborators({
+      owner: context.repo.owner,
+      repo: context.repo.repo
+    });
+    if (collaborators.some(collaborator => collaborator.login === commentAuthor)) {
+      const issueNumber = context.payload.issue.number;
+      await octokit.rest.issues.addLabels({
+        owner: context.repo.owner,
+        repo: context.repo.repo,
+        issue_number: issueNumber,
+        labels: ["collaborator"]
+      });
+      console.log(`Added "collaborator" label to issue #${issueNumber}`);
+    }
+    
+    // If the comment body includes the word "help", assign the issue to the current user
+    if (commentBody.includes("help")) {
+      const assignee = context.payload.sender.login;
+      const issueNumber = context.payload.issue.number;
+      await octokit.rest.issues.update({
+        owner: context.repo.owner,
+        repo: context.repo.repo,
+        issue_number: issueNumber,
+        assignees: [assignee]
+      });
+      console.log(`Assigned issue #${issueNumber} to ${assignee}`);
+    }
+  }
+  
