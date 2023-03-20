@@ -39,8 +39,7 @@ async function handleComment(github, context) {
     if (!isCommentFromMember) {
         console.log('not from an org member')
         //Get Item Info
-        const getItemInfoQuery = '
-            query($org: String!, $repo: String!, $project: Int!, $issue: Int!) {
+        /* const getItemInfoQuery = 'query ($org: String!, $repo: String!, $project: Int!, $issue: Int!) {
               organization(login: $org) {
                 repository(name: $repo) {
                   issue(number: $issue) {
@@ -78,13 +77,15 @@ async function handleComment(github, context) {
                   }
                 }
               }
-            }'
+            }';
+        
         const getItemInfoVars = {
             org: context.payload.organization.login,
-            repo: 
-            issueNumber:
-            projectNumber:
-        }
+            repo: "test",
+            issueNumber: "39",
+            projectNumber: 1
+        };
+        */
         // If issue is archived on the board, reactivate it
 
         // If the issue is open but is not on the project board, move it to the New Issues column on the project board
