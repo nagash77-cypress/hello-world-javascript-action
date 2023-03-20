@@ -12,6 +12,10 @@ async function handleComment(github, context) {
 
     console.log(context.payload.organization.login);
 
+    const isCommentCreatorMemberofOrg = isUserAnOrgMember(github, context, context.payload.comment.user.login, context.payload.organization.login);
+
+    console.log(isCommentCreatorMemberofOrg);
+
     const MemberQuery = `query ($login: String!, $org: String!) {
         user(login: $login) {
           organization(login: $org) {
@@ -27,9 +31,28 @@ async function handleComment(github, context) {
       const MemberResult = await github.graphql(MemberQuery, MemberVariables)
       console.log(MemberVariables);
       console.log(MemberResult);
-  
+      console.log(MemberResult.user);
+      console.log(MemberResult.user.organization);
+    
+    // If comment is from someone outside of the org
+    if (MemberResult.user.organization == null) {
+        // If issue is archived on the board, reactivate it
+
+        // If the issue is open but is not on the project board, move it to the New Issues column on the project board
+
+        // If the issue the issue is of status Closed on the project board, move it to the New Issues column
+
+        
+    }
    
-  }
-  
+  }  
+
+function isUserAnOrgMember(github, context, username, org) {
+
+    const isMember = false;
+
+    return isMember;
+
+}
 
 module.exports = { handleComment };
