@@ -93,7 +93,7 @@ async function handleComment(github, context) {
         // If the issue the issue is of status Closed on the project board, move it to the New Issues column
 
         
-} 
-
+    } 
+}
 
 module.exports = { handleComment };
