@@ -86,6 +86,10 @@ async function handleComment(github, context) {
             issueNumber: issueOrPullRequest.number,
             projectNumber: 1
         };
+        const getItemInfo = await github.graphql(getItemInfoQuery,getItemInfoVars);
+        
+        console.log(getItemInfoVars);
+        console.log(getItemInfo);
         // If issue is archived on the board, reactivate it
 
         // If the issue is open but is not on the project board, move it to the New Issues column on the project board
