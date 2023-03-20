@@ -31,7 +31,7 @@ async function handleComment(github, context) {
 
 async function isUserAnOrgMember(github, username, org) {
 
-    const isMember = false;
+    isMember = false;
 
     const MemberQuery = `query ($login: String!, $org: String!) {
         user(login: $login) {
