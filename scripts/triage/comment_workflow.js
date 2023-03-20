@@ -83,8 +83,8 @@ async function handleComment(github, context) {
         const getItemInfoVars = {
             org: context.payload.organization.login,
             repo: "hello-world-javascript-action",
-            issueNumber: issueOrPullRequest.number,
-            projectNumber: 1
+            issue: issueOrPullRequest.number,
+            project: 1
         };
         const getItemInfo = await github.graphql(getItemInfoQuery,getItemInfoVars);
         
