@@ -12,7 +12,7 @@ async function handleComment(github, context) {
 
     console.log(context.payload.organization.login);
 
-    const isCommentCreatorMemberofOrg = await isUserAnOrgMember(github, context.payload.comment.user.login, context.payload.organization.login);
+    const isCommentCreatorMemberofOrg = await isUserAnOrgMember(github, context);
 
     console.log(isCommentCreatorMemberofOrg);
     
@@ -29,10 +29,10 @@ async function handleComment(github, context) {
    
   }  
 
-async function isUserAnOrgMember(github, username, org) {
+async function isUserAnOrgMember(github, context) {
 
     isMember = false;
-
+    
     const MemberQuery = `query ($login: String!, $org: String!) {
         user(login: $login) {
           organization(login: $org) {
@@ -42,10 +42,10 @@ async function isUserAnOrgMember(github, username, org) {
         }
       }`;
       const MemberVariables = {
-        login: username,
-        org: org
+        login: context.payload.comment.user.login,
+        org: context.payload.organization.login
       }
-      const MemberResult = await github.graphql(MemberQuery, MemberVariables)
+      const MemberResult = github.graphql(MemberQuery, MemberVariables)
       console.log(MemberVariables);
       console.log(MemberResult);
       console.log(MemberResult.user);
