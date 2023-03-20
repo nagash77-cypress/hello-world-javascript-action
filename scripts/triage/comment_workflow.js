@@ -45,7 +45,7 @@ function isUserAnOrgMember(github, username, org) {
         login: username,
         org: org
       }
-      const MemberResult = await github.graphql(MemberQuery, MemberVariables)
+      const MemberResult = github.graphql(MemberQuery, MemberVariables)
       console.log(MemberVariables);
       console.log(MemberResult);
       console.log(MemberResult.user);
