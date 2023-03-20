@@ -39,14 +39,15 @@ async function handleComment(github, context) {
     if (!isCommentFromMember) {
         console.log('not from an org member');
         //Get Item Info
-        const getItemInfoQuery = 'query ($org: String!, $repo: String!, $project: Int!, $issue: Int!) {
+        
+        const getItemInfoQuery = "query ($org: String!, $repo: String!, $project: Int!, $issue: Int!) {
             organization(login: $org) {
               repository(name: $repo) {
                 issue(number: $issue) {
                   projectItems(first: 10, includeArchived: false) {
                     nodes {
                       id
-                      fieldValueByName(name: "Status") {
+                      fieldValueByName(name: 'Status') {
                         ... on ProjectV2ItemFieldSingleSelectValue {
                           name
                           field {
@@ -66,7 +67,7 @@ async function handleComment(github, context) {
                 }
               }
               projectV2(number: $project) {
-                field(name: "Status") {
+                field(name: 'Status') {
                   ... on ProjectV2SingleSelectField {
                     id
                     options {
@@ -77,7 +78,7 @@ async function handleComment(github, context) {
                 }
               }
             }
-          }';
+          }";
         
         const getItemInfoVars = {
             org: context.payload.organization.login,
