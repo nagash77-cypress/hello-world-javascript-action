@@ -23,7 +23,7 @@ async function handleComment(github, context) {
         org: context.payload.organization.login
     }
     
-    const isMemberResult = github.graphql(isMemberQuery, isMemberVariables)
+    const isMemberResult = await github.graphql(isMemberQuery, isMemberVariables)
 
     var isCommentFromMember = false;
 
