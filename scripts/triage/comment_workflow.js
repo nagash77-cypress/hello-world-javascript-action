@@ -12,27 +12,9 @@ async function handleComment(github, context) {
 
     console.log(context.payload.organization.login);
 
-    const isCommentCreatorMemberofOrg = isUserAnOrgMember(github, context, context.payload.comment.user.login, context.payload.organization.login);
+    const isCommentCreatorMemberofOrg = isUserAnOrgMember(github, context.payload.comment.user.login, context.payload.organization.login);
 
     console.log(isCommentCreatorMemberofOrg);
-
-    const MemberQuery = `query ($login: String!, $org: String!) {
-        user(login: $login) {
-          organization(login: $org) {
-            viewerCanAdminister
-            viewerIsAMember
-          }
-        }
-      }`;
-      const MemberVariables = {
-        login: context.payload.comment.user.login,
-        org: context.payload.organization.login
-      }
-      const MemberResult = await github.graphql(MemberQuery, MemberVariables)
-      console.log(MemberVariables);
-      console.log(MemberResult);
-      console.log(MemberResult.user);
-      console.log(MemberResult.user.organization);
     
     // If comment is from someone outside of the org
     if (MemberResult.user.organization == null) {
@@ -47,9 +29,31 @@ async function handleComment(github, context) {
    
   }  
 
-function isUserAnOrgMember(github, context, username, org) {
+function isUserAnOrgMember(github, username, org) {
 
     const isMember = false;
+
+    const MemberQuery = `query ($login: String!, $org: String!) {
+        user(login: $login) {
+          organization(login: $org) {
+            viewerCanAdminister
+            viewerIsAMember
+          }
+        }
+      }`;
+      const MemberVariables = {
+        login: username,
+        org: org
+      }
+      const MemberResult = await github.graphql(MemberQuery, MemberVariables)
+      console.log(MemberVariables);
+      console.log(MemberResult);
+      console.log(MemberResult.user);
+      console.log(MemberResult.user.organization);
+
+      if (MemberResult.user.organization == null) {
+        isMember = true;
+      }
 
     return isMember;
 
