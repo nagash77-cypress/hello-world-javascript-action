@@ -25,13 +25,13 @@ async function handleComment(github, context) {
     
     const isMemberResult = await github.graphql(isMemberQuery, isMemberVariables)
 
-    var isCommentFromMember = false;
-
     if (isMemberResult.user.organization != null) {
-        isCommentFromMember = true;
+        const isCommentFromMember = true;
+    } else { 
+        const isCommentFromMember = false;
     }
 
-    console.log(isCommentFromMember);
+    //console.log(isCommentFromMember);
     
     // If comment is from someone outside of the org
     if (!isCommentFromMember) {
