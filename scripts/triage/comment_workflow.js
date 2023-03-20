@@ -37,25 +37,24 @@ async function handleComment(github, context) {
     
     // If comment is from someone outside of the org
     if (!isCommentFromMember) {
-        console.log('not from an org member')
+        console.log('not from an org member');
         //Get Item Info
-        /* const getItemInfoQuery = 'query ($org: String!, $repo: String!, $project: Int!, $issue: Int!) {
-              organization(login: $org) {
-                repository(name: $repo) {
-                  issue(number: $issue) {
-                    projectItems(first: 10, includeArchived: false) {
-                      nodes {
-                        id
-                        fieldValueByName(name: "Status") {
-                          ... on ProjectV2ItemFieldSingleSelectValue {
-                            name
-                            field {
-                              ... on ProjectV2SingleSelectField {
-                                project {
-                                  ... on ProjectV2 {
-                                    id
-                                    number
-                                  }
+        const getItemInfoQuery = 'query ($org: String!, $repo: String!, $project: Int!, $issue: Int!) {
+            organization(login: $org) {
+              repository(name: $repo) {
+                issue(number: $issue) {
+                  projectItems(first: 10, includeArchived: false) {
+                    nodes {
+                      id
+                      fieldValueByName(name: "Status") {
+                        ... on ProjectV2ItemFieldSingleSelectValue {
+                          name
+                          field {
+                            ... on ProjectV2SingleSelectField {
+                              project {
+                                ... on ProjectV2 {
+                                  id
+                                  number
                                 }
                               }
                             }
@@ -65,27 +64,27 @@ async function handleComment(github, context) {
                     }
                   }
                 }
-                projectV2(number: $project) {
-                  field(name: "Status") {
-                    ... on ProjectV2SingleSelectField {
+              }
+              projectV2(number: $project) {
+                field(name: "Status") {
+                  ... on ProjectV2SingleSelectField {
+                    id
+                    options {
                       id
-                      options {
-                        id
-                        name
-                      }
+                      name
                     }
                   }
                 }
               }
-            }';
+            }
+          }';
         
         const getItemInfoVars = {
             org: context.payload.organization.login,
-            repo: "test",
-            issueNumber: "39",
+            repo: "hello-world-javascript-action",
+            issueNumber: issueOrPullRequest.number,
             projectNumber: 1
         };
-        */
         // If issue is archived on the board, reactivate it
 
         // If the issue is open but is not on the project board, move it to the New Issues column on the project board
@@ -93,9 +92,7 @@ async function handleComment(github, context) {
         // If the issue the issue is of status Closed on the project board, move it to the New Issues column
 
         
-    }
-   
-  }  
+} 
 
 
 module.exports = { handleComment };
