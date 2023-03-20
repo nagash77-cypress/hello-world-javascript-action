@@ -10,14 +10,32 @@ async function handleComment(github, context) {
     const { issue, pull_request } = context.payload;
     const issueOrPullRequest = issue || pull_request;
 
-    console.log(context.payload.organization.login);
+    const isMemberQuery = `query ($login: String!, $org: String!) {
+        user(login: $login) {
+          organization(login: $org) {
+            viewerCanAdminister
+            viewerIsAMember
+          }
+        }
+      }`;
+    const isMemberVariables = {
+        login: context.payload.comment.user.login,
+        org: context.payload.organization.login
+    }
+    
+    const isMemberResult = github.graphql(isMemberQuery, isMemberVariables)
 
-    const isCommentCreatorMemberofOrg = isUserAnOrgMember(github, context);
+    var isCommentFromMember = false;
 
-    console.log(isCommentCreatorMemberofOrg);
+    if (isMemberResult.user.organization != null) {
+        isCommentFromMember = true;
+    }
+
+    console.log(isCommentFromMember);
     
     // If comment is from someone outside of the org
-    if (MemberResult.user.organization == null) {
+    if (!isCommentFromMember) {
+        console.log('not from an org member')
         // If issue is archived on the board, reactivate it
 
         // If the issue is open but is not on the project board, move it to the New Issues column on the project board
@@ -29,34 +47,5 @@ async function handleComment(github, context) {
    
   }  
 
-function isUserAnOrgMember(github, context) {
-
-    isMember = false;
-    
-    const MemberQuery = `query ($login: String!, $org: String!) {
-        user(login: $login) {
-          organization(login: $org) {
-            viewerCanAdminister
-            viewerIsAMember
-          }
-        }
-      }`;
-      const MemberVariables = {
-        login: context.payload.comment.user.login,
-        org: context.payload.organization.login
-      }
-      const MemberResult = github.graphql(MemberQuery, MemberVariables)
-      console.log(MemberVariables);
-      console.log(MemberResult);
-      console.log(MemberResult.user);
-      console.log(MemberResult.user.organization);
-
-      if (MemberResult.user.organization == null) {
-        isMember = true;
-      }
-
-    return isMember;
-
-}
 
 module.exports = { handleComment };
