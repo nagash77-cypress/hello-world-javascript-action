@@ -45,9 +45,10 @@ async function handleComment(github, context) {
             organization(login: $org) {
               repository(name: $repo) {
                 issue(number: $issue) {
-                  projectItems(first: 10, includeArchived: false) {
+                  projectItems(first: 10, includeArchived: true) {
                     nodes {
                       id
+                      isArchived
                       fieldValueByName(name: "Status") {
                         ... on ProjectV2ItemFieldSingleSelectValue {
                           name
@@ -91,9 +92,10 @@ async function handleComment(github, context) {
 
         console.log(getItemInfoVars);
         console.log(getItemInfo);
-
-        const projectID = getItemInfo.organization.repository.issue.projectItems.nodes[0].fieldValueByName.field.project.id;
-        const projectItemID = getItemInfo.organization.repository.issue.projectItems.nodes[0].id;
+        
+        const projectID = getItemInfo.organization.repository.issue.projectItems.nodes[0].fieldValueByName.field.project.id || 1;
+        const projectItemID = getItemInfo.organization.repository.issue.projectItems.nodes[0].id || null;
+        const isItemArchived = getItemInfo.organization.repository.issue.projectItems.nodes[0].isArchived || false;
         const statusFieldID = getItemInfo.organization.projectV2.field.id;
         const status = "New Issue"; // You can hardcode this value, or extract it from the JSON object if needed
         const newStatusColumnID = getItemInfo.organization.projectV2.field.options.find(option => option.name === "New Issue").id;
@@ -101,12 +103,49 @@ async function handleComment(github, context) {
         // Print the extracted data to console
         console.log(`Project ID: ${projectID}`);
         console.log(`Project Item ID: ${projectItemID}`);
+        console.log(`isARCHIVED: ${isItemArchived}`);
         console.log(`Status Field ID: ${statusFieldID}`);
         console.log(`Status: ${status}`);
         console.log(`New Status Column ID: ${newStatusColumnID}`);
         
         
         // If issue is archived on the board, reactivate it
+        if(isItemArchived) {
+          const unarchiveQuery = `
+          mutation (
+            $project: ID!
+            $item: ID!
+            $status_field: ID!
+            $status_value: String!
+          ) {
+            updateProjectV2ItemFieldValue(input: {
+              projectId: $project_id
+              itemId: $item_id
+              fieldId: $status_field_id
+              value: { 
+                singleSelectOptionId: $status_value_id
+              }
+            }) {
+              projectV2Item {
+                id
+              }
+            }
+          }`;
+
+          const unarchiveQueryVars = {
+            project_id: projectID,
+            item_id: projectItemID,
+            status_field_id: statusFieldID,
+            status_value_id: newStatusColumnID
+          };
+
+          const unarchiveItem = await github.graphql(unarchiveQuery,unarchiveQueryVars); 
+
+          console.log("query: " ${unarchiveQuery} );
+          console.log("vars: " ${unarchiveQueryVars} );
+          console.log("result: " ${unarchiveItem} );
+
+        }
 
         // If the issue is open but is not on the project board, move it to the New Issues column on the project board
 
