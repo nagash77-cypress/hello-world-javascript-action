@@ -10,8 +10,8 @@ async function handleComment(github, context) {
     const { issue, pull_request } = context.payload;
     const issueOrPullRequest = issue || pull_request;
 
-    console.log(issueOrPullRequest);
-    console.log(context);
+    //console.log(issueOrPullRequest);
+    //console.log(context);
 
     const isMemberQuery = `query ($login: String!, $org: String!) {
         user(login: $login) {
@@ -90,20 +90,20 @@ async function handleComment(github, context) {
         const getItemInfo = await github.graphql(getItemInfoQuery,getItemInfoVars);
 
         console.log(getItemInfoVars);
-        console.log(getItemInfo.data);
+        console.log(getItemInfo);
 
-        const projectID = getItemInfo.data.organization.repository.issue.projectItems.nodes[0].fieldValueByName.field.project.id;
-        const projectItemID = getItemInfo.data.organization.repository.issue.projectItems.nodes[0].id;
-        const statusFieldID = getItemInfo.data.organization.projectV2.field.id;
-        const status = "New Issue"; // You can hardcode this value, or extract it from the JSON object if needed
-        const newStatusColumnID = getItemInfo.data.organization.projectV2.field.options.find(option => option.name === "New Issue").id;
+        //const projectID = getItemInfo.data.organization.repository.issue.projectItems.nodes[0].fieldValueByName.field.project.id;
+        //const projectItemID = getItemInfo.data.organization.repository.issue.projectItems.nodes[0].id;
+        //const statusFieldID = getItemInfo.data.organization.projectV2.field.id;
+        //const status = "New Issue"; // You can hardcode this value, or extract it from the JSON object if needed
+        //const newStatusColumnID = getItemInfo.data.organization.projectV2.field.options.find(option => option.name === "New Issue").id;
 
         // Print the extracted data to console
-        console.log(`Project ID: ${projectID}`);
-        console.log(`Project Item ID: ${projectItemID}`);
-        console.log(`Status Field ID: ${statusFieldID}`);
-        console.log(`Status: ${status}`);
-        console.log(`New Status Column ID: ${newStatusColumnID}`);
+        //console.log(`Project ID: ${projectID}`);
+        //console.log(`Project Item ID: ${projectItemID}`);
+        //console.log(`Status Field ID: ${statusFieldID}`);
+        //console.log(`Status: ${status}`);
+        //console.log(`New Status Column ID: ${newStatusColumnID}`);
         
         
         // If issue is archived on the board, reactivate it
