@@ -142,7 +142,7 @@ async function handleComment(github, context) {
         // If the issue is open but is not on the project board, move it to the New Issues column on the project board
 
         // If the issue the issue is of status Closed on the project board, move it to the New Issues column
-        if(false = true) {
+        if(1 == 2) {
           const unarchiveQuery = `
           mutation (
             $project_id: ID!
