@@ -119,7 +119,11 @@ async function handleComment(github, context) {
               unarchiveProjectV2Item(input: {
                 projectId: $project_id
                 itemId: $item_id
-              })
+              }) {
+                unarchiveProjectV2Item {
+                  item
+                }
+              }
           }`;
 
           const unarchiveQueryVars = {
