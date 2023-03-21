@@ -11,6 +11,7 @@ async function handleComment(github, context) {
     const issueOrPullRequest = issue || pull_request;
 
     console.log(issueOrPullRequest);
+    console.log(context);
 
     const isMemberQuery = `query ($login: String!, $org: String!) {
         user(login: $login) {
