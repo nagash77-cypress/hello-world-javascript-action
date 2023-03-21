@@ -88,10 +88,21 @@ async function handleComment(github, context) {
             project: 1
         };
         const getItemInfo = await github.graphql(getItemInfoQuery,getItemInfoVars);
+
+        const projectID = getItemInfo.data.organization.repository.issue.projectItems.nodes[0].fieldValueByName.field.project.id;
+        const projectItemID = getItemInfo.data.organization.repository.issue.projectItems.nodes[0].id;
+        const statusFieldID = getItemInfo.data.organization.projectV2.field.id;
+        const status = "New Issue"; // You can hardcode this value, or extract it from the JSON object if needed
+        const newStatusColumnID = getItemInfo.data.organization.projectV2.field.options.find(option => option.name === "New Issue").id;
+
+        // Print the extracted data to console
+        console.log(`Project ID: ${projectID}`);
+        console.log(`Project Item ID: ${projectItemID}`);
+        console.log(`Status Field ID: ${statusFieldID}`);
+        console.log(`Status: ${status}`);
+        console.log(`New Status Column ID: ${newStatusColumnID}`);
         
         console.log(getItemInfoVars);
-        console.log(getItemInfo.organization.repository.issue);
-        console.log(getItemInfo.organization.repository.projectV2.field);
         // If issue is archived on the board, reactivate it
 
         // If the issue is open but is not on the project board, move it to the New Issues column on the project board
