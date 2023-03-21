@@ -89,6 +89,9 @@ async function handleComment(github, context) {
         };
         const getItemInfo = await github.graphql(getItemInfoQuery,getItemInfoVars);
 
+        console.log(getItemInfoVars);
+        console.log(getItemInfo.data);
+
         const projectID = getItemInfo.data.organization.repository.issue.projectItems.nodes[0].fieldValueByName.field.project.id;
         const projectItemID = getItemInfo.data.organization.repository.issue.projectItems.nodes[0].id;
         const statusFieldID = getItemInfo.data.organization.projectV2.field.id;
@@ -102,7 +105,7 @@ async function handleComment(github, context) {
         console.log(`Status: ${status}`);
         console.log(`New Status Column ID: ${newStatusColumnID}`);
         
-        console.log(getItemInfoVars);
+        
         // If issue is archived on the board, reactivate it
 
         // If the issue is open but is not on the project board, move it to the New Issues column on the project board
