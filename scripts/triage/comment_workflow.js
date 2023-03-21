@@ -113,10 +113,10 @@ async function handleComment(github, context) {
         if(isItemArchived) {
           const unarchiveQuery = `
           mutation (
-            $project: ID!
-            $item: ID!
-            $status_field: ID!
-            $status_value: String!
+            $project_id: ID!
+            $item_id: ID!
+            $status_field_id: ID!
+            $status_value_id: String!
           ) {
             updateProjectV2ItemFieldValue(input: {
               projectId: $project_id
