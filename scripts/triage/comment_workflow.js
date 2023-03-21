@@ -83,14 +83,15 @@ async function handleComment(github, context) {
         
         const getItemInfoVars = {
             org: context.payload.organization.login,
-            repo: "hello-world-javascript-action",
+            repo: context.payload.repository.name,
             issue: issueOrPullRequest.number,
             project: 1
         };
         const getItemInfo = await github.graphql(getItemInfoQuery,getItemInfoVars);
         
         console.log(getItemInfoVars);
-        console.log(getItemInfo);
+        console.log(getItemInfo.organization.repository.issue);
+        console.log(getItemInfo.organization.repository.projectV2.field);
         // If issue is archived on the board, reactivate it
 
         // If the issue is open but is not on the project board, move it to the New Issues column on the project board
