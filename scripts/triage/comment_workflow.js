@@ -140,10 +140,11 @@ async function handleComment(github, context) {
           };
 
           const unarchiveItem = await github.graphql(unarchiveQuery,unarchiveQueryVars); 
-
-          console.log("query: " ${unarchiveQuery} );
-          console.log("vars: " ${unarchiveQueryVars} );
-          console.log("result: " ${unarchiveItem} );
+          
+          
+          console.log(`query: ${unarchiveQuery}` );
+          console.log(`vars:  ${unarchiveQueryVars}` );
+          console.log(`result: ${unarchiveItem}` );
 
         }
 
