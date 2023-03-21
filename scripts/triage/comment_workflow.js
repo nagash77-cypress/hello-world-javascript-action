@@ -112,6 +112,38 @@ async function handleComment(github, context) {
         // If issue is archived on the board, reactivate it
         if(isItemArchived) {
           const unarchiveQuery = `
+            mutation (
+              $project_id: ID!
+              $item_id: ID!
+            ) {
+              unarchiveProjectV2Item(input: {
+                projectId: $project_id
+                itemId: $item_id
+              }) {
+                projectV2Item {
+                  id
+                }
+              }
+          }`;
+
+          const unarchiveQueryVars = {
+            project_id: projectID,
+            item_id: projectItemID,
+          };
+
+          const unarchiveItem = await github.graphql(unarchiveQuery,unarchiveQueryVars); 
+          
+          
+          console.log(`query: ${unarchiveQuery}` );
+          console.log(`vars:  ${unarchiveQueryVars}` );
+          console.log(`result: ${unarchiveItem}` );
+        }
+
+        // If the issue is open but is not on the project board, move it to the New Issues column on the project board
+
+        // If the issue the issue is of status Closed on the project board, move it to the New Issues column
+        if(false = true) {
+          const unarchiveQuery = `
           mutation (
             $project_id: ID!
             $item_id: ID!
@@ -145,12 +177,7 @@ async function handleComment(github, context) {
           console.log(`query: ${unarchiveQuery}` );
           console.log(`vars:  ${unarchiveQueryVars}` );
           console.log(`result: ${unarchiveItem}` );
-
-        }
-
-        // If the issue is open but is not on the project board, move it to the New Issues column on the project board
-
-        // If the issue the issue is of status Closed on the project board, move it to the New Issues column
+        };
 
         
     } 
