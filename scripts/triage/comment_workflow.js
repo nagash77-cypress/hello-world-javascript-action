@@ -4,7 +4,7 @@ async function handleComment(github, context) {
     if (!context.payload.comment || context.payload.comment.user.type === "Bot") {
       console.log("Payload does not contain a comment event made by a human user.");
       return;
-    }
+    };
   
     // Get the details of the issue or pull request that triggered the workflow
     const { issue, pull_request } = context.payload;
@@ -24,17 +24,21 @@ async function handleComment(github, context) {
     const isMemberVariables = {
         login: context.payload.comment.user.login,
         org: context.payload.organization.login
-    }
+    };
     
-    const isMemberResult = await github.graphql(isMemberQuery, isMemberVariables)
+    const isMemberResult = await github.graphql(isMemberQuery, isMemberVariables);
 
     let isCommentFromMember = false;
 
     if (isMemberResult.user.organization != null) {
         isCommentFromMember = true;
-    }
+        console.log(`Comment came from a member of the Org.  isCommentFromMember var: ${isCommentFromMember}`);
+        
+        //Don't do anything if the comment is from a member of the Org
+        return
+    };
 
-    console.log(`Comment came from a member of the Org.  isCommentFromMember var: ${isCommentFromMember}`);
+    
     
     // If comment is from someone outside of the org
     if (!isCommentFromMember) {
@@ -94,8 +98,8 @@ async function handleComment(github, context) {
         };
         const getItemInfo = await github.graphql(getItemInfoQuery,getItemInfoVars);
 
-        console.log(getItemInfoVars);
-        console.log(getItemInfo);
+        // console.log(getItemInfoVars);
+        // console.log(getItemInfo);
 
         const issueDataFromGraphQL = getItemInfo.organization.repository.issue;
         const projectID = getItemInfo.organization.projectV2.id;
@@ -107,12 +111,12 @@ async function handleComment(github, context) {
         const newStatusColumnID = getItemInfo.organization.projectV2.field.options.find(option => option.name === "New Issue").id;
 
         // Print the extracted data to console
-        console.log(`Project ID: ${projectID}`);
-        console.log(`Project Item ID: ${projectItemID}`);
-        console.log(`isARCHIVED: ${isItemArchived}`);
-        console.log(`Status Field ID: ${statusFieldID}`);
-        console.log(`Status: ${status}`);
-        console.log(`New Status Column ID: ${newStatusColumnID}`);
+        // console.log(`Project ID: ${projectID}`);
+        // console.log(`Project Item ID: ${projectItemID}`);
+        // console.log(`isARCHIVED: ${isItemArchived}`);
+        // console.log(`Status Field ID: ${statusFieldID}`);
+        // console.log(`Status: ${status}`);
+        // console.log(`New Status Column ID: ${newStatusColumnID}`);
         
         
         // If issue is archived on the board, reactivate it
@@ -135,10 +139,10 @@ async function handleComment(github, context) {
           const unarchiveItem = await github.graphql(unarchiveQuery,unarchiveQueryVars); 
           
           
-          console.log(`query: ${unarchiveQuery}` );
-          console.log(`vars:  ${unarchiveQueryVars}` );
-          console.log(`result: ${unarchiveItem}` );
-        }
+          // console.log(`query: ${unarchiveQuery}` );
+          // console.log(`vars:  ${unarchiveQueryVars}` );
+          // console.log(`result: ${unarchiveItem}` );
+        };
 
         // If the issue is open but is not on the project board add it to the project board
         if(projectItemID == null) {
