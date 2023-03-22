@@ -164,6 +164,8 @@ async function handleComment(github, context) {
         }
         // If the issue the issue is of status Closed on the project board, move it to the New Issues column
         if(issueDataFromGraphQL.closed && 1 == 2) {
+          //TODO: Still need to figure out the projectItemId if the item needed to be added to the board in the previous step 
+          //since that value would have been null before it was added when the getItemInfoQuery was originally run
           const commentOnClosedItemQuery = `
           mutation (
             $project_id: ID!
