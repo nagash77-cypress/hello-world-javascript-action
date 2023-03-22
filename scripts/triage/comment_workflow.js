@@ -160,6 +160,7 @@ async function handleComment(github, context) {
 
           // Print the extracted data to console
           console.log(addToProjectBoard);
+          console.log(addToProjectBoard.addProjectV2ItemById.item.id);
 
         }
         // If the issue the issue is of status Closed on the project board, move it to the New Issues column
