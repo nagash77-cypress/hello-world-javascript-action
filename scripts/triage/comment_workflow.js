@@ -28,13 +28,13 @@ async function handleComment(github, context) {
     
     const isMemberResult = await github.graphql(isMemberQuery, isMemberVariables)
 
-    var isCommentFromMember = false;
+    let isCommentFromMember = false;
 
     if (isMemberResult.user.organization != null) {
         isCommentFromMember = true;
     }
 
-    //console.log(isCommentFromMember);
+    console.log(`Comment came from a member of the Org.  isCommentFromMember var: ${isCommentFromMember}`);
     
     // If comment is from someone outside of the org
     if (!isCommentFromMember) {
@@ -166,7 +166,7 @@ async function handleComment(github, context) {
 
         }
         // If the issue the issue is of status Closed on the project board, move it to the New Issues column
-        if(issueDataFromGraphQL.closed && 1 == 2) {
+        if(issueDataFromGraphQL.closed) {
           //TODO: Still need to figure out the projectItemId if the item needed to be added to the board in the previous step 
           //since that value would have been null before it was added when the getItemInfoQuery was originally run
           const commentOnClosedItemQuery = `
