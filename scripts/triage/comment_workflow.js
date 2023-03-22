@@ -45,6 +45,7 @@ async function handleComment(github, context) {
             organization(login: $org) {
               repository(name: $repo) {
                 issue(number: $issue) {
+                  id
                   projectItems(first: 10, includeArchived: true) {
                     nodes {
                       id
@@ -69,6 +70,7 @@ async function handleComment(github, context) {
                 }
               }
               projectV2(number: $project) {
+                id
                 field(name: "Status") {
                   ... on ProjectV2SingleSelectField {
                     id
@@ -92,8 +94,9 @@ async function handleComment(github, context) {
 
         console.log(getItemInfoVars);
         console.log(getItemInfo);
-        
-        const projectID = getItemInfo.organization.repository.issue.projectItems.nodes.length > 0 ? getItemInfo.organization.repository.issue.projectItems.nodes[0].fieldValueByName.field.project.id : 1;
+
+        const issueNodeId = getItemInfo.organization.repository.issue.id;
+        const projectID = getItemInfo.organization.projectV2.id;
         const projectItemID = getItemInfo.organization.repository.issue.projectItems.nodes.length > 0 ? getItemInfo.organization.repository.issue.projectItems.nodes[0].id : null;
         const isItemArchived = getItemInfo.organization.repository.issue.projectItems.nodes.length > 0 ? getItemInfo.organization.repository.issue.projectItems.nodes[0].isArchived : false;
         const statusFieldID = getItemInfo.organization.projectV2.field.id;
@@ -135,7 +138,25 @@ async function handleComment(github, context) {
         }
 
         // If the issue is open but is not on the project board, move it to the New Issues column on the project board
+        if(projectItemID == null) {
+          const addToProjectBoardQuery = `
+            mutation ($project_id: ID!, $item_id: ID!) {
+              addProjectV2ItemById(input: {contentId: $item_id, projectId: $project_id}) {
+                clientMutationId
+                item {
+                  id
+                }
+              }
+            }`;
 
+          const addToProjectBoardQueryVars = {
+            project_id: projectID,
+            item_id: issueNodeId,
+          };
+
+          const unarchiveItem = await github.graphql(addToProjectBoardQuery,addToProjectBoardQueryVars);
+          
+        }
         // If the issue the issue is of status Closed on the project board, move it to the New Issues column
         if(1 == 2) {
           const unarchiveQuery = `
