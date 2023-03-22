@@ -10,9 +10,6 @@ async function handleComment(github, context) {
     const { issue, pull_request } = context.payload;
     const issueOrPullRequest = issue || pull_request;
 
-    //console.log(issueOrPullRequest);
-    //console.log(context);
-
     const isMemberQuery = `query ($login: String!, $org: String!) {
         user(login: $login) {
           organization(login: $org) {
@@ -98,9 +95,6 @@ async function handleComment(github, context) {
         };
         const getItemInfo = await github.graphql(getItemInfoQuery,getItemInfoVars);
 
-        // console.log(getItemInfoVars);
-        // console.log(getItemInfo);
-
         const issueDataFromGraphQL = getItemInfo.organization.repository.issue;
         const projectID = getItemInfo.organization.projectV2.id;
         //using let because we will need to override this value once we add the item to the project board if it isn't already on it
@@ -109,16 +103,7 @@ async function handleComment(github, context) {
         const statusFieldID = getItemInfo.organization.projectV2.field.id;
         const status = "New Issue"; // You can hardcode this value, or extract it from the JSON object if needed
         const newStatusColumnID = getItemInfo.organization.projectV2.field.options.find(option => option.name === "New Issue").id;
-
-        // Print the extracted data to console
-        // console.log(`Project ID: ${projectID}`);
-        // console.log(`Project Item ID: ${projectItemID}`);
-        // console.log(`isARCHIVED: ${isItemArchived}`);
-        // console.log(`Status Field ID: ${statusFieldID}`);
-        // console.log(`Status: ${status}`);
-        // console.log(`New Status Column ID: ${newStatusColumnID}`);
-        
-        
+       
         // If issue is archived on the board, reactivate it
         if(isItemArchived) {
           const unarchiveQuery = `
@@ -138,10 +123,6 @@ async function handleComment(github, context) {
 
           const unarchiveItem = await github.graphql(unarchiveQuery,unarchiveQueryVars); 
           
-          
-          // console.log(`query: ${unarchiveQuery}` );
-          // console.log(`vars:  ${unarchiveQueryVars}` );
-          // console.log(`result: ${unarchiveItem}` );
         };
 
         // If the issue is open but is not on the project board add it to the project board
@@ -163,16 +144,10 @@ async function handleComment(github, context) {
 
           const addToProjectBoard = await github.graphql(addToProjectBoardQuery,addToProjectBoardQueryVars);
           projectItemID = addToProjectBoard.addProjectV2ItemById.item.id;
-          
-          // // Print the extracted data to console
-          // console.log(addToProjectBoard);
-          // console.log(addToProjectBoard.addProjectV2ItemById.item.id); //new projectItemId after the item has been added to the project board.
 
-        }
+        };
         // If the issue the issue is of status Closed on the project board, move it to the New Issues column
         if(issueDataFromGraphQL.closed) {
-          //TODO: Still need to figure out the projectItemId if the item needed to be added to the board in the previous step 
-          //since that value would have been null before it was added when the getItemInfoQuery was originally run
           const commentOnClosedItemQuery = `
           mutation (
             $project_id: ID!
@@ -209,7 +184,7 @@ async function handleComment(github, context) {
         };
 
         
-    } 
-}
+    };
+};
 
 module.exports = { handleComment };
