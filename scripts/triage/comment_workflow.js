@@ -112,18 +112,14 @@ async function handleComment(github, context) {
         // If issue is archived on the board, reactivate it
         if(isItemArchived) {
           const unarchiveQuery = `
-            mutation (
-              $project_id: ID!
-              $item_id: ID!
-            ) {
+            mutation ($project_id: ID! $item_id: ID!) {
               unarchiveProjectV2Item(input: {
                 projectId: $project_id
                 itemId: $item_id
               }) {
-                unarchiveProjectV2Item {
-                  item
+                clientMutationId
+                item
                 }
-              }
           }`;
 
           const unarchiveQueryVars = {
