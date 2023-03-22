@@ -99,7 +99,8 @@ async function handleComment(github, context) {
 
         const issueDataFromGraphQL = getItemInfo.organization.repository.issue;
         const projectID = getItemInfo.organization.projectV2.id;
-        const projectItemID = getItemInfo.organization.repository.issue.projectItems.nodes.length > 0 ? getItemInfo.organization.repository.issue.projectItems.nodes[0].id : null;
+        //using let because we will need to override this value once we add the item to the project board if it isn't already on it
+        let projectItemID = getItemInfo.organization.repository.issue.projectItems.nodes.length > 0 ? getItemInfo.organization.repository.issue.projectItems.nodes[0].id : null;
         const isItemArchived = getItemInfo.organization.repository.issue.projectItems.nodes.length > 0 ? getItemInfo.organization.repository.issue.projectItems.nodes[0].isArchived : false;
         const statusFieldID = getItemInfo.organization.projectV2.field.id;
         const status = "New Issue"; // You can hardcode this value, or extract it from the JSON object if needed
@@ -157,10 +158,11 @@ async function handleComment(github, context) {
           };
 
           const addToProjectBoard = await github.graphql(addToProjectBoardQuery,addToProjectBoardQueryVars);
-
-          // Print the extracted data to console
-          console.log(addToProjectBoard);
-          console.log(addToProjectBoard.addProjectV2ItemById.item.id);
+          projectItemID = addToProjectBoard.addProjectV2ItemById.item.id;
+          
+          // // Print the extracted data to console
+          // console.log(addToProjectBoard);
+          // console.log(addToProjectBoard.addProjectV2ItemById.item.id); //new projectItemId after the item has been added to the project board.
 
         }
         // If the issue the issue is of status Closed on the project board, move it to the New Issues column
@@ -196,14 +198,6 @@ async function handleComment(github, context) {
           };
 
           const commentOnClosedItem = await github.graphql(commentOnClosedItemQuery,commentOnClosedItemQueryVars); 
-          
-           // Print the extracted data to console
-          console.log(`Project ID: ${projectID}`);
-          console.log(`Project Item ID: ${projectItemID}`);
-          console.log(`isARCHIVED: ${isItemArchived}`);
-          console.log(`Status Field ID: ${statusFieldID}`);
-          console.log(`Status: ${status}`);
-          console.log(`New Status Column ID: ${newStatusColumnID}`);
           
           console.log(`query: ${commentOnClosedItemQuery}` );
           console.log(`vars:  ${commentOnClosedItemQueryVars}` );
