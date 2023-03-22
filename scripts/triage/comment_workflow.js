@@ -93,9 +93,9 @@ async function handleComment(github, context) {
         console.log(getItemInfoVars);
         console.log(getItemInfo);
         
-        const projectID = getItemInfo.organization.repository.issue.projectItems.nodes[0].fieldValueByName.field.project.id || 1;
-        const projectItemID = getItemInfo.organization.repository.issue.projectItems.nodes[0].id || null;
-        const isItemArchived = getItemInfo.organization.repository.issue.projectItems.nodes[0].isArchived || false;
+        const projectID = getItemInfo.organization.repository.issue.projectItems.nodes.length > 0 ? getItemInfo.organization.repository.issue.projectItems.nodes[0].fieldValueByName.field.project.id : 1;
+        const projectItemID = getItemInfo.organization.repository.issue.projectItems.nodes.length > 0 ? getItemInfo.organization.repository.issue.projectItems.nodes[0].id : null;
+        const isItemArchived = getItemInfo.organization.repository.issue.projectItems.nodes.length > 0 ? getItemInfo.organization.repository.issue.projectItems.nodes[0].isArchived : false;
         const statusFieldID = getItemInfo.organization.projectV2.field.id;
         const status = "New Issue"; // You can hardcode this value, or extract it from the JSON object if needed
         const newStatusColumnID = getItemInfo.organization.projectV2.field.options.find(option => option.name === "New Issue").id;
