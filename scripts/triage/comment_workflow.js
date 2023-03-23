@@ -8,7 +8,11 @@ async function handleComment(github, context) {
     console.log(context.payload);
     // Get the details of the issue or pull request that triggered the workflow
     const { issue, pull_request } = context.payload;
-    const issueOrPullRequest = issue || pull_request;
+    const issueOrPullRequest = issue ? { ...issue, type: "issue" } : { ...pull_request, type: "pullRequest" };
+
+    console.log(issueOrPullRequest);
+    console.log(issueOrPullRequest.type);
+
 
     const isMemberQuery = `query ($login: String!, $org: String!) {
         user(login: $login) {
@@ -45,7 +49,7 @@ async function handleComment(github, context) {
         const getItemInfoQuery = `query ($org: String!, $repo: String!, $project: Int!, $issue: Int!) {
             organization(login: $org) {
               repository(name: $repo) {
-                issue(number: $issue) {
+                ${issueOrPullRequest.type}(number: $issue) {
                   closed
                   closedAt
                   id
@@ -93,6 +97,9 @@ async function handleComment(github, context) {
             issue: issueOrPullRequest.number,
             project: 1
         };
+
+        console.log(getItemInfoQuery)
+
         const getItemInfo = await github.graphql(getItemInfoQuery,getItemInfoVars);
 
         const issueDataFromGraphQL = getItemInfo.organization.repository.issue;
