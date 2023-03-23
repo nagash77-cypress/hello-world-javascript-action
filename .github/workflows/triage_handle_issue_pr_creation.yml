@@ -32,6 +32,6 @@ jobs:
         with:
           github-token: ${{ secrets.ADD_TO_TRIAGE_BOARD_TOKEN }}
           script: |
-            const script = require('./scripts/triage/item_creation__workflow.js')
-            script.handleComment(github, context);
+            const script = require('./scripts/triage/item_creation_workflow.js')
+            script.handleItemCreation(github, context);
           
