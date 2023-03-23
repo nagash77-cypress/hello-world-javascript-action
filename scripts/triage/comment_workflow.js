@@ -5,7 +5,7 @@ async function handleComment(github, context) {
       console.log("Payload does not contain a comment event made by a human user.");
       return;
     };
-  
+    console.log(context.payload);
     // Get the details of the issue or pull request that triggered the workflow
     const { issue, pull_request } = context.payload;
     const issueOrPullRequest = issue || pull_request;
