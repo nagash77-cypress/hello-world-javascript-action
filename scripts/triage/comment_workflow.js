@@ -102,11 +102,11 @@ async function handleComment(github, context) {
 
         const getItemInfo = await github.graphql(getItemInfoQuery,getItemInfoVars);
 
-        const issueDataFromGraphQL = getItemInfo.organization.repository.issue;
+        const issueDataFromGraphQL = getItemInfo.organization.repository[issueOrPullRequest.type];
         const projectID = getItemInfo.organization.projectV2.id;
         //using let because we will need to override this value once we add the item to the project board if it isn't already on it
-        let projectItemID = getItemInfo.organization.repository.issue.projectItems.nodes.length > 0 ? getItemInfo.organization.repository.issue.projectItems.nodes[0].id : null;
-        const isItemArchived = getItemInfo.organization.repository.issue.projectItems.nodes.length > 0 ? getItemInfo.organization.repository.issue.projectItems.nodes[0].isArchived : false;
+        let projectItemID = issueDataFromGraphQL.projectItems.nodes.length > 0 ? issueDataFromGraphQL.projectItems.nodes[0].id : null;
+        const isItemArchived = issueDataFromGraphQL.projectItems.nodes.length > 0 ? issueDataFromGraphQL.projectItems.nodes[0].isArchived : false;
         const statusFieldID = getItemInfo.organization.projectV2.field.id;
         const status = "New Issue"; // You can hardcode this value, or extract it from the JSON object if needed
         const newStatusColumnID = getItemInfo.organization.projectV2.field.options.find(option => option.name === "New Issue").id;
