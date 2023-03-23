@@ -7,8 +7,8 @@ async function handleComment(github, context) {
     };
     console.log(context.payload);
     // Get the details of the issue or pull request that triggered the workflow
-    const { issue, pull_request } = context.payload;
-    const issueOrPullRequest = issue ? { ...issue, type: "issue" } : { ...pull_request, type: "pullRequest" };
+    const { issue, issue: { pull_request } } = context.payload;
+    const issueOrPullRequest = pull_request ? { ...issue, type: "pullRequest" } : { ...issue, type: "issue" };
 
     console.log(issueOrPullRequest);
     console.log(issueOrPullRequest.type);
