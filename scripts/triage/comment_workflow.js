@@ -5,14 +5,10 @@ async function handleComment(github, context) {
       console.log("Payload does not contain a comment event made by a human user.");
       return;
     };
-    console.log(context.payload);
+    
     // Get the details of the issue or pull request that triggered the workflow
     const { issue, issue: { pull_request } } = context.payload;
     const issueOrPullRequest = pull_request ? { ...issue, type: "pullRequest" } : { ...issue, type: "issue" };
-
-    console.log(issueOrPullRequest);
-    console.log(issueOrPullRequest.type);
-
 
     const isMemberQuery = `query ($login: String!, $org: String!) {
         user(login: $login) {
@@ -97,8 +93,6 @@ async function handleComment(github, context) {
             issue: issueOrPullRequest.number,
             project: 1
         };
-
-        console.log(getItemInfoQuery)
 
         const getItemInfo = await github.graphql(getItemInfoQuery,getItemInfoVars);
 
@@ -185,9 +179,6 @@ async function handleComment(github, context) {
 
           const commentOnClosedItem = await github.graphql(commentOnClosedItemQuery,commentOnClosedItemQueryVars); 
           
-          console.log(`query: ${commentOnClosedItemQuery}` );
-          console.log(`vars:  ${commentOnClosedItemQueryVars}` );
-          console.log(`result: ${commentOnClosedItem}` );
         };
 
         
