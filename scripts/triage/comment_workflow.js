@@ -13,7 +13,6 @@ async function handleComment(github, context) {
     const isMemberQuery = `query ($login: String!, $org: String!) {
         user(login: $login) {
           organization(login: $org) {
-            viewerCanAdminister
             viewerIsAMember
           }
         }
@@ -126,7 +125,7 @@ async function handleComment(github, context) {
           
         };
 
-        // If the issue is open but is not on the project board add it to the project board
+        // If the issue is not on the project board add it to the project board
         if(projectItemID == null) {
           const addToProjectBoardQuery = `
             mutation ($project_id: ID!, $item_id: ID!) {
