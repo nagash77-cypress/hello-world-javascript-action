@@ -22,7 +22,7 @@ jobs:
       - name: Create Pull Request
         uses: actions/github-script@v6
         with:
-          github-token: ${{ secrets.TRIAGE_BOARD_TOKEN }}
+          github-token: ${{ secrets.ADD_TO_TRIAGE_BOARD_TOKEN }}
           script: |
             const { createPullRequest } = require('./scripts/create-pull-request.js')
 
