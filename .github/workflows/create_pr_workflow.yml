@@ -1,0 +1,28 @@
+name: 'Create PR Bot'
+on:
+  schedule:
+    - cron: '*/10 * * * *'
+
+jobs:
+  update-browser-versions:
+    runs-on: ubuntu-latest
+    env:
+      CYPRESS_BOT_APP_ID: ${{ secrets.CYPRESS_BOT_APP_ID }}
+      BASE_BRANCH: develop
+
+    steps:
+      # Update available and a PR doesn't already exist
+      - name: Create Pull Request
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const { createPullRequest } = require('./scripts/create-pull-request.js')
+
+            await createPullRequest({
+            context,
+            github,
+            baseBranch: '${{ env.BASE_BRANCH }}',
+            branchName: 'botBranch',
+            description: 'chore: Bot created PR',
+            body: 'This PR was auto-generated to update the version(s) of Chrome for driver tests',
+            })
