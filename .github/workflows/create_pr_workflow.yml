@@ -26,11 +26,6 @@ jobs:
         with:
           github-token: ${{ secrets.ADD_TO_TRIAGE_BOARD_TOKEN }}
           script: |
-
-            console.log("repo owner ${{ context.repo.owner }}");
-            console.log("repo owner ${{ context.repo.repo }}");
-
-
             const { createPullRequest } = require('./scripts/create-pull-request.js')
 
             await createPullRequest({

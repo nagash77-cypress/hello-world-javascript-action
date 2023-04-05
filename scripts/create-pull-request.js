@@ -1,4 +1,10 @@
 const createPullRequest = async ({ context, github, baseBranch, branchName, description, body, reviewers }) => {
+  
+  
+  console.log("repo owner - ${{ context.repo.owner }}");
+  console.log("repo - ${{ context.repo.repo }}");
+
+
   const { data: { number } } = await github.rest.pulls.create({
     owner: context.repo.owner,
     repo: context.repo.repo,
