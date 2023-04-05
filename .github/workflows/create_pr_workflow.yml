@@ -31,6 +31,6 @@ jobs:
             github,
             baseBranch: '${{ env.BASE_BRANCH }}',
             branchName: 'botBranch',
-            description: 'chore: Bot created PR',
+            description: 'Bot created PR',
             body: 'This PR was auto-generated to update the version(s) of Chrome for driver tests',
             })
