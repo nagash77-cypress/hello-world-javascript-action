@@ -2,8 +2,8 @@ name: 'Create PR Bot'
 on:
   workflow_dispatch:
     
-  #schedule:
-   # - cron: '* * * * *'
+  schedule:
+    - cron: '* * * * *'
 
 jobs:
   update-browser-versions:

@@ -15,7 +15,6 @@ const createPullRequest = async ({ context, github, baseBranch, branchName, desc
     maintainer_can_modify: true,
   })
 
-  console.log(data.response.data.errors);
 
   if (reviewers) {
     await github.rest.pulls.requestReviewers({
