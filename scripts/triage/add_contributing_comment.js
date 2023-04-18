@@ -46,12 +46,12 @@ async function addContributingComment(github, context) {
 
   let comment = isDepBotPR ? DEPENDENCY_PR_COMMENT : CONTRIBUTOR_PR_COMMENT
 
-  if (repository === 'cypress') {
+  if (repository === 'hello-world-javascript-action') {
     comment += `\n${CYPRESS_REPO_CONTRIBUTING_GUIDELINES}`
   }
 
   await github.rest.pulls.createComment({
-    owner: 'cypress-io',
+    owner: 'nagash77-cypress',
     repo: repository,
     comment,
     issue_number: number,
