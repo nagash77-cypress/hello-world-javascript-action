@@ -51,6 +51,10 @@ async function addContributingComment(github, context) {
   }
 
   //console.log(github.rest);
+  //console.log(owners);
+  console.log(repository);
+  console.log(comment);
+  console.log(number);
 
   await github.rest.issues.createComment({
     owner: 'nagash77-cypress',
