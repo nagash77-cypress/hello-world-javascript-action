@@ -35,5 +35,5 @@ jobs:
           github-token: ${{ secrets.ADD_TO_TRIAGE_BOARD_TOKEN }}
           script: |
             const script = require('./scripts/triage/add_contributing_comment.js')
-            script.handleComment(github, context);
+            script.addContributingComment(github, context);
           
