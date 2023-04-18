@@ -30,4 +30,11 @@ jobs:
           script: |
             const script = require('./scripts/triage/comment_workflow.js')
             script.handleComment(github, context);
+      - name: Add Contributor Comment to PR
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.ADD_TO_TRIAGE_BOARD_TOKEN }}
+          script: |
+            const script = require('./scripts/triage/add_contributing_comment.js')
+            script.handleComment(github, context);
           
