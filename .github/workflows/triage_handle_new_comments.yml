@@ -16,9 +16,8 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
         with:
-          repository: 'nagash77-cypress/test-private'
-          ref: 'main'
-          ssh-key: ${{ secrets.WORKFLOW_PRIVATE_KEY }}
+          repository: 'nagash77-cypress/hello-world-javascript-action'
+          ref: 'develop'
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
