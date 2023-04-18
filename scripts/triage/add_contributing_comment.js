@@ -37,7 +37,7 @@ async function addContributingComment(github, context) {
   ]
   const isDepBotPR = dependencyBumpBots.includes(login)
 
-  console.log('is this pull request from an authorized bot?', isBotPR)
+  console.log('is this pull request from an authorized bot?', isDepBotPR)
 
   if (isMember) {
     console.log('Cypress org members are aware of contributing guidelines.')
