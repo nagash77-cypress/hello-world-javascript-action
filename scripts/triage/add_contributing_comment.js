@@ -14,6 +14,14 @@ const CYPRESS_REPO_CONTRIBUTING_GUIDELINES =
 
 async function addContributingComment(github, context) {
   const { action, number, pull_request, repository, sender } = context.payload
+
+  console.log("action: " + action);
+  console.log("number: " + number);
+  console.log("pull_request: " + pull_request);
+  console.log("repository: " + repository);
+  console.log("sender: " + sender);
+
+
   if (!pull_request) {
     console.log(
       "This action can only be invoked in `pull_request_target` or `pull_request` events. Otherwise the pull request can't be inferred."
@@ -52,9 +60,9 @@ async function addContributingComment(github, context) {
 
   //console.log(github.rest);
   //console.log(owners);
-  console.log(repository);
-  console.log(comment);
-  console.log(number);
+  console.log("repository2:" + repository);
+  console.log("commentBody: " + comment);
+  console.log("Pull Number: " + number);
 
   await github.rest.issues.createComment({
     owner: 'nagash77-cypress',
