@@ -20,7 +20,8 @@ async function handleComment(github, context) {
 
   let isCommentFromMember = await isCypressOrgMember(
     github,
-    context.payload.comment.user.login
+    context.payload.comment.user.login,
+    context.payload.organization.login
   )
 
   if (isCommentFromMember) {
