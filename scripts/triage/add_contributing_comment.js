@@ -25,8 +25,9 @@ async function addContributingComment(github, context) {
     return
   }
 
+  const org = context.payload.organization.login
   const { login } = sender
-  const isMember = await isCypressOrgMember(github, login)
+  const isMember = await isCypressOrgMember(github, login, org)
 
   const dependencyBumpBots = [
     'dependabot[bot]',

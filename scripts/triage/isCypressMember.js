@@ -1,4 +1,4 @@
-async function isCypressOrgMember(github, login) {
+async function isCypressOrgMember(github, login, org) {
   const isMemberQuery = `
     query ($login: String!, $org: String!) {
       user(login: $login) {
@@ -11,7 +11,7 @@ async function isCypressOrgMember(github, login) {
 
   const isMemberResult = await github.graphql(isMemberQuery, {
     login,
-    org: 'cypress-io',
+    org: org,
   })
 
   return isMemberResult.user.organization != null
