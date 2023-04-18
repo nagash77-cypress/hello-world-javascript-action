@@ -49,7 +49,6 @@ jobs:
         with:
           repository: 'nagash77-cypress/hello-world-javascript-action'
           ref: 'develop'
-          ssh-key: ${{ secrets.WORKFLOW_PRIVATE_KEY }}
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
