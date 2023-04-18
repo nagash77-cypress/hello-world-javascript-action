@@ -52,11 +52,12 @@ async function addContributingComment(github, context) {
 
   console.log(github.rest);
 
-  await github.rest.pulls.createComment({
+  await github.rest.issues.createComment({
     owner: 'nagash77-cypress',
     repo: repository,
-    comment,
+    body: comment,
     issue_number: number,
+
   })
 }
 
