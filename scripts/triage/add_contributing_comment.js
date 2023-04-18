@@ -50,7 +50,7 @@ async function addContributingComment(github, context) {
     comment += `\n${CYPRESS_REPO_CONTRIBUTING_GUIDELINES}`
   }
 
-  await github.rest.createComment({
+  await github.rest.pulls.createComment({
     owner: 'cypress-io',
     repo: repository,
     comment,
