@@ -41,13 +41,13 @@ async function getOpenAndClosedIssueMetrics(github, context, beginDate, endDate,
         searchQuery: searchQuery
     }
 
-    console.log('----------------Query Params----------------------------')
-    console.log(beginDate)
-    console.log(endDate)
-    console.log(reposArray)
-    console.log(getOpenedAndClosedIssueCountParams)
-    console.log(searchQuery);
-    console.log('---------------------------------------------------------')
+    // console.log('----------------Query Params----------------------------')
+    // console.log(beginDate)
+    // console.log(endDate)
+    // console.log(reposArray)
+    // console.log(getOpenedAndClosedIssueCountParams)
+    // console.log(searchQuery);
+    // console.log('---------------------------------------------------------')
 
     const getOpenedAndClosedIssueCount = await github.graphql(getOpenedAndClosedIssueCountQuery, getOpenedAndClosedIssueCountParams)
 
