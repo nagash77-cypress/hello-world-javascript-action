@@ -1,4 +1,4 @@
-async function getOpenAndClosedIssueMetrics(github, context, beginDate, endDate, reposList) {
+async function getOpenAndClosedIssueMetrics(github, context, beginDate, endDate, reposArray) {
     console.log('Made it to the function')
 
 
@@ -28,11 +28,11 @@ async function getOpenAndClosedIssueMetrics(github, context, beginDate, endDate,
       }
     `
     
-    let repoNames = reposList
+    //let repoNames = reposList
     let orgName = context.payload.organization.login
 
     // Split the string into an array of names
-    let reposArray = repoNames.split(', ');
+    //let reposArray = repoNames.split(', ');
 
     // Prepend each name with "repo:SomeString/" and join them into a string
     let searchQuery = reposArray.map(name => `repo:${orgName}/${name}`).join(' ')
