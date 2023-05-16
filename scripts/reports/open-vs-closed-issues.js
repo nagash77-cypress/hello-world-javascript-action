@@ -2,8 +2,8 @@ async function getOpenAndClosedIssueMetrics(github, context, beginDate, endDate,
     console.log('Made it to the function')
 
     const getOpenedAndClosedIssueCountQuery = `
-        query ($orgName: String!, $repoNames: [String!]!) {
-            organization(login: $orgName) {
+        query ($org: String!, $repoNames: [String!]!) {
+            organization(login: $org) {
             name
             repositories(first: 100, names: $repoNames) {
                 nodes {
