@@ -7,14 +7,15 @@ on:
         required: true
   
   workflow_dispatch:
-    start-date:
-        description: 'Beginning date of query'     
-        required: false
-        default: '2020-01-01'
-    end-date:
-        description: 'Ending date of query'     
-        required: false
-        default: '2020-01-08'
+    inputs:
+      start-date:
+          description: 'Beginning date of query'     
+          required: false
+          default: '2020-01-01'
+      end-date:
+          description: 'Ending date of query'     
+          required: false
+          default: '2020-01-08'
 
   #schedule:
    # - cron: '30 1 * * *'
