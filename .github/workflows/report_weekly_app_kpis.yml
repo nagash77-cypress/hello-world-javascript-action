@@ -33,7 +33,7 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: '16'
-      - name: Add Contributor Comment to PR
+      - name: Generate Open / Closed KPIs
         uses: actions/github-script@v6
         env:
           START_DATE: ${{ github.event.inputs.start-date || '2020-01-01'}}
