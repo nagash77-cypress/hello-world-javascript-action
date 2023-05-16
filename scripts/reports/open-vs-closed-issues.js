@@ -1,27 +1,47 @@
-async function getOpenAndClosedIssueMetrics(github, context, beginDate, endDate, repos) {
+async function getOpenAndClosedIssueMetrics(github, context, beginDate, endDate, reposList) {
     console.log('Made it to the function')
 
+
     const getOpenedAndClosedIssueCountQuery = `
-        query ($org: String!, $repoNames: [String!]!) {
-            organization(login: $org) {
-            name
-            repositories(first: 100, names: $repoNames) {
+    query ($searchQuery: String!) {
+        search(type: REPOSITORY, query: $searchQuery, first: 100) {
+          nodes {
+            ... on Repository {
+              id
+              createdAt
+              openIssueCount: issues(states: [OPEN]) {
+                totalCount
+              }
+              closedIssueCount: issues(states: [CLOSED]) {
+                totalCount
+              }
+              releases(last: 1) {
+                totalCount
                 nodes {
-                name
-                issues(states: OPEN) {
-                    totalCount
+                  tagName
                 }
-                issues(states: CLOSED) {
-                    totalCount
-                }
-                }
+              }
+              name
             }
-            }
+          }
         }
+      }
     `
+    
+    let repoNames = reposList
+    let orgName = context.payload.organization.login
+
+    // Split the string into an array of names
+    let reposArray = repoNames.split(', ');
+
+    // Prepend each name with "repo:SomeString/" and join them into a string
+    let searchQuery = reposArray.map(name => `repo:${orgName}/${name}`).join(' ')
+
+    console.log(searchQuery);
+
+
     const getOpenedAndClosedIssueCountParams = {
-        org: context.payload.organization.login,
-        repoNames: [repos]
+        searchQuery: context.payload.organization.login
     }
 
     console.log(beginDate)
