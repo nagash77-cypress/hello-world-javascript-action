@@ -41,7 +41,7 @@ async function getOpenAndClosedIssueMetrics(github, context, beginDate, endDate,
 
 
     const getOpenedAndClosedIssueCountParams = {
-        searchQuery: context.payload.organization.login
+        searchQuery: searchQuery
     }
 
     console.log(beginDate)
