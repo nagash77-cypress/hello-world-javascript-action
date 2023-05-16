@@ -46,7 +46,7 @@ async function getOpenAndClosedIssueMetrics(github, context, beginDate, endDate,
 
     console.log(beginDate)
     console.log(endDate)
-    console.log(repos)
+    console.log(reposArray)
     console.log(getOpenedAndClosedIssueCountParams)
 
     const getOpenedAndClosedIssueCount = await github.graphql(getOpenedAndClosedIssueCountQuery, getOpenedAndClosedIssueCountParams)
