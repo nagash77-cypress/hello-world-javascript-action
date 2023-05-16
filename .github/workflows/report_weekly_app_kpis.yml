@@ -1,0 +1,46 @@
+name: 'Handle Issue/PR Comment Workflow'
+on:
+  # makes this workflow reusable
+  workflow_call:
+    secrets:
+      ADD_TO_TRIAGE_BOARD_TOKEN:
+        required: true
+  
+  workflow_dispatch:
+    start-date:
+        description: 'Beginning date of query'     
+        required: false
+        default: '2020-01-01'
+    end-date:
+        description: 'Ending date of query'     
+        required: false
+        default: '2020-01-08'
+
+  #schedule:
+   # - cron: '30 1 * * *'
+
+
+jobs:
+  run-kpi-reporting:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          repository: 'nagash77-cypress/hello-world-javascript-action'
+          ref: 'develop'
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+      - name: Add Contributor Comment to PR
+        uses: actions/github-script@v6
+        env:
+          START_DATE: ${{ github.event.inputs.start-date || '2020-01-01'}}
+          END_DATE: ${{ github.event.inputs.end-date || '2020-01-08'}}
+        with:
+          github-token: ${{ secrets.ADD_TO_TRIAGE_BOARD_TOKEN }}
+          script: |
+            const script = require('./scripts/reports/open-vs-closed-issues.js')
+            script.getOpenAndClosedIssueMetrics(github, context, ${{ env.START_DATE }}, ${{ env.END_DATE }} );
+          
