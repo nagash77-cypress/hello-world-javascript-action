@@ -1,7 +1,6 @@
 async function getOpenAndClosedIssueMetrics(github, context, beginDate, endDate, reposArray) {
     console.log('Made it to the function')
 
-
     const getOpenedAndClosedIssueCountQuery = `
     query ($searchQuery: String!) {
         search(type: REPOSITORY, query: $searchQuery, first: 100) {
@@ -27,8 +26,9 @@ async function getOpenAndClosedIssueMetrics(github, context, beginDate, endDate,
         }
       }
     `
+    // eventually I want to be able to just accept a normal list of repo names but I was having difficulty getting the github workflow to pass them nicely
+    //let repoNames = reposList 
     
-    //let repoNames = reposList
     let orgName = context.payload.organization.login
 
     // Split the string into an array of names
@@ -37,21 +37,27 @@ async function getOpenAndClosedIssueMetrics(github, context, beginDate, endDate,
     // Prepend each name with "repo:SomeString/" and join them into a string
     let searchQuery = reposArray.map(name => `repo:${orgName}/${name}`).join(' ')
 
-    console.log(searchQuery);
-
-
     const getOpenedAndClosedIssueCountParams = {
         searchQuery: searchQuery
     }
 
+    console.log('----------------Query Params----------------------------')
     console.log(beginDate)
     console.log(endDate)
     console.log(reposArray)
     console.log(getOpenedAndClosedIssueCountParams)
+    console.log(searchQuery);
+    console.log('---------------------------------------------------------')
 
     const getOpenedAndClosedIssueCount = await github.graphql(getOpenedAndClosedIssueCountQuery, getOpenedAndClosedIssueCountParams)
 
-    console.log(getOpenedAndClosedIssueCount.search.nodes)
+    //console.log(getOpenedAndClosedIssueCount.search.nodes)
+
+    let sum = getOpenedAndClosedIssueCount.search.nodes.reduce((total, node) => total + node.openIssueCount.totalCount, 0)
+
+    console.log('--------------------Total Open Issues--------------------')
+    console.log(sum);
+    console.log('---------------------------------------------------------')
 
     return true
 }
