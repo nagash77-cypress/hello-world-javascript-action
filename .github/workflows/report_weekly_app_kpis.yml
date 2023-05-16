@@ -1,4 +1,4 @@
-name: 'Handle Issue/PR Comment Workflow'
+name: 'KPI Report Generation'
 on:
   # makes this workflow reusable
   workflow_call:
