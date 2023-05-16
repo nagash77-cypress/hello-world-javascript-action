@@ -1,5 +1,38 @@
-async function getOpenAndClosedIssueMetrics(github, context, numberOfDays) {
+async function getOpenAndClosedIssueMetrics(github, context, beginDate, endDate, repos) {
     console.log('Made it to the function')
+
+    const getOpenedAndClosedIssueCountQuery = `
+        query ($orgName: String!, $repoNames: [String!]!) {
+            organization(login: $orgName) {
+            name
+            repositories(first: 100, names: $repoNames) {
+                nodes {
+                name
+                issues(states: OPEN) {
+                    totalCount
+                }
+                issues(states: CLOSED) {
+                    totalCount
+                }
+                }
+            }
+            }
+        }
+    `
+    const getOpenedAndClosedIssueCountParams = {
+        org: context.payload.organization.login,
+        repoNames: repos
+    }
+
+    console.log(beginDate)
+    console.log(endDate)
+    console.log(repos)
+    console.log(getOpenedAndClosedIssueCountParams)
+
+    const getOpenedAndClosedIssueCount = await github.graphql(getOpenedAndClosedIssueCountQuery, getOpenedAndClosedIssueCountParams)
+
+    console.log(getOpenedAndClosedIssueCount)
+
     return true
 }
 
