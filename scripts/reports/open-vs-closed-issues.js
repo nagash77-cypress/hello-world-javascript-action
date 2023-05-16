@@ -56,8 +56,8 @@ async function getOpenAndClosedIssueMetrics(github, context, beginDate, endDate,
     let openIssueSum = getOpenedAndClosedIssueCount.search.nodes.reduce((total, node) => total + node.openIssueCount.totalCount, 0)
 
     console.log('--------------------Total Open Issues--------------------')
-    console.log('Repos Being Queried:  ${reposArray}');
-    console.log('Total Open Issues:  ${openIssueSum}');
+    console.log(`Repos Being Queried:  ${reposArray}`);
+    console.log(`Total Open Issues:  ${openIssueSum}`);
     console.log('---------------------------------------------------------')
 
     return true
