@@ -1,4 +1,4 @@
-async function isOrgMember(github, login, org) {
+async function isCypressOrgMember(github, login, org) {
   const isMemberQuery = `
   query ($login: String!, $org: String!) {
     search(query: $login, type: USER, first: 1) {
@@ -33,5 +33,5 @@ async function isOrgMember(github, login, org) {
   return userIsMember
 }
 
-module.exports = { isOrgMember }
+module.exports = { isCypressOrgMember }
 
