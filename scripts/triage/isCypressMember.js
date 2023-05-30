@@ -24,8 +24,8 @@ async function isCypressOrgMember(github, login, org) {
 
   let userIsMember = false;
 
-  if(isMemberResult.data.search.edges.length > 0) { // Make sure there is at least one user
-    const user = isMemberResult.data.search.edges[0].node;
+  if(isMemberResult.search.edges.length > 0) { // Make sure there is at least one user
+    const user = isMemberResult.search.edges[0].node;
 
     if(user.organization !== null) { // If the organization field is not null, then the user is a member
       userIsMember = true;
