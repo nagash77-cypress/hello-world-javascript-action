@@ -1,20 +1,37 @@
-async function isCypressOrgMember(github, login, org) {
+async function isOrgMember(github, login, org) {
   const isMemberQuery = `
-    query ($login: String!, $org: String!) {
-      user(login: $login) {
-        organization(login: $org) {
-          viewerIsAMember
+  query ($login: String!, $org: String!) {
+    search(query: $login, type: USER, first: 1) {
+      edges {
+        node {
+          ... on User {
+            organization(login: $org) {
+              id
+            }
+          }
         }
       }
     }
+  }
   `
 
   const isMemberResult = await github.graphql(isMemberQuery, {
     login,
-    org: org,
+    org,
   })
 
-  return isMemberResult.user.organization != null
+  let userIsMember = false;
+
+  if(isMemberResult.data.search.edges.length > 0) { // Make sure there is at least one user
+    const user = isMemberResult.data.search.edges[0].node;
+
+    if(user.organization !== null) { // If the organization field is not null, then the user is a member
+      userIsMember = true;
+    }
+  }
+
+  return userIsMember
 }
 
-module.exports = { isCypressOrgMember }
+module.exports = { isOrgMember }
+
