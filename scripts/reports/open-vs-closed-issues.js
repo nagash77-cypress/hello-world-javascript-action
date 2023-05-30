@@ -1,6 +1,5 @@
 async function getOpenAndClosedIssueMetrics(github, context, beginDate, endDate, reposArray) {
-    console.log('Made it to the function')
-
+    
     const getOpenedAndClosedIssueCountQuery = `
     query ($searchQuery: String!) {
         search(type: REPOSITORY, query: $searchQuery, first: 100) {

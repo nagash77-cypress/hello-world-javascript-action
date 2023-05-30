@@ -1,17 +1,19 @@
 async function getTriageIssueMetrics(github, context, beginDate, endDate, projectBoardNumber) {
     console.log('Made it to the function')
-
-    return true
     
     const ROUTED_TO_LABELS = ['triaged']
     const MS_PER_DAY = 1000 * 60 * 60 * 24
-    const { REPOSITORY, ORGANIZATION, PROJECT_NUMBER } = process.env
+
+    //const { REPOSITORY, ORGANIZATION, PROJECT_NUMBER } = process.env
+    const ORGANIZATION = 'nagash77-cypress'
+    const REPOSITORY = "hello-world-javascript-action"
+    const PROJECT_NUMBER = projectBoardNumber
 
     const issues = []
 
     const determineDateRange = () => {
-        const inputStartDate = '${{ inputs.startDate }}'
-        const inputEndDate = '${{ inputs.endDate }}'
+        const inputStartDate = beginDate
+        const inputEndDate = endDate
 
         if (inputStartDate && inputEndDate) {
         return { startDate: inputStartDate, endDate: inputEndDate }
