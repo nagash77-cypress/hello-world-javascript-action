@@ -12,9 +12,9 @@ async function getTriageIssueMetrics(github, context, argBeginDate, argEndDate, 
 
     const issues = []
 
-    const determineDateRange = (beginDate, endDate) => {
+    const determineDateRange = (beginDate, endingDate) => {
         const inputStartDate = beginDate
-        const inputEndDate = endDate
+        const inputEndDate = endingDate
 
         if (inputStartDate && inputEndDate) {
         return { startDate: inputStartDate, endDate: inputEndDate }
@@ -28,13 +28,19 @@ async function getTriageIssueMetrics(github, context, argBeginDate, argEndDate, 
 
         startDate.setDate(startDate.getDate() - 6)
 
+        console.log(startDate)
+        console.log(endingDate)
+
         return { startDate: startDate.toISOString().split('T')[0], endDate: (new Date()).toISOString().split('T')[0] }
     }
 
-    console.log(startDate)
-    console.log(endDate)
+    
 
     const dateRange = determineDateRange(argBeginDate, argEndDate)
+    console.log(dateRange.startDate)
+    console.log(dateRange.endDate)
+
+
     const query = `is:issue+repo:${ORGANIZATION}/${REPOSITORY}+project:${ORGANIZATION}/${PROJECT_NUMBER}+created:${dateRange.startDate}..${dateRange.endDate}`
 
     const findLabelDateTime = async (issueNumber) => {
