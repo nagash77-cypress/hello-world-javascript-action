@@ -1,4 +1,4 @@
-async function getTriageIssueMetrics(github, context, beginDate, endDate, projectBoardNumber) {
+async function getTriageIssueMetrics(github, context, argBeginDate, argEndDate, projectBoardNumber) {
     console.log('Made it to the function')
 
 
@@ -31,9 +31,10 @@ async function getTriageIssueMetrics(github, context, beginDate, endDate, projec
         return { startDate: startDate.toISOString().split('T')[0], endDate: (new Date()).toISOString().split('T')[0] }
     }
 
-    console.log(determineDateRange)
+    console.log(startDate)
+    console.log(endDate)
 
-    const dateRange = determineDateRange(beginDate, endDate)
+    const dateRange = determineDateRange(argBeginDate, argEndDate)
     const query = `is:issue+repo:${ORGANIZATION}/${REPOSITORY}+project:${ORGANIZATION}/${PROJECT_NUMBER}+created:${dateRange.startDate}..${dateRange.endDate}`
 
     const findLabelDateTime = async (issueNumber) => {
