@@ -2,7 +2,7 @@ async function getTriageIssueMetrics(github, context, argBeginDate, argEndDate, 
     console.log('Made it to the function')
 
 
-    const ROUTED_TO_LABELS = ['triaged']
+    const ROUTED_TO_LABELS = ['triaged','triage']
     const MS_PER_DAY = 1000 * 60 * 60 * 24
 
     //const { REPOSITORY, ORGANIZATION, PROJECT_NUMBER } = process.env
@@ -100,12 +100,12 @@ async function getTriageIssueMetrics(github, context, argBeginDate, argEndDate, 
         }
     }
 
-    const issuesRoutedOrClosedIn7Days = issues.filter((issue) => issue.elapsedDays <= 7).length
-    const percentage = Number(issues.length > 0 ? issuesRoutedOrClosedIn7Days / issues.length : 0).toLocaleString(undefined, { style: 'percent', minimumFractionDigits: 2 })
+    const issuesRoutedOrClosedInTimePeriod = issues.length
+    const percentage = Number(issues.length > 0 ? issuesRoutedOrClosedInTimePeriod / issues.length : 0).toLocaleString(undefined, { style: 'percent', minimumFractionDigits: 2 })
 
     console.log(`Triage Metrics (${dateRange.startDate} - ${dateRange.endDate})`)
     console.log('Total issues:', issues.length)
-    console.log(`Issues routed/closed within 7 days: ${issuesRoutedOrClosedIn7Days} (${percentage})`)
+    console.log(`Issues routed/closed within 7 days: ${issuesRoutedOrClosedInTimePeriod} (${percentage})`)
 
 }
 
