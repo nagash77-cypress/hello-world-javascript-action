@@ -1,8 +1,5 @@
 async function getTriageIssueMetrics(github, context, beginDate, endDate, projectBoardNumber) {
     console.log('Made it to the function')
-    console.log(beginDate)
-    console.log(endDate)
-    return
 
 
     const ROUTED_TO_LABELS = ['triaged']
@@ -18,10 +15,6 @@ async function getTriageIssueMetrics(github, context, beginDate, endDate, projec
     const determineDateRange = (beginDate, endDate) => {
         const inputStartDate = beginDate
         const inputEndDate = endDate
-
-        console.log(inputStartDate)
-        console.log(inputEndDate)
-        return
 
         if (inputStartDate && inputEndDate) {
         return { startDate: inputStartDate, endDate: inputEndDate }
