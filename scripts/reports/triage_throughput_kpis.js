@@ -1,6 +1,10 @@
 async function getTriageIssueMetrics(github, context, beginDate, endDate, projectBoardNumber) {
     console.log('Made it to the function')
-    
+    console.log(beginDate)
+    console.log(endDate)
+    return
+
+
     const ROUTED_TO_LABELS = ['triaged']
     const MS_PER_DAY = 1000 * 60 * 60 * 24
 
