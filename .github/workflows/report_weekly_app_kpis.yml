@@ -11,11 +11,11 @@ on:
       start-date:
         description: 'Beginning date of query'     
         required: false
-        default: '2020-01-01'
+        default: '2020-04-01'
       end-date:
         description: 'Ending date of query'     
         required: false
-        default: '2020-01-08'
+        default: '2020-04-08'
       default-repos:
         description: "Comma separated list of repos you want to query"
         required: false
