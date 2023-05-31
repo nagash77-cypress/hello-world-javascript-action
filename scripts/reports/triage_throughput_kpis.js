@@ -11,7 +11,7 @@ async function getTriageIssueMetrics(github, context, beginDate, endDate, projec
 
     const issues = []
 
-    const determineDateRange = () => {
+    const determineDateRange = (beginDate, endDate) => {
         const inputStartDate = beginDate
         const inputEndDate = endDate
 
@@ -36,7 +36,7 @@ async function getTriageIssueMetrics(github, context, beginDate, endDate, projec
 
     console.log(determineDateRange)
 
-    const dateRange = determineDateRange()
+    const dateRange = determineDateRange(beginDate, endDate)
     const query = `is:issue+repo:${ORGANIZATION}/${REPOSITORY}+project:${ORGANIZATION}/${PROJECT_NUMBER}+created:${dateRange.startDate}..${dateRange.endDate}`
 
     const findLabelDateTime = async (issueNumber) => {
