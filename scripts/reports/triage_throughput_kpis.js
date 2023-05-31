@@ -15,6 +15,10 @@ async function getTriageIssueMetrics(github, context, beginDate, endDate, projec
         const inputStartDate = beginDate
         const inputEndDate = endDate
 
+        console.log(inputStartDate)
+        console.log(inputEndDate)
+        return
+
         if (inputStartDate && inputEndDate) {
         return { startDate: inputStartDate, endDate: inputEndDate }
         }
