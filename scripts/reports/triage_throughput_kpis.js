@@ -71,6 +71,10 @@ async function getTriageIssueMetrics(github, context, argBeginDate, argEndDate, 
     for await (const { data } of iterator) {
         for (const issue of data) {
         let routedOrClosedAt
+        
+        console.log("new loop")
+        console.log(data)
+        console.log("------------")
 
         if (!issue.pull_request) {
             const routedLabel = issue.labels.find((label) => ROUTED_TO_LABELS.includes(label.name))
@@ -105,7 +109,7 @@ async function getTriageIssueMetrics(github, context, argBeginDate, argEndDate, 
 
     console.log(`Triage Metrics (${dateRange.startDate} - ${dateRange.endDate})`)
     console.log('Total issues:', issues.length)
-    console.log(`Issues routed/closed within 7 days: ${issuesRoutedOrClosedInTimePeriod} (${percentage})`)
+    console.log(`Issues routed/closed within specified time frame: ${issuesRoutedOrClosedInTimePeriod} (${percentage})`)
 
 }
 
