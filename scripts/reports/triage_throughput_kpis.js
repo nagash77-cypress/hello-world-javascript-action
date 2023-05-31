@@ -68,6 +68,8 @@ async function getTriageIssueMetrics(github, context, argBeginDate, argEndDate, 
         per_page: 100,
     })
 
+    console.log(iterator)
+
     for await (const { data } of iterator) {
         for (const issue of data) {
         let routedOrClosedAt
