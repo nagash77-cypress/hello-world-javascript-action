@@ -75,5 +75,5 @@ jobs:
             console.log("${{ env.START_DATE }}") 
             console.log("${{ env.END_DATE }}")
             console.log("${{ env.PROJECT_BOARD_NUMBER }}")
-            script.getTriageIssueMetrics(github, context, ${{ env.START_DATE }}, ${{ env.END_DATE }}, ${{ env.PROJECT_BOARD_NUMBER }});
+            script.getTriageIssueMetrics(github, context, "${{ env.START_DATE }}", "${{ env.END_DATE }}", "${{ env.PROJECT_BOARD_NUMBER }}");
           
