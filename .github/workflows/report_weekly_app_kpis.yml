@@ -72,6 +72,8 @@ jobs:
           github-token: ${{ secrets.ADD_TO_TRIAGE_BOARD_TOKEN }}
           script: |
             const script = require('./scripts/reports/triage_throughput_kpis.js')
-            echo "${{ env.START_DATE }}, ${{ env.END_DATE }}, ${{ env.PROJECT_BOARD_NUMBER }}"
+            console.log("${{ env.START_DATE }}") 
+            console.log("${{ env.END_DATE }}")
+            console.log("${{ env.PROJECT_BOARD_NUMBER }}")
             script.getTriageIssueMetrics(github, context, ${{ env.START_DATE }}, ${{ env.END_DATE }}, ${{ env.PROJECT_BOARD_NUMBER }});
           
