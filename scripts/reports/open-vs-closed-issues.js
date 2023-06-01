@@ -33,6 +33,8 @@ async function getOpenAndClosedIssueMetrics(github, context, beginDate, endDate,
     // Split the string into an array of names
     //let reposArray = repoNames.split(', ');
 
+    console.log(reposArray)
+
     // Prepend each name with "repo:SomeString/" and join them into a string
     let searchQuery = reposArray.map(name => `repo:${orgName}/${name}`).join(' ')
 
