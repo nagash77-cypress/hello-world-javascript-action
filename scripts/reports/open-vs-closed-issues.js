@@ -1,9 +1,4 @@
-async function getOpenAndClosedIssueMetrics(github, context, beginDate, endDate, reposArray) {
-    console.log('-----Begin function call----')
-    console.log(beginDate)
-    console.log(endDate)
-    console.log(reposArray)
-    console.log('-----------------------------')
+async function getOpenAndClosedIssueMetrics(github, context, reposArray) {
 
     const getOpenedAndClosedIssueCountQuery = `
     query ($searchQuery: String!) {
@@ -70,13 +65,6 @@ async function getOpenAndClosedIssueMetrics(github, context, beginDate, endDate,
     console.log(`Repos Being Queried:  ${reposArray}`);
     console.log(`Total Closed Issues:  ${closedIssueSum}`);
     console.log('---------------------------------------------------------')
-
-
-    console.log('-----Begin function call----')
-    console.log(beginDate)
-    console.log(endDate)
-    console.log(reposArray)
-    console.log('-----------------------------')
 
     return true
 }
