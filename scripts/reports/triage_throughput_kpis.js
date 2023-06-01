@@ -39,12 +39,19 @@ async function getTriageIssueMetrics(github, context, argBeginDate, argEndDate, 
     function daysBetween(date1, date2) {
         const oneDay = 1000 * 60 * 60 * 24;
         const diffInTime = Math.abs(date2 - date1);
-    
+        
+        console.log('in DaysBetween Function')
+        console.log(date1)
+        console.log(date2)
+        console.log('end function call')
+
         return Math.ceil(diffInTime / oneDay);
     }
 
     const dateRange = determineDateRange(argBeginDate, argEndDate)
     const numberOfDaysInRange = daysBetween(dateRange.startDate,dateRange.endDate)
+    
+    console.log(numberOfDaysInRange)
 
     const query = `is:issue+project:${ORGANIZATION}/${PROJECT_NUMBER}+created:${dateRange.startDate}..${dateRange.endDate}`
 
