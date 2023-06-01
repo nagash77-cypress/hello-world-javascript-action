@@ -28,13 +28,23 @@ async function getTriageIssueMetrics(github, context, argBeginDate, argEndDate, 
 
         startDate.setDate(startDate.getDate() - 6)
 
+        let date_span_in_days = 
+
         console.log(startDate)
         console.log(endingDate)
 
         return { startDate: startDate.toISOString().split('T')[0], endDate: (new Date()).toISOString().split('T')[0] }
-    }    
+    }
+    
+    function daysBetween(date1, date2) {
+        const oneDay = 1000 * 60 * 60 * 24;
+        const diffInTime = Math.abs(date2 - date1);
+    
+        return Math.ceil(diffInTime / oneDay);
+    }
 
     const dateRange = determineDateRange(argBeginDate, argEndDate)
+    const numberOfDaysInRange = daysBetween(dateRange.startDate,dateRange.endDate)
 
     const query = `is:issue+project:${ORGANIZATION}/${PROJECT_NUMBER}+created:${dateRange.startDate}..${dateRange.endDate}`
 
@@ -95,12 +105,12 @@ async function getTriageIssueMetrics(github, context, argBeginDate, argEndDate, 
         }
     }
 
-    const issuesRoutedOrClosedInTimePeriod = issues.length
+    const issuesRoutedOrClosedInTimePeriod = issues.filter((issue) => issue.elapsedDays <= numberOfDaysInRange).length
     const percentage = Number(issues.length > 0 ? issuesRoutedOrClosedInTimePeriod / issues.length : 0).toLocaleString(undefined, { style: 'percent', minimumFractionDigits: 2 })
 
     console.log(`Triage Metrics (${dateRange.startDate} - ${dateRange.endDate})`)
     console.log('Total issues:', issues.length)
-    console.log(`Issues routed/closed within specified time frame: ${issuesRoutedOrClosedInTimePeriod} (${percentage})`)
+    console.log(`Issues routed/closed within ${numberOfDaysInRange} days: ${issuesRoutedOrClosedInTimePeriod} (${percentage})`)
     console.log('they are who we thought they were')
 
 }
