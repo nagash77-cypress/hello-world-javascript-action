@@ -65,18 +65,16 @@ async function getTriageIssueMetrics(github, context, argBeginDate, argEndDate, 
 
     const iterator = github.paginate.iterator(github.rest.search.issuesAndPullRequests, {
         q: query,
-        per_page: 100,
+        per_page: 3,
     })
-
-    console.log(iterator)
 
     for await (const { data } of iterator) {
         for (const issue of data) {
         let routedOrClosedAt
         
-        console.log("new loop")
-        console.log(issue)
-        console.log("------------")
+        // console.log("new loop")
+        // console.log(issue)
+        // console.log("------------")
 
         if (!issue.pull_request) {
             const routedLabel = issue.labels.find((label) => ROUTED_TO_LABELS.includes(label.name))
