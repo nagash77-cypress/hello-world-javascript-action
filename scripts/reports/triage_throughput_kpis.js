@@ -32,16 +32,11 @@ async function getTriageIssueMetrics(github, context, argBeginDate, argEndDate, 
         console.log(endingDate)
 
         return { startDate: startDate.toISOString().split('T')[0], endDate: (new Date()).toISOString().split('T')[0] }
-    }
-
-    
+    }    
 
     const dateRange = determineDateRange(argBeginDate, argEndDate)
-    console.log(dateRange.startDate)
-    console.log(dateRange.endDate)
 
-
-    const query = `is:issue+repo:${ORGANIZATION}/${REPOSITORY}+project:${ORGANIZATION}/${PROJECT_NUMBER}+created:${dateRange.startDate}..${dateRange.endDate}`
+    const query = `is:issue+project:${ORGANIZATION}/${PROJECT_NUMBER}+created:${dateRange.startDate}..${dateRange.endDate}`
 
     const findLabelDateTime = async (issueNumber) => {
         const iterator = github.paginate.iterator(github.rest.issues.listEventsForTimeline, {
@@ -72,10 +67,6 @@ async function getTriageIssueMetrics(github, context, argBeginDate, argEndDate, 
         for (const issue of data) {
         let routedOrClosedAt
         
-        // console.log("new loop")
-        // console.log(issue)
-        // console.log("------------")
-
         if (!issue.pull_request) {
             const routedLabel = issue.labels.find((label) => ROUTED_TO_LABELS.includes(label.name))
 
