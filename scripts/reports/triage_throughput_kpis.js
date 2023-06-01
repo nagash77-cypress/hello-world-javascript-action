@@ -36,7 +36,7 @@ async function getTriageIssueMetrics(github, context, argBeginDate, argEndDate, 
         return { startDate: startDate.toISOString().split('T')[0], endDate: (new Date()).toISOString().split('T')[0] }
     }
     
-    function daysBetween(date1, date2) {
+    function daysBetween(dateStr1, dateStr2) {
         const date1 = new Date(dateStr1);
         const date2 = new Date(dateStr2);
         const oneDay = 1000 * 60 * 60 * 24;
