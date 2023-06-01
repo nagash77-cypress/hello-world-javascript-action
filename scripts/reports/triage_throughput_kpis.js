@@ -29,7 +29,7 @@ async function getTriageIssueMetrics(github, context, argBeginDate, argEndDate, 
 
         const startDate = new Date()
 
-        startDate.setDate(startDate.getDate() - 6)
+        startDate.setDate(startDate.getDate() - 7)
 
         return { startDate: startDate.toISOString().split('T')[0], endDate: (new Date()).toISOString().split('T')[0] }
     }
