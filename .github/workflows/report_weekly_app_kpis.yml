@@ -35,17 +35,16 @@ jobs:
         with:
           repository: 'nagash77-cypress/hello-world-javascript-action'
           ref: 'develop'
-        env:
-          START_DATE: ${{ github.event.inputs.start-date || '2023-01-01'}}
-          END_DATE: ${{ github.event.inputs.end-date || '2023-01-08'}}
-          DEFAULT_REPOS: ${{ github.event.inputs.default-repos || '["hello-world-javascript-action", "test-private"]' }}
-          PROJECT_BOARD_NUMBER: 1
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '16'
       - name: Generate Non-mono Repo Open / Closed KPIs
         uses: actions/github-script@v6
+        env:
+          START_DATE: ${{ github.event.inputs.start-date || '2023-01-01'}}
+          END_DATE: ${{ github.event.inputs.end-date || '2023-01-08'}}
+          DEFAULT_REPOS: ${{ github.event.inputs.default-repos || '["hello-world-javascript-action", "test-private"]' }}
         with:
           github-token: ${{ secrets.ADD_TO_TRIAGE_BOARD_TOKEN }}
           script: |
@@ -53,13 +52,21 @@ jobs:
             script.getOpenAndClosedIssueMetrics(github, context, "${{ env.START_DATE }}", "${{ env.END_DATE }}", ${{ env.DEFAULT_REPOS }});
       - name: Generate Cypress Mono Repo Open / Closed KPIs
         uses: actions/github-script@v6
+        env:
+          START_DATE: ${{ github.event.inputs.start-date || '2023-01-01'}}
+          END_DATE: ${{ github.event.inputs.end-date || '2023-01-08'}}
+          DEFAULT_REPOS: '["another-test"]'
         with:
           github-token: ${{ secrets.ADD_TO_TRIAGE_BOARD_TOKEN }}
           script: |
             const script = require('./scripts/reports/open-vs-closed-issues.js')
-            script.getOpenAndClosedIssueMetrics(github, context, ${{ env.START_DATE }}, ${{ env.END_DATE }}, ["another-test"]);
+            script.getOpenAndClosedIssueMetrics(github, context, ${{ env.START_DATE }}, ${{ env.END_DATE }}, ${{ env.DEFAULT_REPOS }});
       - name: Generate Triage Throughput KPIs
         uses: actions/github-script@v6
+        env:
+          START_DATE: ${{ github.event.inputs.start-date || '2023-01-01'}}
+          END_DATE: ${{ github.event.inputs.end-date || '2023-01-08'}}
+          PROJECT_BOARD_NUMBER: 1
         with:
           github-token: ${{ secrets.ADD_TO_TRIAGE_BOARD_TOKEN }}
           script: |
