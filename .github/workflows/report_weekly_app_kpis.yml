@@ -22,8 +22,8 @@ on:
         default: '["hello-world-javascript-action", "cypress-1", "test-private"]'
       
 
-  #schedule:
-   # - cron: '30 1 * * *'
+  schedule:
+    - cron: '0 14 * * 5'
 
 
 jobs:
