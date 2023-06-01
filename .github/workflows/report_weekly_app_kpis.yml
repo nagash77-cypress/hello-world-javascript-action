@@ -16,10 +16,14 @@ on:
         description: 'Ending date of query'     
         required: false
         default: '2023-06-01'
-      default-repos:
+      default-other-repos:
         description: "Comma separated list of repos you want to query"
         required: false
         default: '["hello-world-javascript-action", "test-private"]'
+      default-mono-repo:
+        description: "The mono repo"
+        required: false
+        default: '["another-test"]'
       
 
   schedule:
@@ -42,7 +46,7 @@ jobs:
       - name: Generate Non-mono Repo Open / Closed KPIs
         uses: actions/github-script@v6
         env:
-          DEFAULT_REPOS: ${{ github.event.inputs.default-repos || '["hello-world-javascript-action", "test-private"]' }}
+          DEFAULT_REPOS: ${{ github.event.inputs.default-other-repos || '["hello-world-javascript-action", "test-private"]' }}
         with:
           github-token: ${{ secrets.ADD_TO_TRIAGE_BOARD_TOKEN }}
           script: |
@@ -51,12 +55,12 @@ jobs:
       - name: Generate Cypress Mono Repo Open / Closed KPIs
         uses: actions/github-script@v6
         env:
-          DEFAULT_REPOS: '["another-test"]'
+          DEFAULT_MONO_REPO:  ${{ github.event.inputs.default-mono-repo || '["another-test"]' }}
         with:
           github-token: ${{ secrets.ADD_TO_TRIAGE_BOARD_TOKEN }}
           script: |
             const script = require('./scripts/reports/open-vs-closed-issues.js')
-            script.getOpenAndClosedIssueMetrics(github, context, ${{ env.DEFAULT_REPOS }});
+            script.getOpenAndClosedIssueMetrics(github, context, ${{ env.DEFAULT_MONO_REPO }});
       - name: Generate Triage Throughput KPIs
         uses: actions/github-script@v6
         env:
