@@ -110,6 +110,7 @@ async function getTriageIssueMetrics(github, context, argBeginDate, argEndDate, 
     console.log(`Triage Metrics (${dateRange.startDate} - ${dateRange.endDate})`)
     console.log('Total issues:', issues.length)
     console.log(`Issues routed/closed within specified time frame: ${issuesRoutedOrClosedInTimePeriod} (${percentage})`)
+    console.log('they are who we thought they were')
 
 }
 
