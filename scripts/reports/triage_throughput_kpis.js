@@ -73,7 +73,7 @@ async function getTriageIssueMetrics(github, context, argBeginDate, argEndDate, 
         for (const issue of data) {
      
         console.log(`---------------------------Issue Number: ${issue.number} --------------------------`)
-        console.log(`repo name: ${issue.repository.name}`)
+        console.log(JSON.stringify(issue, null, 2))
         
         let routedOrClosedAt
         
