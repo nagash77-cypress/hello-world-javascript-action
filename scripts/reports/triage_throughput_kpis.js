@@ -10,7 +10,6 @@ async function getTriageIssueMetrics(github, context, argBeginDate, argEndDate, 
 
     //const { REPOSITORY, ORGANIZATION, PROJECT_NUMBER } = process.env
     const ORGANIZATION = 'nagash77-cypress'
-    const REPOSITORY = "hello-world-javascript-action"
     const PROJECT_NUMBER = projectBoardNumber
 
     const issues = []
@@ -74,6 +73,7 @@ async function getTriageIssueMetrics(github, context, argBeginDate, argEndDate, 
         for (const issue of data) {
      
         console.log(`---------------------------Issue Number: ${issue.number} --------------------------`)
+        console.log(`repo name: ${issue.repository}`)
         
         let routedOrClosedAt
         
