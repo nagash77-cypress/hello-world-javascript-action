@@ -77,7 +77,7 @@ async function getTriageIssueMetrics(github, context, argBeginDate, argEndDate, 
         let repositoryUrl = issue.repository_url
         let issueOrgAndRepoInfo = repositoryUrl.split("/")
         let repoName = issueOrgAndRepoInfo.pop()
-        let orgName = issueOrgAndRepoInfo[issueOrgAndRepoInfo.length - 2]
+        let orgName = issueOrgAndRepoInfo[issueOrgAndRepoInfo.length - 1]
         let routedOrClosedAt
         
         if (!issue.pull_request) {
