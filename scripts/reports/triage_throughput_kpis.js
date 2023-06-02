@@ -39,10 +39,10 @@ async function getTriageIssueMetrics(github, context, argBeginDate, argEndDate, 
 
     const query = `is:issue+project:${ORGANIZATION}/${PROJECT_NUMBER}+created:${dateRange.startDate}..${dateRange.endDate}`
 
-    const findLabelDateTime = async (issueNumber) => {
+    const findLabelDateTime = async (issueNumber, repo) => {
         const iterator = github.paginate.iterator(github.rest.issues.listEventsForTimeline, {
         owner: ORGANIZATION,
-        repo: REPOSITORY,
+        repo: repo,
         issue_number: issueNumber,
         })
 
@@ -53,6 +53,7 @@ async function getTriageIssueMetrics(github, context, argBeginDate, argEndDate, 
             console.log(`timelineItem.label.name: ${timelineItem.label.name}`)
             
             if (timelineItem.event === 'labeled' && ROUTED_TO_LABELS.includes(timelineItem.label.name)) {
+                console.log(`timelineItem.label.name: ${timelineItem.label.name}`)
                 return timelineItem.created_at
             }
             console.log(`no matching labels found`)
@@ -80,7 +81,7 @@ async function getTriageIssueMetrics(github, context, argBeginDate, argEndDate, 
             const routedLabel = issue.labels.find((label) => ROUTED_TO_LABELS.includes(label.name))
 
             if (routedLabel) {
-                routedOrClosedAt = await findLabelDateTime(issue.number)
+                routedOrClosedAt = await findLabelDateTime(issue.number, issue.repository.properties.name)
                 console.log('has routed label')
                 
             } else if (issue.state === 'closed') {
@@ -100,8 +101,8 @@ async function getTriageIssueMetrics(github, context, argBeginDate, argEndDate, 
 
             
             console.log(`issue.number: ${issue.number}`)
-            console.log(`issue.organization: ${issue.organization}`)
-            console.log(`issue.repository: ${issue.repository}`)
+            console.log(`issue.organization: ${issue.organization.login}`)
+            console.log(`issue.repository: ${issue.repository.properties.name}`)
             console.log(`issue.title: ${issue.title}`)
             console.log(`issue.state: ${issue.state}`)
             console.log(`issue.created_at: ${issue.created_at}`)
