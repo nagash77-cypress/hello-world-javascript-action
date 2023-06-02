@@ -40,23 +40,17 @@ async function getTriageIssueMetrics(github, context, argBeginDate, argEndDate, 
 
     const findLabelDateTime = async (issueNumber, repo) => {
         const iterator = github.paginate.iterator(github.rest.issues.listEventsForTimeline, {
-        owner: ORGANIZATION,
-        repo: repo,
-        issue_number: issueNumber,
-        })
+            owner: ORGANIZATION,
+            repo: repo,
+            issue_number: issueNumber,
+            })
 
         for await (const { data: timelineData } of iterator) {
-        for (const timelineItem of timelineData) {
-            console.log(`timelineItem: ${timelineItem}`)
-            console.log(`timelineItem.event: ${timelineItem.event}`)
-            console.log(`timelineItem.label.name: ${timelineItem.label.name}`)
-            
-            if (timelineItem.event === 'labeled' && ROUTED_TO_LABELS.includes(timelineItem.label.name)) {
-                console.log(`timelineItem.label.name: ${timelineItem.label.name}`)
-                return timelineItem.created_at
+            for (const timelineItem of timelineData) {
+                if (timelineItem.event === 'labeled' && ROUTED_TO_LABELS.includes(timelineItem.label.name)) {
+                    return timelineItem.created_at
+                }
             }
-            console.log(`no matching labels found`)
-        }
         }
     }
 
@@ -71,8 +65,6 @@ async function getTriageIssueMetrics(github, context, argBeginDate, argEndDate, 
 
     for await (const { data } of iterator) {
         for (const issue of data) {
-     
-        console.log(`---------------------------Issue Number: ${issue.number} --------------------------`)
         
         let repositoryUrl = issue.repository_url
         let issueOrgAndRepoInfo = repositoryUrl.split("/")
@@ -91,27 +83,13 @@ async function getTriageIssueMetrics(github, context, argBeginDate, argEndDate, 
                 routedOrClosedAt = issue.closed_at
                 console.log('does NOT have routed label')
                
-            }
-
-            
-           
+            }  
 
             let elapsedDays
 
             if (routedOrClosedAt) {
                 elapsedDays = calculateElapsedDays(issue.created_at, routedOrClosedAt)
             }
-
-            
-            console.log(`issue.number: ${issue.number}`)
-            console.log(`issue.organization: ${orgName}`)
-            console.log(`issue.repository: ${repoName}`)
-            console.log(`issue.title: ${issue.title}`)
-            console.log(`issue.state: ${issue.state}`)
-            console.log(`issue.created_at: ${issue.created_at}`)
-            console.log(`routedOrClosedAt: ${routedOrClosedAt}`)
-            console.log(`elapsedDays: ${elapsedDays}`)
-            console.log(`---------------------------End Loop ----------------------------------------------`)
 
             issues.push({
             number: issue.number,
@@ -133,9 +111,11 @@ async function getTriageIssueMetrics(github, context, argBeginDate, argEndDate, 
     const issuesRoutedOrClosedInTimePeriod = issues.filter((issue) => issue.elapsedDays <= numberOfDaysInRange).length
     const percentage = Number(issues.length > 0 ? issuesRoutedOrClosedInTimePeriod / issues.length : 0).toLocaleString(undefined, { style: 'percent', minimumFractionDigits: 2 })
 
+    console.log(`---------------------------Triage Metrics-------------------------------`)
     console.log(`Triage Metrics (${dateRange.startDate} - ${dateRange.endDate})`)
     console.log('Total issues:', issues.length)
     console.log(`Issues triaged/closed within this timeframe (${numberOfDaysInRange} days): ${issuesRoutedOrClosedInTimePeriod} (${percentage})`)
+    console.log(`------------------------------------------------------------------------`)
 
 }
 
