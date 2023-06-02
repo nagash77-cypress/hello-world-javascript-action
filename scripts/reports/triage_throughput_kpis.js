@@ -100,6 +100,8 @@ async function getTriageIssueMetrics(github, context, argBeginDate, argEndDate, 
 
             
             console.log(`issue.number: ${issue.number}`)
+            console.log(`issue.organization: ${issue.organization}`)
+            console.log(`issue.repository: ${issue.repository}`)
             console.log(`issue.title: ${issue.title}`)
             console.log(`issue.state: ${issue.state}`)
             console.log(`issue.created_at: ${issue.created_at}`)
