@@ -72,16 +72,32 @@ async function getTriageIssueMetrics(github, context, argBeginDate, argEndDate, 
             const routedLabel = issue.labels.find((label) => ROUTED_TO_LABELS.includes(label.name))
 
             if (routedLabel) {
-            routedOrClosedAt = await findLabelDateTime(issue.number)
+                routedOrClosedAt = await findLabelDateTime(issue.number)
+                console.log('has routed label')
+                console.log(`Routed Label: ${routedLabel}`)
             } else if (issue.state === 'closed') {
-            routedOrClosedAt = issue.closed_at
+                routedOrClosedAt = issue.closed_at
+                console.log('does NOT have routed label')
+                console.log(`Routed Label: ${routedLabel}`)
             }
+
+            
+           
 
             let elapsedDays
 
             if (routedOrClosedAt) {
-            elapsedDays = calculateElapsedDays(issue.created_at, routedOrClosedAt)
+                elapsedDays = calculateElapsedDays(issue.created_at, routedOrClosedAt)
             }
+
+            console.log(`---------------------------Issue Number: ${issue.number} --------------------------`)
+            console.log(`issue.number: ${issue.number}`)
+            console.log(`issue.title: ${issue.title}`)
+            console.log(`issue.state: ${issue.state}`)
+            console.log(`issue.created_at: ${issue.created_at}`)
+            console.log(`routedOrClosedAt: ${routedOrClosedAt}`)
+            console.log(`elapsedDays: ${elapsedDays}`)
+            console.log(`---------------------------End Loop ----------------------------------------------`)
 
             issues.push({
             number: issue.number,
@@ -97,6 +113,9 @@ async function getTriageIssueMetrics(github, context, argBeginDate, argEndDate, 
     }
 
     const numberOfDaysInRange = calculateElapsedDays(dateRange.startDate,dateRange.endDate)
+
+    console.log(`numberOfDaysInRange: ${numberOfDaysInRange}`)
+
     const issuesRoutedOrClosedInTimePeriod = issues.filter((issue) => issue.elapsedDays <= numberOfDaysInRange).length
     const percentage = Number(issues.length > 0 ? issuesRoutedOrClosedInTimePeriod / issues.length : 0).toLocaleString(undefined, { style: 'percent', minimumFractionDigits: 2 })
 
