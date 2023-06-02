@@ -73,15 +73,18 @@ async function getTriageIssueMetrics(github, context, argBeginDate, argEndDate, 
         for (const issue of data) {
      
         console.log(`---------------------------Issue Number: ${issue.number} --------------------------`)
-        console.log(JSON.stringify(issue, null, 2))
         
+        let repositoryUrl = issue.repository_url
+        let issueOrgAndRepoInfo = repositoryUrl.split("/")
+        let repoName = issueOrgAndRepoInfo.pop()
+        let orgName = issueOrgAndRepoInfo[issueOrgAndRepoInfo.length - 2]
         let routedOrClosedAt
         
         if (!issue.pull_request) {
             const routedLabel = issue.labels.find((label) => ROUTED_TO_LABELS.includes(label.name))
 
             if (routedLabel) {
-                routedOrClosedAt = await findLabelDateTime(issue.number, issue.repository.name)
+                routedOrClosedAt = await findLabelDateTime(issue.number, repoName)
                 console.log('has routed label')
                 
             } else if (issue.state === 'closed') {
@@ -101,8 +104,8 @@ async function getTriageIssueMetrics(github, context, argBeginDate, argEndDate, 
 
             
             console.log(`issue.number: ${issue.number}`)
-            console.log(`issue.organization: ${issue.organization.login}`)
-            console.log(`issue.repository: ${issue.repository.properties.name}`)
+            console.log(`issue.organization: ${orgName}`)
+            console.log(`issue.repository: ${repoName}`)
             console.log(`issue.title: ${issue.title}`)
             console.log(`issue.state: ${issue.state}`)
             console.log(`issue.created_at: ${issue.created_at}`)
