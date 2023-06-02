@@ -1,9 +1,4 @@
 async function getTriageIssueMetrics(github, context, argBeginDate, argEndDate, projectBoardNumber) {
-    
-    console.log('Made it to the function')
-    
-    console.log(`Begin Date: ${argBeginDate}`)
-    console.log(`End Date: ${argEndDate}`)
 
     const ROUTED_TO_LABELS = ['triaged','triage']
     const MS_PER_DAY = 1000 * 60 * 60 * 24
@@ -76,13 +71,9 @@ async function getTriageIssueMetrics(github, context, argBeginDate, argEndDate, 
             const routedLabel = issue.labels.find((label) => ROUTED_TO_LABELS.includes(label.name))
 
             if (routedLabel) {
-                routedOrClosedAt = await findLabelDateTime(issue.number, repoName)
-                console.log('has routed label')
-                
+                routedOrClosedAt = await findLabelDateTime(issue.number, repoName)   
             } else if (issue.state === 'closed') {
                 routedOrClosedAt = issue.closed_at
-                console.log('does NOT have routed label')
-               
             }  
 
             let elapsedDays
@@ -105,9 +96,6 @@ async function getTriageIssueMetrics(github, context, argBeginDate, argEndDate, 
     }
 
     const numberOfDaysInRange = calculateElapsedDays(dateRange.startDate,dateRange.endDate)
-
-    console.log(`numberOfDaysInRange: ${numberOfDaysInRange}`)
-
     const issuesRoutedOrClosedInTimePeriod = issues.filter((issue) => issue.elapsedDays <= numberOfDaysInRange).length
     const percentage = Number(issues.length > 0 ? issuesRoutedOrClosedInTimePeriod / issues.length : 0).toLocaleString(undefined, { style: 'percent', minimumFractionDigits: 2 })
 
