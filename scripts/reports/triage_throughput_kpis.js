@@ -48,9 +48,14 @@ async function getTriageIssueMetrics(github, context, argBeginDate, argEndDate, 
 
         for await (const { data: timelineData } of iterator) {
         for (const timelineItem of timelineData) {
+            console.log(`timelineItem: ${timelineItem}`)
+            console.log(`timelineItem.event: ${timelineItem.event}`)
+            console.log(`timelineItem.label.name: ${timelineItem.label.name}`)
+            
             if (timelineItem.event === 'labeled' && ROUTED_TO_LABELS.includes(timelineItem.label.name)) {
-            return timelineItem.created_at
+                return timelineItem.created_at
             }
+            console.log(`no matching labels found`)
         }
         }
     }
@@ -66,6 +71,9 @@ async function getTriageIssueMetrics(github, context, argBeginDate, argEndDate, 
 
     for await (const { data } of iterator) {
         for (const issue of data) {
+     
+        console.log(`---------------------------Issue Number: ${issue.number} --------------------------`)
+        
         let routedOrClosedAt
         
         if (!issue.pull_request) {
@@ -74,11 +82,11 @@ async function getTriageIssueMetrics(github, context, argBeginDate, argEndDate, 
             if (routedLabel) {
                 routedOrClosedAt = await findLabelDateTime(issue.number)
                 console.log('has routed label')
-                console.log(`Routed Label: ${routedLabel}`)
+                
             } else if (issue.state === 'closed') {
                 routedOrClosedAt = issue.closed_at
                 console.log('does NOT have routed label')
-                console.log(`Routed Label: ${routedLabel}`)
+               
             }
 
             
@@ -90,7 +98,7 @@ async function getTriageIssueMetrics(github, context, argBeginDate, argEndDate, 
                 elapsedDays = calculateElapsedDays(issue.created_at, routedOrClosedAt)
             }
 
-            console.log(`---------------------------Issue Number: ${issue.number} --------------------------`)
+            
             console.log(`issue.number: ${issue.number}`)
             console.log(`issue.title: ${issue.title}`)
             console.log(`issue.state: ${issue.state}`)
