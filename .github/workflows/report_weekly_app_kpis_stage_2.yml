@@ -1,0 +1,55 @@
+name: 'KPI Report Generation'
+on:
+  # makes this workflow reusable
+  workflow_call:
+    secrets:
+      ADD_TO_TRIAGE_BOARD_TOKEN:
+        required: true
+  
+  workflow_dispatch:
+    inputs:
+      start-date:
+        description: 'Beginning date of query (ex. 2023-06-01)'     
+        required: false
+      end-date:
+        description: 'Ending date of query (ex. 2023-06-01)'     
+        required: false
+      default-other-repos:
+        description: "Comma separated list of repos you want to query"
+        required: false
+        default: '["hello-world-javascript-action", "test-private"]'
+      default-mono-repo:
+        description: "The mono repo"
+        required: false
+        default: '["another-test"]'
+      
+
+  schedule:
+    - cron: '0 17 * * 5'
+
+
+jobs:
+  run-kpi-reporting:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          repository: 'nagash77-cypress/hello-world-javascript-action'
+          ref: 'develop'
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 'lts/*'
+      - name: Generate Mitigation KPIs
+        uses: actions/github-script@v6
+        env:
+          START_DATE: ${{ github.event.inputs.start-date }}
+          END_DATE: ${{ github.event.inputs.end-date }}
+          PROJECT_BOARD_NUMBER: 1
+        with:
+          github-token: ${{ secrets.ADD_TO_TRIAGE_BOARD_TOKEN }}
+          script: |
+            const script = require('./scripts/reports/triage_mitigation_kpis.js')
+            script.getIssueMitigationMetrics(github, context, "${{ env.START_DATE }}", "${{ env.END_DATE }}", "${{ env.PROJECT_BOARD_NUMBER }}");
+          
