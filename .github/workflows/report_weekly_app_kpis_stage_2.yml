@@ -1,4 +1,4 @@
-name: 'KPI Report Generation'
+name: 'Mitigation KPI Report Generation'
 on:
   # makes this workflow reusable
   workflow_call:
