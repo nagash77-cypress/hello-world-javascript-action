@@ -1,10 +1,10 @@
 async function getIssueMitigationMetrics(github, context, argBeginDate, argEndDate, projectBoardNumber) {
 
-    const ROUTED_TO_LABELS = ['triaged','triage']
+    const MITIGATED_LABELS = ['existing workaround']
     const MS_PER_DAY = 1000 * 60 * 60 * 24
 
     //const { REPOSITORY, ORGANIZATION, PROJECT_NUMBER } = process.env
-    const ORGANIZATION = 'nagash77-cypress'
+    const ORGANIZATION = context.payload.organization.login
     const PROJECT_NUMBER = projectBoardNumber
 
     const issues = []
@@ -31,7 +31,7 @@ async function getIssueMitigationMetrics(github, context, argBeginDate, argEndDa
 
     const dateRange = determineDateRange(argBeginDate, argEndDate)
 
-    const query = `is:issue+project:${ORGANIZATION}/${PROJECT_NUMBER}+created:${dateRange.startDate}..${dateRange.endDate}`
+    const query = `is:issue+project:${ORGANIZATION}/${PROJECT_NUMBER}`
 
     const findLabelDateTime = async (issueNumber, repo) => {
         const iterator = github.paginate.iterator(github.rest.issues.listEventsForTimeline, {
@@ -42,7 +42,7 @@ async function getIssueMitigationMetrics(github, context, argBeginDate, argEndDa
 
         for await (const { data: timelineData } of iterator) {
             for (const timelineItem of timelineData) {
-                if (timelineItem.event === 'labeled' && ROUTED_TO_LABELS.includes(timelineItem.label.name)) {
+                if (timelineItem.event === 'labeled' && MITIGATED_LABELS.includes(timelineItem.label.name)) {
                     return timelineItem.created_at
                 }
             }
@@ -68,7 +68,7 @@ async function getIssueMitigationMetrics(github, context, argBeginDate, argEndDa
         let routedOrClosedAt
         
         if (!issue.pull_request) {
-            const routedLabel = issue.labels.find((label) => ROUTED_TO_LABELS.includes(label.name))
+            const routedLabel = issue.labels.find((label) => MITIGATED_LABELS.includes(label.name))
 
             if (routedLabel) {
                 routedOrClosedAt = await findLabelDateTime(issue.number, repoName)   
@@ -101,9 +101,10 @@ async function getIssueMitigationMetrics(github, context, argBeginDate, argEndDa
 
     console.log(`---------------------------Triage Metrics-------------------------------`)
     console.log(`Triage Metrics (${dateRange.startDate} - ${dateRange.endDate})`)
-    console.log('Total issues:', issues.length)
-    console.log(`Issues triaged/closed within this timeframe (${numberOfDaysInRange} days): ${issuesRoutedOrClosedInTimePeriod} (${percentage})`)
+    console.log('Total Issues Provided With Workarounds:', issues.length)
     console.log(`------------------------------------------------------------------------`)
+
+    return issues
 
 }
 

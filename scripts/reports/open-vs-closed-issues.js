@@ -66,7 +66,13 @@ async function getOpenAndClosedIssueMetrics(github, context, reposArray) {
     console.log(`Total Closed Issues:  ${closedIssueSum}`);
     console.log('---------------------------------------------------------')
 
-    return true
+    const issuesObject = {
+      openIssueSum: openIssueSum,
+      closedIssueSum: closedIssueSum,
+      reposArray: reposArray
+    }
+
+    return issuesObject
 }
 
 module.exports = { getOpenAndClosedIssueMetrics }
