@@ -71,7 +71,7 @@ jobs:
           script: |
             const script = require('./scripts/reports/triage_throughput_kpis.js')
             const triageObject = script.getTriageIssueMetrics(github, context, "${{ env.START_DATE }}", "${{ env.END_DATE }}", "${{ env.PROJECT_BOARD_NUMBER }}");
-           
+            echo 'TRIAGE_OBJECT_STRING='$(jq -r triageObject)` >> $GITHUB_OUTPUT 
       - name: Generate Mitigation KPIs
         id: mititagtion-metrics
         uses: actions/github-script@v6
@@ -96,5 +96,5 @@ jobs:
           github-token: ${{ secrets.ADD_TO_TRIAGE_BOARD_TOKEN }}
           script: |
             const script = require('./scripts/reports/generate_kpi_report.js')
-            script.generateKPIReport(github, context, ${{ steps.triage-metrics.outputs.triageObject }}, ${{ steps.mititagtion-metrics.outputs.mitigationObject }});
+            script.generateKPIReport(github, context, ${{ steps.triage-metrics.outputs.TRIAGE_OBJECT_STRING }}, ${{ steps.mititagtion-metrics.outputs.mitigationObject }});
       
