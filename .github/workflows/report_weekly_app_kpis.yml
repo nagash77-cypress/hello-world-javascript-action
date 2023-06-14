@@ -48,7 +48,6 @@ jobs:
         with:
           github-token: ${{ secrets.ADD_TO_TRIAGE_BOARD_TOKEN }}
           script: |
-            const core = require('@actions/core')
             const script = require('./scripts/reports/open-vs-closed-issues.js')
             script.getOpenAndClosedIssueMetrics(github, context, core, ${{ env.DEFAULT_REPOS }});
       - name: Generate Cypress Mono Repo Open / Closed KPIs
