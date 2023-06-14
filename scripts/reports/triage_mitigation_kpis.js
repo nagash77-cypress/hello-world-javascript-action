@@ -85,12 +85,26 @@ async function getIssueMitigationMetrics(github, context, core, argBeginDate, ar
                 elapsedDays = calculateElapsedDays(issue.created_at, routedOrClosedAt)
             }
 
-            // core.debug('New Issue Loop')
+            core.debug('New Issue Loop')
             // core.debug(issue)
             core.debug(routedOrClosedAt)
             // core.debug(dateRange)
             // core.debug(routedOrClosedAt <= dateRange.endDate)
             // core.debug(routedOrClosedAt >= dateRange.startDate)
+
+            let formattedRoutedOrClosedAtDate;
+
+            if (routedOrClosedAt) {
+                let tempDate = new Date(routedOrClosedAt);
+                if (!isNaN(tempDate.getTime())) {
+                    formattedRoutedOrClosedAtDate = tempDate.toISOString().split('T')[0];
+                    core.debug(formattedRoutedOrClosedAtDate)
+                } else {
+                    core.setFailed('Invalid date:', routedOrClosedAt);
+                }
+            } else {
+                console.setFailed('Date not defined:', routedOrClosedAt);
+            }
 
             const formattedRoutedOrClosedAtDate = new Date(routedOrClosedAt).toISOString().split('T')[0]
 
