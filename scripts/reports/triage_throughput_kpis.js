@@ -4,7 +4,7 @@ async function getTriageIssueMetrics(github, context, core, argBeginDate, argEnd
     const MS_PER_DAY = 1000 * 60 * 60 * 24
 
     //const { REPOSITORY, ORGANIZATION, PROJECT_NUMBER } = process.env
-    const ORGANIZATION = 'nagash77-cypress'
+    const ORGANIZATION = context.payload.organization.login
     const PROJECT_NUMBER = projectBoardNumber
 
     const issues = []
@@ -105,7 +105,13 @@ async function getTriageIssueMetrics(github, context, core, argBeginDate, argEnd
     console.log(`Issues triaged/closed within this timeframe (${numberOfDaysInRange} days): ${issuesRoutedOrClosedInTimePeriod} (${percentage})`)
     console.log(`------------------------------------------------------------------------`)
 
-    core.setOutput('results', issues)
+    const results = {
+        numberOfDaysInRange: numberOfDaysInRange,
+        issuesRoutedOrClosedInTimePeriod: issuesRoutedOrClosedInTimePeriod,
+        percentageTriaged: percentage
+    }
+    
+    core.setOutput('results', results)
 
     return true
 
