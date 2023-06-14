@@ -92,7 +92,9 @@ async function getIssueMitigationMetrics(github, context, core, argBeginDate, ar
             // core.debug(routedOrClosedAt <= dateRange.endDate)
             // core.debug(routedOrClosedAt >= dateRange.startDate)
 
-            if(routedOrClosedAt.toISOString().split('T')[0] <= dateRange.endDate && routedOrClosedAt.toISOString().split('T')[0] >= dateRange.startDate) {     
+            const formattedRoutedOrClosedAtDate = routedOrClosedAt.toISOString().split('T')[0]
+
+            if(formattedRoutedOrClosedAtDate <= dateRange.endDate && formattedRoutedOrClosedAtDate >= dateRange.startDate) {     
                 issues.push({
                     number: issue.number,
                     title: issue.title,
