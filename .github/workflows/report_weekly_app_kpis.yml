@@ -69,7 +69,6 @@ jobs:
         with:
           github-token: ${{ secrets.ADD_TO_TRIAGE_BOARD_TOKEN }}
           script: |
-            const core = require('@actions/core');
             const script = require('./scripts/reports/triage_throughput_kpis.js')
             const triageObject = script.getTriageIssueMetrics(github, context, core, "${{ env.START_DATE }}", "${{ env.END_DATE }}", "${{ env.PROJECT_BOARD_NUMBER }}");
       - name: Generate Mitigation KPIs
