@@ -106,7 +106,7 @@ async function getIssueMitigationMetrics(github, context, core, argBeginDate, ar
                 console.setFailed('Date not defined:', routedOrClosedAt);
             }
 
-            const formattedRoutedOrClosedAtDate = new Date(routedOrClosedAt).toISOString().split('T')[0]
+            //const formattedRoutedOrClosedAtDate = new Date(routedOrClosedAt).toISOString().split('T')[0]
 
             if(formattedRoutedOrClosedAtDate <= dateRange.endDate && formattedRoutedOrClosedAtDate >= dateRange.startDate) {     
                 issues.push({
