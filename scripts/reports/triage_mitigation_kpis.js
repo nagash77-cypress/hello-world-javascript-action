@@ -85,7 +85,7 @@ async function getIssueMitigationMetrics(github, context, core, argBeginDate, ar
                 elapsedDays = calculateElapsedDays(issue.created_at, routedOrClosedAt)
             }
 
-            if(routedOrClosedAt < dateRange.endDate) {     
+            if(routedOrClosedAt < dateRange.endDate && routedOrClosedAt > dateRange.startDate) {     
                 issues.push({
                     number: issue.number,
                     title: issue.title,
