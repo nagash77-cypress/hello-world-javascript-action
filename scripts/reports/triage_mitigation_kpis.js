@@ -24,8 +24,11 @@ async function getIssueMitigationMetrics(github, context, core, argBeginDate, ar
         const startDate = new Date()
 
         startDate.setDate(startDate.getDate() - 7)
+        
+        formattedStartDate = startDate.toISOString().split('T')[0]
+        formattedEndDate = (new Date()).toISOString().split('T')[0]
 
-        return { startDate: startDate.toISOString().split('T')[0], endDate: (new Date()).toISOString().split('T')[0] }
+        return { startDate: formattedStartDate, endDate: formattedEndDate, numOfDays:  calculateElapsedDays(formattedStartDate, formattedEndDate)}
     }
     
 
@@ -82,15 +85,17 @@ async function getIssueMitigationMetrics(github, context, core, argBeginDate, ar
                 elapsedDays = calculateElapsedDays(issue.created_at, routedOrClosedAt)
             }
 
-            issues.push({
-            number: issue.number,
-            title: issue.title,
-            state: issue.state,
-            url: issue.html_url,
-            createdAt: issue.created_at,
-            routedOrClosedAt,
-            elapsedDays,
-            })
+            if(elapsedDays <= dateRange.numOfDays) {     
+                issues.push({
+                    number: issue.number,
+                    title: issue.title,
+                    state: issue.state,
+                    url: issue.html_url,
+                    createdAt: issue.created_at,
+                    routedOrClosedAt,
+                    elapsedDays,
+                })
+            }   
         }
         }
     }
