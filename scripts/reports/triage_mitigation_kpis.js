@@ -1,3 +1,5 @@
+const core = require('@actions/core');
+
 async function getIssueMitigationMetrics(github, context, argBeginDate, argEndDate, projectBoardNumber) {
 
     const MITIGATED_LABELS = ['existing workaround']
@@ -104,7 +106,9 @@ async function getIssueMitigationMetrics(github, context, argBeginDate, argEndDa
     console.log('Total Issues Provided With Workarounds:', issues.length)
     console.log(`------------------------------------------------------------------------`)
 
-    return issues
+    core.setOutput('results', issues)
+
+    return true
 
 }
 

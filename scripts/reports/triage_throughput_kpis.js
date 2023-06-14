@@ -1,4 +1,6 @@
-async function getTriageIssueMetrics(github, context, core, argBeginDate, argEndDate, projectBoardNumber) {
+const core = require('@actions/core');
+
+async function getTriageIssueMetrics(github, context, argBeginDate, argEndDate, projectBoardNumber) {
 
     const ROUTED_TO_LABELS = ['triaged','triage']
     const MS_PER_DAY = 1000 * 60 * 60 * 24

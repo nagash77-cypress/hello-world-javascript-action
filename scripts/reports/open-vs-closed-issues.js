@@ -1,4 +1,6 @@
-async function getOpenAndClosedIssueMetrics(github, context, core, reposArray) {
+const core = require('@actions/core');
+
+async function getOpenAndClosedIssueMetrics(github, context, reposArray) {
 
     const getOpenedAndClosedIssueCountQuery = `
     query ($searchQuery: String!) {
@@ -73,7 +75,7 @@ async function getOpenAndClosedIssueMetrics(github, context, core, reposArray) {
     }
 
     core.setOutput('results', issuesObject)
-    
+
     return true
 }
 
