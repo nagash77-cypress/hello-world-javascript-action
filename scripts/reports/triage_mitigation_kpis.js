@@ -103,7 +103,7 @@ async function getIssueMitigationMetrics(github, context, core, argBeginDate, ar
                     core.setFailed('Invalid date:', routedOrClosedAt);
                 }
             } else {
-                console.setFailed('Date not defined:', routedOrClosedAt);
+                core.setFailed('Date not defined:', routedOrClosedAt);
             }
 
             //const formattedRoutedOrClosedAtDate = new Date(routedOrClosedAt).toISOString().split('T')[0]
