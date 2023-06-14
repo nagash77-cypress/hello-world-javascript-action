@@ -82,51 +82,34 @@ async function getIssueMitigationMetrics(github, context, core, argBeginDate, ar
             let elapsedDays
 
             if (routedOrClosedAt) {
-                elapsedDays = calculateElapsedDays(issue.created_at, routedOrClosedAt)
+                const elapsedDays = calculateElapsedDays(issue.created_at, routedOrClosedAt)
+                const formattedRoutedOrClosedAtDate = new Date(routedOrClosedAt).toISOString().split('T')[0]
+
+                if(formattedRoutedOrClosedAtDate <= dateRange.endDate && formattedRoutedOrClosedAtDate >= dateRange.startDate) {     
+                    issues.push({
+                        number: issue.number,
+                        title: issue.title,
+                        state: issue.state,
+                        url: issue.html_url,
+                        createdAt: issue.created_at,
+                        routedOrClosedAt,
+                        elapsedDays,
+                    })
+                }
             }
 
-            core.debug('New Issue Loop')
+            //core.debug('New Issue Loop')
             // core.debug(issue)
-            core.debug(routedOrClosedAt)
+            //core.debug(routedOrClosedAt)
             // core.debug(dateRange)
             // core.debug(routedOrClosedAt <= dateRange.endDate)
             // core.debug(routedOrClosedAt >= dateRange.startDate)
 
-            let formattedRoutedOrClosedAtDate;
-
-            if (routedOrClosedAt) {
-                let tempDate = new Date(routedOrClosedAt);
-                if (!isNaN(tempDate.getTime())) {
-                    formattedRoutedOrClosedAtDate = tempDate.toISOString().split('T')[0];
-                    core.debug(formattedRoutedOrClosedAtDate)
-                } else {
-                    core.setFailed('Invalid date:', routedOrClosedAt);
-                }
-            } else {
-                core.setFailed('Date not defined:', routedOrClosedAt);
-            }
-
-            //const formattedRoutedOrClosedAtDate = new Date(routedOrClosedAt).toISOString().split('T')[0]
-
-            if(formattedRoutedOrClosedAtDate <= dateRange.endDate && formattedRoutedOrClosedAtDate >= dateRange.startDate) {     
-                issues.push({
-                    number: issue.number,
-                    title: issue.title,
-                    state: issue.state,
-                    url: issue.html_url,
-                    createdAt: issue.created_at,
-                    routedOrClosedAt,
-                    elapsedDays,
-                })
-            }   
         }
         }
     }
 
-    const numberOfDaysInRange = calculateElapsedDays(dateRange.startDate,dateRange.endDate)
-    const issuesRoutedOrClosedInTimePeriod = issues.filter((issue) => issue.elapsedDays <= numberOfDaysInRange).length
-    const percentage = Number(issues.length > 0 ? issuesRoutedOrClosedInTimePeriod / issues.length : 0).toLocaleString(undefined, { style: 'percent', minimumFractionDigits: 2 })
-
+   
     console.log(`---------------------------Triage Metrics-------------------------------`)
     console.log(`Triage Metrics (${dateRange.startDate} - ${dateRange.endDate})`)
     console.log('Total Issues Provided With Workarounds:', issues.length)
