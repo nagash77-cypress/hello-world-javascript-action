@@ -9,6 +9,10 @@ async function getTriageIssueMetrics(github, context, core, argBeginDate, argEnd
 
     const issues = []
 
+    const calculateElapsedDays = (createdAt, routedOrClosedAt) => {
+        return Math.round((new Date(routedOrClosedAt) - new Date(createdAt)) / MS_PER_DAY, 0)
+    }
+
     const determineDateRange = (beginDate, endingDate) => {
         const inputStartDate = beginDate
         const inputEndDate = endingDate
@@ -24,14 +28,17 @@ async function getTriageIssueMetrics(github, context, core, argBeginDate, argEnd
         const startDate = new Date()
 
         startDate.setDate(startDate.getDate() - 7)
+        
+        formattedStartDate = startDate.toISOString().split('T')[0]
+        formattedEndDate = (new Date()).toISOString().split('T')[0]
 
-        return { startDate: startDate.toISOString().split('T')[0], endDate: (new Date()).toISOString().split('T')[0] }
+        return { startDate: formattedStartDate, endDate: formattedEndDate, numOfDays:  calculateElapsedDays(formattedStartDate, formattedEndDate)}
     }
     
 
     const dateRange = determineDateRange(argBeginDate, argEndDate)
 
-    const query = `is:issue+project:${ORGANIZATION}/${PROJECT_NUMBER}+created:${dateRange.startDate}..${dateRange.endDate}`
+    const query = `is:issue+project:${ORGANIZATION}/${PROJECT_NUMBER}`
 
     const findLabelDateTime = async (issueNumber, repo) => {
         const iterator = github.paginate.iterator(github.rest.issues.listEventsForTimeline, {
@@ -47,10 +54,6 @@ async function getTriageIssueMetrics(github, context, core, argBeginDate, argEnd
                 }
             }
         }
-    }
-
-    const calculateElapsedDays = (createdAt, routedOrClosedAt) => {
-        return Math.round((new Date(routedOrClosedAt) - new Date(createdAt)) / MS_PER_DAY, 0)
     }
 
     const iterator = github.paginate.iterator(github.rest.search.issuesAndPullRequests, {
@@ -79,36 +82,47 @@ async function getTriageIssueMetrics(github, context, core, argBeginDate, argEnd
             let elapsedDays
 
             if (routedOrClosedAt) {
-                elapsedDays = calculateElapsedDays(issue.created_at, routedOrClosedAt)
+                const elapsedDays = calculateElapsedDays(issue.created_at, routedOrClosedAt)
+                const formattedRoutedOrClosedAtDate = new Date(routedOrClosedAt).toISOString().split('T')[0]
+
+                if(formattedRoutedOrClosedAtDate <= dateRange.endDate && formattedRoutedOrClosedAtDate >= dateRange.startDate) {     
+                    issues.push({
+                        number: issue.number,
+                        title: issue.title,
+                        state: issue.state,
+                        url: issue.html_url,
+                        createdAt: issue.created_at,
+                        routedOrClosedAt,
+                        elapsedDays,
+                    })
+                }
             }
 
-            issues.push({
-            number: issue.number,
-            title: issue.title,
-            state: issue.state,
-            url: issue.html_url,
-            createdAt: issue.created_at,
-            routedOrClosedAt,
-            elapsedDays,
-            })
+            //core.debug('New Issue Loop')
+            // core.debug(issue)
+            //core.debug(routedOrClosedAt)
+            // core.debug(dateRange)
+            // core.debug(routedOrClosedAt <= dateRange.endDate)
+            // core.debug(routedOrClosedAt >= dateRange.startDate)
+
         }
         }
     }
 
+
     const numberOfDaysInRange = calculateElapsedDays(dateRange.startDate,dateRange.endDate)
-    const issuesRoutedOrClosedInTimePeriod = issues.filter((issue) => issue.elapsedDays <= numberOfDaysInRange).length
-    const percentage = Number(issues.length > 0 ? issuesRoutedOrClosedInTimePeriod / issues.length : 0).toLocaleString(undefined, { style: 'percent', minimumFractionDigits: 2 })
+    //const issuesRoutedOrClosedInTimePeriod = issues.filter((issue) => issue.elapsedDays <= numberOfDaysInRange).length
+    //const percentage = Number(issues.length > 0 ? issuesRoutedOrClosedInTimePeriod / issues.length : 0).toLocaleString(undefined, { style: 'percent', minimumFractionDigits: 2 })
 
     console.log(`---------------------------Triage Metrics-------------------------------`)
     console.log(`Triage Metrics (${dateRange.startDate} - ${dateRange.endDate})`)
-    console.log('Total issues:', issues.length)
-    console.log(`Issues triaged/closed within this timeframe (${numberOfDaysInRange} days): ${issuesRoutedOrClosedInTimePeriod} (${percentage})`)
+    //console.log('Total issues:', issues.length)
+    console.log(`Issues triaged/closed within this timeframe (${numberOfDaysInRange} days): ${issues.length}`)
     console.log(`------------------------------------------------------------------------`)
 
     const results = {
         numberOfDaysInRange: numberOfDaysInRange,
-        issuesRoutedOrClosedInTimePeriod: issuesRoutedOrClosedInTimePeriod,
-        percentageTriaged: percentage
+        issuesRoutedOrClosedInTimePeriod: issues.length,
     }
     
     core.setOutput('results', results)
