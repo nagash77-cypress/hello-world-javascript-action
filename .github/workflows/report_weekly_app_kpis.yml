@@ -93,7 +93,6 @@ jobs:
         with:
           github-token: ${{ secrets.ADD_TO_TRIAGE_BOARD_TOKEN }}
           script: |
-            const core = require('@actions/core');
             const script = require('./scripts/reports/generate_kpi_report.js')
             script.generateKPIReport(github, context, core, "${{ steps.triage-metrics.outputs.results }}", "${{ steps.mititagtion-metrics.outputs.results }}");
       
