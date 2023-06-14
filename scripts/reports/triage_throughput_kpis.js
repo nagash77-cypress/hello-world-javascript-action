@@ -45,8 +45,9 @@ async function getTriageIssueMetrics(github, context, core, argBeginDate, argEnd
             })
 
         for await (const { data: timelineData } of iterator) {
-            core.debug(timelineData)
+            core.debug('------------------------------NEw Timeline-------------------')
             for (const timelineItem of timelineData) {
+                core.debug(timelineItem)
                 if (timelineItem.event === 'labeled' && ROUTED_TO_LABELS.includes(timelineItem.label.name)) {
                     return timelineItem.created_at
                 }
