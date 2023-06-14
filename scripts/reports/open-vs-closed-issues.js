@@ -1,6 +1,4 @@
-const core = require('@actions/core');
-
-async function getOpenAndClosedIssueMetrics(github, context, reposArray) {
+async function getOpenAndClosedIssueMetrics(github, context, core, reposArray) {
 
     const getOpenedAndClosedIssueCountQuery = `
     query ($searchQuery: String!) {

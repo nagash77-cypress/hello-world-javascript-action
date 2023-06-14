@@ -48,8 +48,9 @@ jobs:
         with:
           github-token: ${{ secrets.ADD_TO_TRIAGE_BOARD_TOKEN }}
           script: |
+            const core = require('@actions/core')
             const script = require('./scripts/reports/open-vs-closed-issues.js')
-            script.getOpenAndClosedIssueMetrics(github, context, ${{ env.DEFAULT_REPOS }});
+            script.getOpenAndClosedIssueMetrics(github, context, core, ${{ env.DEFAULT_REPOS }});
       - name: Generate Cypress Mono Repo Open / Closed KPIs
         uses: actions/github-script@v6
         env:
@@ -57,8 +58,9 @@ jobs:
         with:
           github-token: ${{ secrets.ADD_TO_TRIAGE_BOARD_TOKEN }}
           script: |
+            const core = require('@actions/core');
             const script = require('./scripts/reports/open-vs-closed-issues.js')
-            script.getOpenAndClosedIssueMetrics(github, context, ${{ env.DEFAULT_MONO_REPO }});
+            script.getOpenAndClosedIssueMetrics(github, context, core, ${{ env.DEFAULT_MONO_REPO }});
       - name: Generate Triage Throughput KPIs
         id: triage-metrics
         uses: actions/github-script@v6
@@ -69,8 +71,9 @@ jobs:
         with:
           github-token: ${{ secrets.ADD_TO_TRIAGE_BOARD_TOKEN }}
           script: |
+            const core = require('@actions/core');
             const script = require('./scripts/reports/triage_throughput_kpis.js')
-            const triageObject = script.getTriageIssueMetrics(github, context, "${{ env.START_DATE }}", "${{ env.END_DATE }}", "${{ env.PROJECT_BOARD_NUMBER }}");
+            const triageObject = script.getTriageIssueMetrics(github, context, core, "${{ env.START_DATE }}", "${{ env.END_DATE }}", "${{ env.PROJECT_BOARD_NUMBER }}");
       - name: Generate Mitigation KPIs
         id: mititagtion-metrics
         uses: actions/github-script@v6
@@ -81,8 +84,9 @@ jobs:
         with:
           github-token: ${{ secrets.ADD_TO_TRIAGE_BOARD_TOKEN }}
           script: |
+            const core = require('@actions/core');
             const script = require('./scripts/reports/triage_mitigation_kpis.js')
-            const mitigationObject = script.getIssueMitigationMetrics(github, context, "${{ env.START_DATE }}", "${{ env.END_DATE }}", "${{ env.PROJECT_BOARD_NUMBER }}");
+            const mitigationObject = script.getIssueMitigationMetrics(github, context, core, "${{ env.START_DATE }}", "${{ env.END_DATE }}", "${{ env.PROJECT_BOARD_NUMBER }}");
       - name: Generate KPI Report
         id: generate-report
         uses: actions/github-script@v6
@@ -93,6 +97,7 @@ jobs:
         with:
           github-token: ${{ secrets.ADD_TO_TRIAGE_BOARD_TOKEN }}
           script: |
+            const core = require('@actions/core');
             const script = require('./scripts/reports/generate_kpi_report.js')
-            script.generateKPIReport(github, context, "${{ steps.triage-metrics.outputs.results }}", "${{ steps.mititagtion-metrics.outputs.results }}");
+            script.generateKPIReport(github, context, core, "${{ steps.triage-metrics.outputs.results }}", "${{ steps.mititagtion-metrics.outputs.results }}");
       

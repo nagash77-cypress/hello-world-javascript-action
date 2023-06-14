@@ -1,6 +1,4 @@
-const core = require('@actions/core');
-
-async function generateKPIReport(github, context, triageObjectString, mitigationObjectString) {
+async function generateKPIReport(github, context, core, triageObjectString, mitigationObjectString) {
   
   console.log(core)
   console.log('made it to the report function')
