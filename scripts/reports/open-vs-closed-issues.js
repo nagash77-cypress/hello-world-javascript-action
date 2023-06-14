@@ -1,4 +1,4 @@
-async function getOpenAndClosedIssueMetrics(github, context, reposArray) {
+async function getOpenAndClosedIssueMetrics(github, context, core, reposArray) {
 
     const getOpenedAndClosedIssueCountQuery = `
     query ($searchQuery: String!) {
@@ -72,7 +72,9 @@ async function getOpenAndClosedIssueMetrics(github, context, reposArray) {
       reposArray: reposArray
     }
 
-    return issuesObject
+    core.setOutput('results', issuesObject)
+    
+    return true
 }
 
 module.exports = { getOpenAndClosedIssueMetrics }
