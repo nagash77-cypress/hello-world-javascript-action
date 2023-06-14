@@ -9,7 +9,7 @@ async function generateKPIReport(github, context, core, triageObject, mitigation
   // let mitigationObject = JSON.parse(mitigationObjectString)
 
   core.debug(triageObject)
-  console.log(`${triageObject}`)
+  core.debug(mitigationObject)
   
   console.log('--------------------Total Open Issues--------------------')
   //console.log(`Repos Being Queried:  ${reposArray}`);
