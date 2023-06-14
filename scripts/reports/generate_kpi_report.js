@@ -5,11 +5,11 @@ async function generateKPIReport(github, context, core, triageObjectString, miti
   console.log(`triageObjectSting: ${triageObjectString}`)
   console.log(`mitigationObjectString: ${mitigationObjectString}`)
 
-  // let triageObject = JSON.parse(triageObjectString)
-  // let mitigationObject = JSON.parse(mitigationObjectString)
+  let triageObject = JSON.parse(triageObjectString)
+  let mitigationObject = JSON.parse(mitigationObjectString)
 
-  // console.log(`${triageObjectString}`)
-  // console.log(`${mitigationObjectString}`)
+  console.log(`${triageObjectString}`)
+  console.log(`${mitigationObjectString}`)
   
   console.log('--------------------Total Open Issues--------------------')
   //console.log(`Repos Being Queried:  ${reposArray}`);
