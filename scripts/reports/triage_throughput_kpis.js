@@ -37,8 +37,6 @@ async function getTriageIssueMetrics(github, context, core, argBeginDate, argEnd
 
     const dateRange = determineDateRange(argBeginDate, argEndDate)
 
-    const query = `is:issue+project:${ORGANIZATION}/${PROJECT_NUMBER}`
-
     const findLabelDateTime = async (issueNumber, repo) => {
         const iterator = github.paginate.iterator(github.rest.issues.listEventsForTimeline, {
             owner: ORGANIZATION,
@@ -47,6 +45,7 @@ async function getTriageIssueMetrics(github, context, core, argBeginDate, argEnd
             })
 
         for await (const { data: timelineData } of iterator) {
+            core.debug(timelineData)
             for (const timelineItem of timelineData) {
                 if (timelineItem.event === 'labeled' && ROUTED_TO_LABELS.includes(timelineItem.label.name)) {
                     return timelineItem.created_at
@@ -55,6 +54,24 @@ async function getTriageIssueMetrics(github, context, core, argBeginDate, argEnd
         }
     }
 
+    // const findAddedToProjectDateTime = async (issueNumber, repo) => {
+    //     const iterator = github.paginate.iterator(github.rest.issues.listEventsForTimeline, {
+    //         owner: ORGANIZATION,
+    //         repo: repo,
+    //         issue_number: issueNumber,
+    //         })
+
+    //     for await (const { data: timelineData } of iterator) {
+    //         for (const timelineItem of timelineData) {
+    //             if (timelineItem.event === 'labeled' && ROUTED_TO_LABELS.includes(timelineItem.label.name)) {
+    //                 return timelineItem.created_at
+    //             }
+    //         }
+    //     }
+    // }
+    
+    const query = `is:issue+project:${ORGANIZATION}/${PROJECT_NUMBER}`
+    
     const iterator = github.paginate.iterator(github.rest.search.issuesAndPullRequests, {
         q: query,
         per_page: 100,
@@ -96,19 +113,26 @@ async function getTriageIssueMetrics(github, context, core, argBeginDate, argEnd
                     })
                 }
             }
-
-            //core.debug('New Issue Loop')
-            // core.debug(issue)
-            //core.debug(routedOrClosedAt)
-            // core.debug(dateRange)
-            // core.debug(routedOrClosedAt <= dateRange.endDate)
-            // core.debug(routedOrClosedAt >= dateRange.startDate)
-
         }
         }
     }
 
+    const getListOfItemsAddedToProject = async (issueNumber, repo) => {
+        const iterator = github.paginate.iterator(github.rest.issues.listEventsForTimeline, {
+            owner: ORGANIZATION,
+            repo: repo,
+            issue_number: issueNumber,
+            })
 
+        for await (const { data: timelineData } of iterator) {
+            for (const timelineItem of timelineData) {
+                if (timelineItem.event === 'labeled' && ROUTED_TO_LABELS.includes(timelineItem.label.name)) {
+                    return timelineItem.created_at
+                }
+            }
+        }
+    }
+    
     const numberOfDaysInRange = calculateElapsedDays(dateRange.startDate,dateRange.endDate)
     //const issuesRoutedOrClosedInTimePeriod = issues.filter((issue) => issue.elapsedDays <= numberOfDaysInRange).length
     //const percentage = Number(issues.length > 0 ? issuesRoutedOrClosedInTimePeriod / issues.length : 0).toLocaleString(undefined, { style: 'percent', minimumFractionDigits: 2 })
