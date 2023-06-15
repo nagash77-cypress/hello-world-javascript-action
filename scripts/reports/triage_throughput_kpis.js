@@ -156,7 +156,7 @@ async function getTriageIssueMetrics(github, context, core, argBeginDate, argEnd
     console.log(`---------------------------Triage Metrics-------------------------------`)
     console.log(`Triage Metrics (${dateRange.startDate} - ${dateRange.endDate})`)
     console.log('Number of New Issues Created:', newIssuesCreated.length)
-    console.log(`Issues triaged/closed within this timeframe (${numberOfDaysInRange} days): ${issues.length}`)
+    console.log(`Issues triaged/closed within this timeframe (${numberOfDaysInRange} days): ${issuesTriaged.length}`)
     console.log(`------------------------------------------------------------------------`)
 
     const results = {
