@@ -6,7 +6,9 @@ async function getTriageIssueMetrics(github, context, core, argBeginDate, argEnd
     const ORGANIZATION = context.payload.organization.login
     const PROJECT_NUMBER = projectBoardNumber
 
-    const issues = []
+    const issuesTriaged = []
+    const newIssuesCreated = []
+
 
     const calculateElapsedDays = (createdAt, routedOrClosedAt) => {
         return Math.round((new Date(routedOrClosedAt) - new Date(createdAt)) / MS_PER_DAY, 0)
@@ -95,15 +97,26 @@ async function getTriageIssueMetrics(github, context, core, argBeginDate, argEnd
             } else if (issue.state === 'closed') {
                 routedOrClosedAt = issue.closed_at
             }  
+            
+            //Get which issues were created during this time period.  
+            const formattedCreatedDate = new Date(issue.created_at).toISOString().split('T')[0]
 
-            let elapsedDays
+            if(formattedCreatedDate <= dateRange.endDate && formattedCreatedDate >= dateRange.startDate) {
+                newIssuesCreated.push({
+                    number: issue.number,
+                    title: issue.title,
+                    state: issue.state,
+                    url: issue.html_url,
+                    createdAt: issue.created_at,
+                })
+            }
 
             if (routedOrClosedAt) {
                 const elapsedDays = calculateElapsedDays(issue.created_at, routedOrClosedAt)
                 const formattedRoutedOrClosedAtDate = new Date(routedOrClosedAt).toISOString().split('T')[0]
 
                 if(formattedRoutedOrClosedAtDate <= dateRange.endDate && formattedRoutedOrClosedAtDate >= dateRange.startDate) {     
-                    issues.push({
+                    issuesTriaged.push({
                         number: issue.number,
                         title: issue.title,
                         state: issue.state,
@@ -133,6 +146,8 @@ async function getTriageIssueMetrics(github, context, core, argBeginDate, argEnd
             }
         }
     }
+
+    
     
     const numberOfDaysInRange = calculateElapsedDays(dateRange.startDate,dateRange.endDate)
     //const issuesRoutedOrClosedInTimePeriod = issues.filter((issue) => issue.elapsedDays <= numberOfDaysInRange).length
@@ -140,13 +155,14 @@ async function getTriageIssueMetrics(github, context, core, argBeginDate, argEnd
 
     console.log(`---------------------------Triage Metrics-------------------------------`)
     console.log(`Triage Metrics (${dateRange.startDate} - ${dateRange.endDate})`)
-    //console.log('Total issues:', issues.length)
+    console.log('Number of New Issues Created:', newIssuesCreated.length)
     console.log(`Issues triaged/closed within this timeframe (${numberOfDaysInRange} days): ${issues.length}`)
     console.log(`------------------------------------------------------------------------`)
 
     const results = {
         numberOfDaysInRange: numberOfDaysInRange,
-        issuesRoutedOrClosedInTimePeriod: issues.length,
+        issuesRoutedOrClosedInTimePeriod: issuesTriaged,
+        newIssuesCreatedInTimePeriod: newIssuesCreated,
     }
     
     core.setOutput('results', results)
