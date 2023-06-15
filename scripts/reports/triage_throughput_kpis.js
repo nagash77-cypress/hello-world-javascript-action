@@ -134,6 +134,7 @@ async function getTriageIssueMetrics(github, context, core, argBeginDate, argEnd
 
     const results = {
         numberOfDaysInRange: numberOfDaysInRange,
+        dateRange: dateRange,
         issuesRoutedOrClosedInTimePeriod: issuesTriaged,
         newIssuesCreatedInTimePeriod: newIssuesCreated,
     }
