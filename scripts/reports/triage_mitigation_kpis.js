@@ -109,11 +109,10 @@ async function getIssueMitigationMetrics(github, context, core, argBeginDate, ar
         }
     }
 
-   
-    console.log(`---------------------------Triage Metrics-------------------------------`)
-    console.log(`Triage Metrics (${dateRange.startDate} - ${dateRange.endDate})`)
-    console.log('Total Issues Provided With Workarounds:', issues.length)
-    console.log(`------------------------------------------------------------------------`)
+    const results = {
+        issues: issues,
+        dateRange: dateRange,
+    }
 
     core.setOutput('results', issues)
 

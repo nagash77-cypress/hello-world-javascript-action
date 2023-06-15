@@ -47,31 +47,13 @@ async function getTriageIssueMetrics(github, context, core, argBeginDate, argEnd
             })
 
         for await (const { data: timelineData } of iterator) {
-            core.debug('------------------------------NEw Timeline-------------------')
             for (const timelineItem of timelineData) {
-                core.debug(timelineItem)
                 if (timelineItem.event === 'labeled' && ROUTED_TO_LABELS.includes(timelineItem.label.name)) {
                     return timelineItem.created_at
                 }
             }
         }
     }
-
-    // const findAddedToProjectDateTime = async (issueNumber, repo) => {
-    //     const iterator = github.paginate.iterator(github.rest.issues.listEventsForTimeline, {
-    //         owner: ORGANIZATION,
-    //         repo: repo,
-    //         issue_number: issueNumber,
-    //         })
-
-    //     for await (const { data: timelineData } of iterator) {
-    //         for (const timelineItem of timelineData) {
-    //             if (timelineItem.event === 'labeled' && ROUTED_TO_LABELS.includes(timelineItem.label.name)) {
-    //                 return timelineItem.created_at
-    //             }
-    //         }
-    //     }
-    // }
     
     const query = `is:issue+project:${ORGANIZATION}/${PROJECT_NUMBER}`
     
@@ -98,7 +80,8 @@ async function getTriageIssueMetrics(github, context, core, argBeginDate, argEnd
                 routedOrClosedAt = issue.closed_at
             }  
             
-            //Get which issues were created during this time period.  
+            //Get which issues were created during this time period.
+            //strings passed back from the github API need to be formatted to check since by default we are using midnight in our date range beginning and end  
             const formattedCreatedDate = new Date(issue.created_at).toISOString().split('T')[0]
 
             if(formattedCreatedDate <= dateRange.endDate && formattedCreatedDate >= dateRange.startDate) {
@@ -146,18 +129,8 @@ async function getTriageIssueMetrics(github, context, core, argBeginDate, argEnd
             }
         }
     }
-
-    
     
     const numberOfDaysInRange = calculateElapsedDays(dateRange.startDate,dateRange.endDate)
-    //const issuesRoutedOrClosedInTimePeriod = issues.filter((issue) => issue.elapsedDays <= numberOfDaysInRange).length
-    //const percentage = Number(issues.length > 0 ? issuesRoutedOrClosedInTimePeriod / issues.length : 0).toLocaleString(undefined, { style: 'percent', minimumFractionDigits: 2 })
-
-    core.debug(`---------------------------Triage Metrics-------------------------------`)
-    core.debug(`Triage Metrics (${dateRange.startDate} - ${dateRange.endDate})`)
-    core.debug('Number of New Issues Created:', newIssuesCreated.length)
-    core.debug(`Issues triaged/closed within this timeframe (${numberOfDaysInRange} days): ${issuesTriaged.length}`)
-    core.debug(`------------------------------------------------------------------------`)
 
     const results = {
         numberOfDaysInRange: numberOfDaysInRange,
