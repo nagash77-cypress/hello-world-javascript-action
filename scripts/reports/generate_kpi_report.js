@@ -19,8 +19,8 @@ async function generateKPIReport(github, context, core, nonMonoStatsObject, mono
 
   console.log(`---------------------------Triage Metrics-------------------------------`)
   console.log(`Triage Metrics (${triageObject.dateRange.startDate} - ${triageObject.dateRange.endDate})`)
-  console.log(`Number of New Issues Created: ${triageObject.newIssuesCreated.length}`)
-  console.log(`Issues triaged/closed within this timeframe (${triageObject.numberOfDaysInRange} days): ${triageObject.issuesTriaged.length}`)
+  console.log(`Number of New Issues Created: ${triageObject.newIssuesCreatedInTimePeriod.length}`)
+  console.log(`Issues triaged/closed within this timeframe (${triageObject.dateRange.numOfDays} days): ${triageObject.issuesRoutedOrClosedInTimePeriod.length}`)
   console.log(`------------------------------------------------------------------------`)
 
   return true
