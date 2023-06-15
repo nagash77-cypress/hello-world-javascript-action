@@ -12,10 +12,6 @@ async function generateKPIReport(github, context, core, nonMonoStatsObject, mono
   console.log(`Total Closed Issues:  ${nonMonoStatsObject.closedIssueSum}`);
   console.log('---------------------------------------------------------')
 
-  core.debug(triageObject)
-  core.debug(`------------------------------`)
-  core.debug(mitigationObject)
-
   console.log(`---------------------------Mitigation Metrics-------------------------------`)
   console.log(`Triage Metrics (${mitigationObject.dateRange.startDate} - ${mitigationObject.dateRange.endDate})`)
   console.log(`Total Issues Provided With Workarounds: ${mitigationObject.issues.length}`)
