@@ -153,11 +153,11 @@ async function getTriageIssueMetrics(github, context, core, argBeginDate, argEnd
     //const issuesRoutedOrClosedInTimePeriod = issues.filter((issue) => issue.elapsedDays <= numberOfDaysInRange).length
     //const percentage = Number(issues.length > 0 ? issuesRoutedOrClosedInTimePeriod / issues.length : 0).toLocaleString(undefined, { style: 'percent', minimumFractionDigits: 2 })
 
-    console.log(`---------------------------Triage Metrics-------------------------------`)
-    console.log(`Triage Metrics (${dateRange.startDate} - ${dateRange.endDate})`)
-    console.log('Number of New Issues Created:', newIssuesCreated.length)
-    console.log(`Issues triaged/closed within this timeframe (${numberOfDaysInRange} days): ${issuesTriaged.length}`)
-    console.log(`------------------------------------------------------------------------`)
+    core.debug(`---------------------------Triage Metrics-------------------------------`)
+    core.debug(`Triage Metrics (${dateRange.startDate} - ${dateRange.endDate})`)
+    core.debug('Number of New Issues Created:', newIssuesCreated.length)
+    core.debug(`Issues triaged/closed within this timeframe (${numberOfDaysInRange} days): ${issuesTriaged.length}`)
+    core.debug(`------------------------------------------------------------------------`)
 
     const results = {
         numberOfDaysInRange: numberOfDaysInRange,
