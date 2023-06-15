@@ -133,7 +133,6 @@ async function getTriageIssueMetrics(github, context, core, argBeginDate, argEnd
     const numberOfDaysInRange = calculateElapsedDays(dateRange.startDate,dateRange.endDate)
 
     const results = {
-        numberOfDaysInRange: numberOfDaysInRange,
         dateRange: dateRange,
         issuesRoutedOrClosedInTimePeriod: issuesTriaged,
         newIssuesCreatedInTimePeriod: newIssuesCreated,

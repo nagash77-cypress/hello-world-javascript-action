@@ -97,14 +97,6 @@ async function getIssueMitigationMetrics(github, context, core, argBeginDate, ar
                     })
                 }
             }
-
-            //core.debug('New Issue Loop')
-            // core.debug(issue)
-            //core.debug(routedOrClosedAt)
-            // core.debug(dateRange)
-            // core.debug(routedOrClosedAt <= dateRange.endDate)
-            // core.debug(routedOrClosedAt >= dateRange.startDate)
-
         }
         }
     }
