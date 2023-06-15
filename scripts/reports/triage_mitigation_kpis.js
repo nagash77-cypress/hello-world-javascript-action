@@ -106,7 +106,7 @@ async function getIssueMitigationMetrics(github, context, core, argBeginDate, ar
         dateRange: dateRange,
     }
 
-    core.setOutput('results', issues)
+    core.setOutput('results', results)
 
     return true
 
