@@ -2,8 +2,6 @@ async function getIssueMitigationMetrics(github, context, core, argBeginDate, ar
 
     const MITIGATED_LABELS = ['existing workaround']
     const MS_PER_DAY = 1000 * 60 * 60 * 24
-
-    //const { REPOSITORY, ORGANIZATION, PROJECT_NUMBER } = process.env
     const ORGANIZATION = context.payload.organization.login
     const PROJECT_NUMBER = projectBoardNumber
 

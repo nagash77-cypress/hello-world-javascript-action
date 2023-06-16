@@ -1,14 +1,12 @@
 async function getTriageIssueMetrics(github, context, core, argBeginDate, argEndDate, projectBoardNumber) {
 
-    const ROUTED_TO_LABELS = ['triaged','triage']
+    const ROUTED_TO_LABELS = ['triaged']
     const MS_PER_DAY = 1000 * 60 * 60 * 24
-
     const ORGANIZATION = context.payload.organization.login
     const PROJECT_NUMBER = projectBoardNumber
 
     const issuesTriaged = []
     const newIssuesCreated = []
-
 
     const calculateElapsedDays = (createdAt, routedOrClosedAt) => {
         return Math.round((new Date(routedOrClosedAt) - new Date(createdAt)) / MS_PER_DAY, 0)
@@ -55,6 +53,9 @@ async function getTriageIssueMetrics(github, context, core, argBeginDate, argEnd
         }
     }
     
+    // This will get all issues on the the project board.  
+    // We are unable to get just the issues added to the project board over a given period
+    // due to limitations int he Github API at the moment
     const query = `is:issue+project:${ORGANIZATION}/${PROJECT_NUMBER}`
     
     const iterator = github.paginate.iterator(github.rest.search.issuesAndPullRequests, {
@@ -62,6 +63,7 @@ async function getTriageIssueMetrics(github, context, core, argBeginDate, argEnd
         per_page: 100,
     })
 
+    // Loop through issues on the project board
     for await (const { data } of iterator) {
         for (const issue of data) {
         
@@ -72,8 +74,11 @@ async function getTriageIssueMetrics(github, context, core, argBeginDate, argEnd
         let routedOrClosedAt
         
         if (!issue.pull_request) {
+            // Does the Issue have one of the labels that indicates it has been routed attached to it?
             const routedLabel = issue.labels.find((label) => ROUTED_TO_LABELS.includes(label.name))
 
+            // Verify if the label was assigned during the specified time period.
+            // Even if the issue does not have a triaged label, if it is closed we will use that closed date to determine if it was processed during the specified time period.
             if (routedLabel) {
                 routedOrClosedAt = await findLabelDateTime(issue.number, repoName)   
             } else if (issue.state === 'closed') {
@@ -84,6 +89,8 @@ async function getTriageIssueMetrics(github, context, core, argBeginDate, argEnd
             //strings passed back from the github API need to be formatted to check since by default we are using midnight in our date range beginning and end  
             const formattedCreatedDate = new Date(issue.created_at).toISOString().split('T')[0]
 
+            // Verify that the issue was created within the specified date range.
+            // If it was, add it to the newIssuesCreated array
             if(formattedCreatedDate <= dateRange.endDate && formattedCreatedDate >= dateRange.startDate) {
                 newIssuesCreated.push({
                     number: issue.number,
@@ -94,6 +101,7 @@ async function getTriageIssueMetrics(github, context, core, argBeginDate, argEnd
                 })
             }
 
+            // Verify that an issue was labeled OR closed during the specified time period and if so add it to the issuesTriaged array
             if (routedOrClosedAt) {
                 const elapsedDays = calculateElapsedDays(issue.created_at, routedOrClosedAt)
                 const formattedRoutedOrClosedAtDate = new Date(routedOrClosedAt).toISOString().split('T')[0]
@@ -111,22 +119,6 @@ async function getTriageIssueMetrics(github, context, core, argBeginDate, argEnd
                 }
             }
         }
-        }
-    }
-
-    const getListOfItemsAddedToProject = async (issueNumber, repo) => {
-        const iterator = github.paginate.iterator(github.rest.issues.listEventsForTimeline, {
-            owner: ORGANIZATION,
-            repo: repo,
-            issue_number: issueNumber,
-            })
-
-        for await (const { data: timelineData } of iterator) {
-            for (const timelineItem of timelineData) {
-                if (timelineItem.event === 'labeled' && ROUTED_TO_LABELS.includes(timelineItem.label.name)) {
-                    return timelineItem.created_at
-                }
-            }
         }
     }
     
