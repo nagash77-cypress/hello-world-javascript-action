@@ -79,7 +79,7 @@ async function getFeatureRequestMetrics(github, context, core, argBeginDate, arg
 
           if (routedAt) {
               const elapsedDays = calculateElapsedDays(issue.created_at, routedAt)
-              const formattedRoutedAtDate = new Date(routedOrClosedAt).toISOString().split('T')[0]
+              const formattedRoutedAtDate = new Date(routedAt).toISOString().split('T')[0]
 
               if(formattedRoutedAtDate <= dateRange.endDate && formattedRoutedAtDate >= dateRange.startDate) {     
                   issues.push({
@@ -88,7 +88,7 @@ async function getFeatureRequestMetrics(github, context, core, argBeginDate, arg
                       state: issue.state,
                       url: issue.html_url,
                       createdAt: issue.created_at,
-                      routedOrClosedAt,
+                      routedAt,
                       elapsedDays,
                   })
               }
