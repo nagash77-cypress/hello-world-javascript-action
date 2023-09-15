@@ -32,6 +32,7 @@ jobs:
             await createPullRequest({
             context,
             github,
+            core,
             baseBranch: '${{ env.BASE_BRANCH }}',
             branchName: 'nagash77-patch-2',
             description: 'Bot created PR',

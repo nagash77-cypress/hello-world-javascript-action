@@ -1,4 +1,4 @@
-const createPullRequest = async ({ context, github, baseBranch, branchName, description, body, reviewers }) => {
+const createPullRequest = async ({ context, github, core, baseBranch, branchName, description, body, reviewers }) => {
   
   
   console.log("repo owner - " + context.repo.owner );
