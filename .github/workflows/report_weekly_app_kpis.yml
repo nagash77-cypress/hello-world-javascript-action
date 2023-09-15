@@ -105,7 +105,7 @@ jobs:
           END_DATE: ${{ github.event.inputs.end-date }}
           PROJECT_BOARD_NUMBER: 1
         with:
-          github-token: ${{ secrets.TRIAGE_BOARD_TOKEN }}
+          github-token: ${{ secrets.ADD_TO_TRIAGE_BOARD_TOKEN }}
           script: |
             const script = require('./scripts/reports/triage_feature_review_metrics.js')
             await script.getFeatureReviewMetrics(github, context, core, "${{ env.START_DATE }}", "${{ env.END_DATE }}", "${{ env.PROJECT_BOARD_NUMBER }}"); 
