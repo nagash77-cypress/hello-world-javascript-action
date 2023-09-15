@@ -22,6 +22,7 @@ jobs:
           node-version: '16'
       # Update available and a PR doesn't already exist
       - name: Create Pull Request
+        id: create-pr
         uses: actions/github-script@v6
         with:
           github-token: ${{ secrets.ADD_TO_TRIAGE_BOARD_TOKEN }}
@@ -36,3 +37,17 @@ jobs:
             description: 'Bot created PR',
             body: 'This PR was auto-generated to update the version(s) of Chrome for driver tests',
             })
+      - name: add issue to e2e project
+        env:
+          GITHUB_TOKEN: ${{ secrets.ADD_TO_TRIAGE_BOARD_TOKEN }}
+          ISSUE_ID: ${{ steps.create-pr.outputs.pr }}
+          PROJECT_ID: 1
+        run: |
+          gh api graphql -f query='
+            mutation($project:ID!, $issue:ID!) {
+              addProjectV2ItemById(input: {projectId: $project, contentId: $issue}) {
+                item {
+                  id
+                }
+              }
+            }' -f project=$PROJECT_ID -f issue=$ISSUE_ID
