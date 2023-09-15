@@ -1,4 +1,4 @@
-async function generateKPIReport(github, context, core, nonMonoStatsObject, monoStatsObjects, triageObject, mitigationObject, featureObject) {
+async function generateKPIReport(github, context, core, nonMonoStatsObject, monoStatsObjects, triageObject, mitigationObject, featureObject, featureReviewObject) {
   
   console.log('--------------------Mono Repo Stats----------------------')
   console.log(`Repos Being Queried:  ${monoStatsObjects.reposArray}`);
@@ -20,6 +20,9 @@ async function generateKPIReport(github, context, core, nonMonoStatsObject, mono
   console.log(`---------------------------Feature Metrics-------------------------------`)
   console.log(`Feature Metrics (${featureObject.dateRange.startDate} - ${featureObject.dateRange.endDate})`)
   console.log(`Total Feature Requests Submitted: ${featureObject.issues.length}`)
+  console.log(
+    `Total Feature Requests Reviewed: ${featureReviewObject.issuesReviewedOrClosedInTimePeriod.length}`
+  )
   console.log(`------------------------------------------------------------------------`)
 
   console.log(`---------------------------Triage Metrics-------------------------------`)
