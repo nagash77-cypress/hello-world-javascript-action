@@ -58,7 +58,7 @@ async function getFeatureReviewMetrics(
     if (LABEL_DATA[issueNumber]) {
       return LABEL_DATA[issueNumber].iterator
     } else {
-      let iterator = github.paginate.iterator(
+      let iterator = await github.paginate.iterator(
         github.rest.issues.listEventsForTimeline,
         {
           owner: ORGANIZATION,
@@ -75,7 +75,7 @@ async function getFeatureReviewMetrics(
   
 
   const findLabelDateTime = async (issueNumber, repo) => {
-    let label_data_iterator = getLabelDataForIssue(issueNumber, repo)
+    let label_data_iterator = await getLabelDataForIssue(issueNumber, repo)
 
     for await (const { data: timelineData } of  label_data_iterator) {
       for (const timelineItem of timelineData) {
@@ -95,7 +95,7 @@ async function getFeatureReviewMetrics(
       'type: enhancement',
       'content: rewrite',
     ]
-    let label_data_iterator = getLabelDataForIssue(issueNumber, repo)
+    let label_data_iterator = await getLabelDataForIssue(issueNumber, repo)
 
     for await (const { data: timelineData } of label_data_iterator) {
       for (const timelineItem of timelineData) {
