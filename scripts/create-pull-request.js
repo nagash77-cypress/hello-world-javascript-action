@@ -15,8 +15,9 @@ const createPullRequest = async ({ context, github, baseBranch, branchName, desc
     maintainer_can_modify: true,
   })
 
-  console.log(data);
-  
+  console.log('---------------')
+  console.log(number);
+
 
   if (reviewers) {
     await github.rest.pulls.requestReviewers({
@@ -26,6 +27,8 @@ const createPullRequest = async ({ context, github, baseBranch, branchName, desc
       reviewers,
     })
   }
+
+
 }
 
 module.exports = {
