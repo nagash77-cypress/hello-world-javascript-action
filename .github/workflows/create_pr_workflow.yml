@@ -42,7 +42,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.ADD_TO_TRIAGE_BOARD_TOKEN }}
           ISSUE_ID: ${{ steps.create-pr.outputs.pr }}
-          PROJECT_ID: 1
+          PROJECT_ID: 2
         run: |
           gh api graphql -f query='
             mutation($project:ID!, $issue:ID!) {
