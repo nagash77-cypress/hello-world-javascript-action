@@ -126,6 +126,9 @@ async function getFeatureReviewMetrics(
   // Loop through issues on the project board
   for await (const { data } of iterator) {
     for (const issue of data) {
+      // Add a 250 millisecond delay between iterations
+      await new Promise(resolve => setTimeout(resolve, 250));
+      
       let repositoryUrl = issue.repository_url
       let issueOrgAndRepoInfo = repositoryUrl.split('/')
       let repoName = issueOrgAndRepoInfo.pop()
