@@ -127,7 +127,7 @@ async function getFeatureReviewMetrics(
   for await (const { data } of iterator) {
     for (const issue of data) {
       // Add a 250 millisecond delay between iterations
-      await new Promise(resolve => setTimeout(resolve, 250));
+      await new Promise(resolve => setTimeout(resolve, 1000));
       
       let repositoryUrl = issue.repository_url
       let issueOrgAndRepoInfo = repositoryUrl.split('/')
