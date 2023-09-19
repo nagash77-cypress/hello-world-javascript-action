@@ -36,8 +36,6 @@ async function getFeatureRequestMetrics(github, context, core, argBeginDate, arg
 
   const dateRange = determineDateRange(argBeginDate, argEndDate)
 
-  const query = `is:issue+project:${ORGANIZATION}/${PROJECT_NUMBER}`
-
   const findLabelDateTime = async (issueNumber, repo) => {
       const iterator = github.paginate.iterator(github.rest.issues.listEventsForTimeline, {
           owner: ORGANIZATION,
@@ -53,6 +51,9 @@ async function getFeatureRequestMetrics(github, context, core, argBeginDate, arg
           }
       }
   }
+
+  const formattedLabels = FEATURE_LABELS.map(label => `"${label.replace(/ /g, '+')}"`).join(',')
+  const query = `is:issue+project:${ORGANIZATION}/${PROJECT_NUMBER}+label:${formattedLabels}`
 
   const iterator = github.paginate.iterator(github.rest.search.issuesAndPullRequests, {
       q: query,

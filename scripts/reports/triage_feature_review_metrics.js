@@ -116,8 +116,6 @@ async function getFeatureReviewMetrics(
   const formattedLabels = FEATURE_LABELS.map(label => `"${label.replace(/ /g, '+')}"`).join(',')
   const query = `is:issue+project:${ORGANIZATION}/${PROJECT_NUMBER}+label:${formattedLabels}`
   
-  console.log(query)
-  
   const iterator = github.paginate.iterator(
     github.rest.search.issuesAndPullRequests,
     {
