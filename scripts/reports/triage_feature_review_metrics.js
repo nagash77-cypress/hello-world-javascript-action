@@ -6,8 +6,13 @@ async function getFeatureReviewMetrics(
   argEndDate,
   projectBoardNumber
 ) {
-  const RELEVANT_LABELS = [
+  const REVIEWED_LABELS = [
     'Feature Backlog',
+  ]
+  const FEATURE_LABELS = [
+    'type: feature',
+    'type: enhancement',
+    'content: rewrite',
   ]
   const MS_PER_DAY = 1000 * 60 * 60 * 24
   const ORGANIZATION = context.payload.organization.login
@@ -81,7 +86,7 @@ async function getFeatureReviewMetrics(
       for (const timelineItem of timelineData) {
         if (
           timelineItem.event === 'labeled' &&
-          RELEVANT_LABELS.includes(timelineItem.label.name)
+          REVIEWED_LABELS.includes(timelineItem.label.name)
         ) {
           return timelineItem.created_at
         }
@@ -90,11 +95,6 @@ async function getFeatureReviewMetrics(
   }
 
   const isIssueAFeatureRequest = async (issueNumber, repo) => {
-    const FEATURE_LABELS = [
-      'type: feature',
-      'type: enhancement',
-      'content: rewrite',
-    ]
     let label_data_iterator = await getLabelDataForIssue(issueNumber, repo)
 
     for await (const { data: timelineData } of label_data_iterator) {
@@ -138,7 +138,7 @@ async function getFeatureReviewMetrics(
       if (!issue.pull_request) {
         // Does the Issue have one of the labels that indicates it has been reviewed attached to it?
         const reviewedLabel = issue.labels.find((label) =>
-          RELEVANT_LABELS.includes(label.name)
+          REVIEWED_LABELS.includes(label.name)
         )
 
         // Verify if the label was assigned during the specified time period.
