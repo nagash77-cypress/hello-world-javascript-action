@@ -113,7 +113,7 @@ async function getFeatureReviewMetrics(
   // This will get all issues on the the project board.
   // We are unable to get just the issues added to the project board over a given period
   // due to limitations in the Github API at the moment
-  const query = `is:issue+project:${ORGANIZATION}/${PROJECT_NUMBER}`
+  const query = `is:issue+project:${ORGANIZATION}/${PROJECT_NUMBER}+label:${FEATURE_LABELS.join(',')}`;
 
   const iterator = github.paginate.iterator(
     github.rest.search.issuesAndPullRequests,
