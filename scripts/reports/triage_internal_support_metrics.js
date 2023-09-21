@@ -62,7 +62,7 @@ async function getInternalSupportMetrics(github, context, core, argBeginDate, ar
 
     console.log(data)
 
-        for (const issue of data) {
+       // for (const issue of data) {
         
         let repositoryUrl = issue.repository_url
         let issueOrgAndRepoInfo = repositoryUrl.split("/")
@@ -71,7 +71,7 @@ async function getInternalSupportMetrics(github, context, core, argBeginDate, ar
         
         console.log(issue)
   
-    }
+   // }
   }
 
 
