@@ -69,6 +69,7 @@ async function getInternalSupportMetrics(github, context, core, argBeginDate, ar
         console.log(issue)
   
     }
+  }
 
 
   // const formattedLabels = FEATURE_LABELS.map(label => `"${label.replace(/ /g, '+')}"`).join(',')
