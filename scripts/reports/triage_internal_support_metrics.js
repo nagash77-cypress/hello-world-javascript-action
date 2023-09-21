@@ -61,10 +61,10 @@ async function getInternalSupportMetrics(github, context, core, argBeginDate, ar
   for await (const { data } of iterator) {
 
     console.log(data)
-
+        let issue = data
        // for (const issue of data) {
         
-        let repositoryUrl = data.repository_url
+        let repositoryUrl = issue.repository_url
         let issueOrgAndRepoInfo = repositoryUrl.split("/")
         let repoName = issueOrgAndRepoInfo.pop()
         let orgName = issueOrgAndRepoInfo[issueOrgAndRepoInfo.length - 1]
