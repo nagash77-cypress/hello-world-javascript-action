@@ -53,12 +53,15 @@ async function getInternalSupportMetrics(github, context, core, argBeginDate, ar
   //     }
   // }
 
-  const iterator = github.paginate.iterator(github.rest.issues.listEventsForTimeline, {
+  const iterator = github.paginate.iterator(github.rest.issues.get, {
             owner: ORGANIZATION,
             repo: "hello-world-javascript-action",
             issue_number: 110,
             })
   for await (const { data } of iterator) {
+
+    console.log(data)
+
         for (const issue of data) {
         
         let repositoryUrl = issue.repository_url
