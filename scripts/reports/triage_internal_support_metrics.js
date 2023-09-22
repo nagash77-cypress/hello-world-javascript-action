@@ -82,11 +82,33 @@ function parseIssueBody(issueBody) {
   // Process the issues array
   console.log(issuesArray);
 
+  function countRequestedPriorities(issuesArray) {
+    const requestedPriorityCounts = {}
+  
+    for (const issue of issuesArray) {
+      // Check if the issue has a "Requested Priority" field
+      if (issue.parsedIssue && issue.parsedIssue['Requested Priority']) {
+        const priorityValue = issue.parsedIssue['Requested Priority']
+  
+        // Check if the priorityValue is already a key in the counts object
+        if (requestedPriorityCounts.hasOwnProperty(priorityValue)) {
+          requestedPriorityCounts[priorityValue]++
+        } else {
+          requestedPriorityCounts[priorityValue] = 1
+        }
+      }
+    }
+  
+    return requestedPriorityCounts
+  }
 
+  const priorityCounts = countRequestedPriorities(issuesArray);
+  console.log(priorityCounts);
 
   
   const results = {
       issues: issuesArray,
+      priorityCounts: priorityCounts,
       dateRange: dateRange,
   }
 
