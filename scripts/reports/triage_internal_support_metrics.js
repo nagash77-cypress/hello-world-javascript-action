@@ -1,39 +1,11 @@
+const { determineDateRange } = require('../utils/githubDateUtils')
+const { parseIssueBody } = require('../utils/githubIssueUtils')
+
 async function getInternalSupportMetrics(github, context, core, argBeginDate, argEndDate, projectBoardNumber) {
 
-  const MS_PER_DAY = 1000 * 60 * 60 * 24
   const ORGANIZATION = context.payload.organization.login
-  const PROJECT_NUMBER = projectBoardNumber
 
   const issuesArray = []
-
-  const calculateElapsedDays = (createdAt, routedOrClosedAt) => {
-      return Math.round((new Date(routedOrClosedAt) - new Date(createdAt)) / MS_PER_DAY, 0)
-  }
-
-  const determineDateRange = (beginDate, endingDate) => {
-      const inputStartDate = beginDate
-      const inputEndDate = endingDate
-
-      if (inputStartDate && inputEndDate) {
-      return { startDate: inputStartDate, endDate: inputEndDate }
-      }
-
-      if (inputStartDate || inputEndDate) {
-      core.setFailed('Both startDate and endDate are required if one is provided.')
-      }
-
-      const startDate = new Date()
-      const endDate = new Date()
-
-      startDate.setDate(startDate.getDate() - 7)
-      
-      let formattedStartDate = startDate.toISOString().split('T')[0]
-      let formattedEndDate = endDate.toISOString().split('T')[0]
-
-      return { startDate: startDate, endDate: endDate, formattedStartDate: formattedStartDate, formattedEndDate: formattedEndDate, numOfDays:  calculateElapsedDays(formattedStartDate, formattedEndDate)}
-  }
-  
-
   const dateRange = determineDateRange(argBeginDate, argEndDate)
 
 
@@ -59,24 +31,6 @@ async function getInternalSupportMetrics(github, context, core, argBeginDate, ar
       })
     })
   }
-
-
-function parseIssueBody(issueBody) {
-  const sections = issueBody.split("###");
-  const parsedData = {};
-
-  sections.forEach((section) => {
-    const lines = section.trim().split("\n");
-    const heading = lines.shift().trim();
-    const content = lines.join("\n").trim();
-
-    if (heading && content) {
-      parsedData[heading] = content;
-    }
-  });
-
-  return parsedData;
-}
 
 
   // Process the issues array
