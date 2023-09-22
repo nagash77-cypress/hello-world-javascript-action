@@ -6,9 +6,9 @@ async function getInternalSupportMetrics(github, context, core, argBeginDate, ar
 
   const issuesArray = []
 
-  // const calculateElapsedDays = (createdAt, routedOrClosedAt) => {
-  //     return Math.round((new Date(routedOrClosedAt) - new Date(createdAt)) / MS_PER_DAY, 0)
-  // }
+  const calculateElapsedDays = (createdAt, routedOrClosedAt) => {
+      return Math.round((new Date(routedOrClosedAt) - new Date(createdAt)) / MS_PER_DAY, 0)
+  }
 
   const determineDateRange = (beginDate, endingDate) => {
       const inputStartDate = beginDate
