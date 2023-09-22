@@ -1,7 +1,7 @@
 const { determineDateRange } = require('../utils/githubDateUtils')
 const { parseIssueBody } = require('../utils/githubIssueUtils')
 
-async function getInternalSupportMetrics(github, context, core, argBeginDate, argEndDate, projectBoardNumber) {
+async function getInternalSupportMetrics(github, context, core, argBeginDate, argEndDate) {
 
   const ORGANIZATION = context.payload.organization.login
 
