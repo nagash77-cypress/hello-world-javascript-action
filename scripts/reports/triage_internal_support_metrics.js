@@ -4,7 +4,7 @@ async function getInternalSupportMetrics(github, context, core, argBeginDate, ar
   const ORGANIZATION = context.payload.organization.login
   const PROJECT_NUMBER = projectBoardNumber
 
-  const issues = []
+  const issuesArray = []
 
   // const calculateElapsedDays = (createdAt, routedOrClosedAt) => {
   //     return Math.round((new Date(routedOrClosedAt) - new Date(createdAt)) / MS_PER_DAY, 0)
@@ -53,26 +53,53 @@ async function getInternalSupportMetrics(github, context, core, argBeginDate, ar
   //     }
   // }
 
-  const iterator = github.paginate.iterator(github.rest.issues.get, {
-            owner: ORGANIZATION,
-            repo: "hello-world-javascript-action",
-            issue_number: 110,
-            })
-  for await (const { data } of iterator) {
 
-    console.log(data)
-        let issue = data
-       // for (const issue of data) {
-        
-        let repositoryUrl = issue.repository_url
-        let issueOrgAndRepoInfo = repositoryUrl.split("/")
-        let repoName = issueOrgAndRepoInfo.pop()
-        let orgName = issueOrgAndRepoInfo[issueOrgAndRepoInfo.length - 1]
-        
-    
+
+  const iterator = github.paginate.iterator(github.rest.issues.listForRepo, {
+    owner: ORGANIZATION,
+    repo: "hello-world-javascript-action",
+    state: 'all', // Get both open and closed issues
+    since: argBeginDate, // Replace with your desired start date
+    until: argEndDate, // Replace with your desired end date
+  })
+
   
-   // }
+  for await (const { data } of iterator) {
+    data.forEach((issue) => {
+      
+      const parsedIssue = parseIssueBody(issue.body)
+      
+      issuesArray.push({
+        issueNumber: issue.number,
+        title: issue.title,
+        parsedIssue, // Parsed data from issue body
+        // Add more fields as needed
+      })
+    })
   }
+
+
+function parseIssueBody(issueBody) {
+  const sections = issueBody.split("###");
+  const parsedData = {};
+
+  sections.forEach((section) => {
+    const lines = section.trim().split("\n");
+    const heading = lines.shift().trim();
+    const content = lines.join("\n").trim();
+
+    if (heading && content) {
+      parsedData[heading] = content;
+    }
+  });
+
+  return parsedData;
+}
+
+
+  // Process the issues array
+  console.log(issuesArray);
+
 
 
   // const formattedLabels = FEATURE_LABELS.map(label => `"${label.replace(/ /g, '+')}"`).join(',')
