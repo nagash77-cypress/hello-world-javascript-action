@@ -121,7 +121,7 @@ jobs:
           github-token: ${{ secrets.ADD_TO_TRIAGE_BOARD_TOKEN }}
           script: |
             const script = require('./scripts/reports/triage_internal_support_metrics.js')
-            await script.getInternalSupportMetrics(github, context, core, "${{ env.START_DATE }}", "${{ env.END_DATE }}", "${{ env.PROJECT_BOARD_NUMBER }}"); 
+            await script.getInternalSupportMetrics(github, context, core, "${{ env.START_DATE }}", "${{ env.END_DATE }}"); 
 
       - name: Generate KPI Report
         id: generate-report
@@ -134,5 +134,16 @@ jobs:
           github-token: ${{ secrets.ADD_TO_TRIAGE_BOARD_TOKEN }}
           script: |
             const script = require('./scripts/reports/generate_kpi_report.js')
-            await script.generateKPIReport(github, context, core, ${{ steps.non-mono-repo-open-closed-metrics.outputs.results }}, ${{ steps.mono-repo-open-closed-metrics.outputs.results }}, ${{ steps.triage-metrics.outputs.results }}, ${{ steps.mititagtion-metrics.outputs.results }}, ${{ steps.feature-metrics.outputs.results }},  ${{ steps.feature-review-metrics.outputs.results }} );
+            await script.generateKPIReport(
+              github, 
+              context, 
+              core, 
+              ${{ steps.non-mono-repo-open-closed-metrics.outputs.results }}, 
+              ${{ steps.mono-repo-open-closed-metrics.outputs.results }}, 
+              ${{ steps.triage-metrics.outputs.results }}, 
+              ${{ steps.mititagtion-metrics.outputs.results }}, 
+              ${{ steps.feature-metrics.outputs.results }},  
+              ${{ steps.feature-review-metrics.outputs.results }},
+              ${{ steps.internal-support-metrics.outputs.results }},
+               )
       
