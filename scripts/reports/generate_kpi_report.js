@@ -1,4 +1,15 @@
-async function generateKPIReport(github, context, core, nonMonoStatsObject, monoStatsObjects, triageObject, mitigationObject, featureObject, featureReviewObject) {
+async function generateKPIReport(
+  github,
+  context,
+  core,
+  nonMonoStatsObject,
+  monoStatsObjects,
+  triageObject,
+  mitigationObject,
+  featureObject,
+  featureReviewObject,
+  internalSupportIssuesObj
+) {
   
   console.log('--------------------Mono Repo Stats----------------------')
   console.log(`Repos Being Queried:  ${monoStatsObjects.reposArray}`);
@@ -30,6 +41,14 @@ async function generateKPIReport(github, context, core, nonMonoStatsObject, mono
   console.log(`Number of New Issues Created: ${triageObject.newIssuesCreatedInTimePeriod.length}`)
   console.log(`Issues triaged/closed within this timeframe (${triageObject.dateRange.numOfDays} days): ${triageObject.issuesRoutedOrClosedInTimePeriod.length}`)
   console.log(`------------------------------------------------------------------------`)
+
+  console.log(`-----------------------Internal Support Metrics--------------------------`)
+  console.log(`Internal Support Metrics (${internalSupportIssuesObj.dateRange.formattedStartDate} - ${internalSupportIssuesObj.dateRange.formattedEndDate})`)
+  for (const priority in internalSupportIssuesObj.priorityCounts) {
+    console.log(`${priority}: ${internalSupportIssuesObj.priorityCounts[priority]}`)
+  }
+  console.log(`------------------------------------------------------------------------`)
+
 
   return true
 }
