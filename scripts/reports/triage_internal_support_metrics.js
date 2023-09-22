@@ -36,25 +36,6 @@ async function getInternalSupportMetrics(github, context, core, argBeginDate, ar
 
   const dateRange = determineDateRange(argBeginDate, argEndDate)
 
-  // const getSupportIssues = async (issueNumber, repo) => {
-  //     const iterator = github.paginate.iterator(github.rest.issues.listEventsForTimeline, {
-  //         owner: ORGANIZATION,
-  //         repo: repo,
-  //         issue_number: issueNumber,
-  //         })
-      
-  //     console.log(iterator)
-
-  //     for await (const { data: timelineData } of iterator) {
-  //         for (const timelineItem of timelineData) {
-  //             if (timelineItem.event === 'labeled' && FEATURE_LABELS.includes(timelineItem.label.name)) {
-  //                 return timelineItem.created_at
-  //             }
-  //         }
-  //     }
-  // }
-
-
 
   const iterator = github.paginate.iterator(github.rest.issues.listForRepo, {
     owner: ORGANIZATION,
@@ -103,58 +84,13 @@ function parseIssueBody(issueBody) {
 
 
 
-  // const formattedLabels = FEATURE_LABELS.map(label => `"${label.replace(/ /g, '+')}"`).join(',')
-  // const query = `is:issue+project:${ORGANIZATION}/${PROJECT_NUMBER}+label:${formattedLabels}`
+  
+  const results = {
+      issues: issuesArray,
+      dateRange: dateRange,
+  }
 
-  // const iterator = github.paginate.iterator(github.rest.search.issuesAndPullRequests, {
-  //     q: query,
-  //     per_page: 100,
-  // })
-
-  // for await (const { data } of iterator) {
-  //     for (const issue of data) {
-      
-  //     let repositoryUrl = issue.repository_url
-  //     let issueOrgAndRepoInfo = repositoryUrl.split("/")
-  //     let repoName = issueOrgAndRepoInfo.pop()
-  //     let orgName = issueOrgAndRepoInfo[issueOrgAndRepoInfo.length - 1]
-  //     let routedAt
-      
-  //     if (!issue.pull_request) {
-  //         const routedLabel = issue.labels.find((label) => FEATURE_LABELS.includes(label.name))
-
-  //         if (routedLabel) {
-  //             routedAt = await findLabelDateTime(issue.number, repoName)   
-  //         }
-
-  //         let elapsedDays
-
-  //         if (routedAt) {
-  //             const elapsedDays = calculateElapsedDays(issue.created_at, routedAt)
-  //             const formattedRoutedAtDate = new Date(routedAt).toISOString().split('T')[0]
-
-  //             if(formattedRoutedAtDate <= dateRange.endDate && formattedRoutedAtDate >= dateRange.startDate) {     
-  //                 issues.push({
-  //                     number: issue.number,
-  //                     title: issue.title,
-  //                     state: issue.state,
-  //                     url: issue.html_url,
-  //                     createdAt: issue.created_at,
-  //                     routedAt,
-  //                     elapsedDays,
-  //                 })
-  //             }
-  //         }
-  //     }
-  //     }
-  // }
-
-  // const results = {
-  //     issues: issues,
-  //     dateRange: dateRange,
-  // }
-
-  // core.setOutput('results', results)
+  core.setOutput('results', results)
 
   return true
 
