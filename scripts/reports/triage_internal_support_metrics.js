@@ -10,30 +10,31 @@ async function getInternalSupportMetrics(github, context, core, argBeginDate, ar
   //     return Math.round((new Date(routedOrClosedAt) - new Date(createdAt)) / MS_PER_DAY, 0)
   // }
 
-  // const determineDateRange = (beginDate, endingDate) => {
-  //     const inputStartDate = beginDate
-  //     const inputEndDate = endingDate
+  const determineDateRange = (beginDate, endingDate) => {
+      const inputStartDate = beginDate
+      const inputEndDate = endingDate
 
-  //     if (inputStartDate && inputEndDate) {
-  //     return { startDate: inputStartDate, endDate: inputEndDate }
-  //     }
+      if (inputStartDate && inputEndDate) {
+      return { startDate: inputStartDate, endDate: inputEndDate }
+      }
 
-  //     if (inputStartDate || inputEndDate) {
-  //     core.setFailed('Both startDate and endDate are required if one is provided.')
-  //     }
+      if (inputStartDate || inputEndDate) {
+      core.setFailed('Both startDate and endDate are required if one is provided.')
+      }
 
-  //     const startDate = new Date()
+      const startDate = new Date()
+      const endDate = new Date()
 
-  //     startDate.setDate(startDate.getDate() - 7)
+      startDate.setDate(startDate.getDate() - 7)
       
-  //     formattedStartDate = startDate.toISOString().split('T')[0]
-  //     formattedEndDate = (new Date()).toISOString().split('T')[0]
+      let formattedStartDate = startDate.toISOString().split('T')[0]
+      let formattedEndDate = endDate.toISOString().split('T')[0]
 
-  //     return { startDate: formattedStartDate, endDate: formattedEndDate, numOfDays:  calculateElapsedDays(formattedStartDate, formattedEndDate)}
-  // }
+      return { startDate: startDate, endDate: endDate, formattedStartDate: formattedStartDate, formattedEndDate: formattedEndDate, numOfDays:  calculateElapsedDays(formattedStartDate, formattedEndDate)}
+  }
   
 
-  //const dateRange = determineDateRange(argBeginDate, argEndDate)
+  const dateRange = determineDateRange(argBeginDate, argEndDate)
 
   // const getSupportIssues = async (issueNumber, repo) => {
   //     const iterator = github.paginate.iterator(github.rest.issues.listEventsForTimeline, {
@@ -59,8 +60,8 @@ async function getInternalSupportMetrics(github, context, core, argBeginDate, ar
     owner: ORGANIZATION,
     repo: "hello-world-javascript-action",
     state: 'all', // Get both open and closed issues
-    since: new Date(argBeginDate).toISOString().split('T')[0], 
-    until: new Date(argEndDate).toISOString().split('T')[0], 
+    since: dateRange.startDate, 
+    until: dateRange.endDate,, 
   })
 
   
