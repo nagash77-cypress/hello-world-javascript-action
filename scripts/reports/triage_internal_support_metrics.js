@@ -59,8 +59,8 @@ async function getInternalSupportMetrics(github, context, core, argBeginDate, ar
     owner: ORGANIZATION,
     repo: "hello-world-javascript-action",
     state: 'all', // Get both open and closed issues
-    since: argBeginDate, // Replace with your desired start date
-    until: argEndDate, // Replace with your desired end date
+    since: new Date(argBeginDate).toISOString().split('T')[0], 
+    until: new Date(argEndDate).toISOString().split('T')[0], 
   })
 
   
