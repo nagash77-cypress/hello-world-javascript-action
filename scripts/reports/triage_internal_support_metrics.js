@@ -37,24 +37,26 @@ async function getInternalSupportMetrics(github, context, core, argBeginDate, ar
   console.log(issuesArray);
 
   function countRequestedPriorities(issuesArray) {
-    const requestedPriorityCounts = {}
+    const requestedPriorityCounts = {};
   
     for (const issue of issuesArray) {
       // Check if the issue has a "Requested Priority" field
-      if (issue.parsedIssue && issue.parsedIssue['Requested Priority']) {
-        const priorityValue = issue.parsedIssue['Requested Priority']
+      if (issue.parsedIssue && 'Requested Priority' in issue.parsedIssue) {
+        const priorityValue = issue.parsedIssue['Requested Priority'];
   
         // Check if the priorityValue is already a key in the counts object
-        if (requestedPriorityCounts.hasOwnProperty(priorityValue)) {
-          requestedPriorityCounts[priorityValue]++
+        if (priorityValue in requestedPriorityCounts) {
+          requestedPriorityCounts[priorityValue]++;
         } else {
-          requestedPriorityCounts[priorityValue] = 1
+          requestedPriorityCounts[priorityValue] = 1;
         }
       }
     }
   
-    return requestedPriorityCounts
+    return requestedPriorityCounts;
   }
+  
+  
 
   const priorityCounts = countRequestedPriorities(issuesArray);
   console.log(priorityCounts);
