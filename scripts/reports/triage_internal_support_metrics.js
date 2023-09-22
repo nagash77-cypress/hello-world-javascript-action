@@ -61,7 +61,7 @@ async function getInternalSupportMetrics(github, context, core, argBeginDate, ar
     repo: "hello-world-javascript-action",
     state: 'all', // Get both open and closed issues
     since: dateRange.startDate, 
-    until: dateRange.endDate,, 
+    until: dateRange.endDate, 
   })
 
   
