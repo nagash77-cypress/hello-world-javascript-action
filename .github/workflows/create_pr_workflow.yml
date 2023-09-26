@@ -2,13 +2,10 @@ name: 'Create PR Bot'
 
 on:
   workflow_dispatch:
-    
+
 jobs:
   update-browser-versions:
     runs-on: ubuntu-latest
-    env:
-      BASE_BRANCH: develop
-      RANDOM_BRANCH_NAME: random-branch-$(date +%s) # Generates a unique branch name based on the current timestamp
 
     steps:
       - name: Checkout code
@@ -16,13 +13,16 @@ jobs:
         with:
           repository: 'nagash77-cypress/hello-world-javascript-action'
           ref: 'develop'
-      
+
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '16'
-      
-      # Update available and a PR doesn't already exist
+
+      - name: Generate Random Branch Name
+        id: random-branch-name
+        run: echo "::set-output name=branch_name::random-branch-$(date +%s)"
+
       - name: Create Pull Request
         id: create-pr
         uses: actions/github-script@v6
@@ -31,7 +31,7 @@ jobs:
           script: |
             const { createPullRequest } = require('./scripts/create-pull-request.js')
 
-            const randomBranchName = process.env.RANDOM_BRANCH_NAME;
+            const randomBranchName = process.env.INPUT_BRANCH_NAME;
 
             await createPullRequest({
               context,
