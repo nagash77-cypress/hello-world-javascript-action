@@ -1,25 +1,27 @@
 name: 'Create PR Bot'
+
 on:
   workflow_dispatch:
     
-  #schedule:
-   # - cron: '* * * * *'
-
 jobs:
   update-browser-versions:
     runs-on: ubuntu-latest
     env:
       BASE_BRANCH: develop
+      RANDOM_BRANCH_NAME: random-branch-$(date +%s) # Generates a unique branch name based on the current timestamp
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
         with:
           repository: 'nagash77-cypress/hello-world-javascript-action'
           ref: 'develop'
+      
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '16'
+      
       # Update available and a PR doesn't already exist
       - name: Create Pull Request
         id: create-pr
@@ -29,14 +31,15 @@ jobs:
           script: |
             const { createPullRequest } = require('./scripts/create-pull-request.js')
 
+            const randomBranchName = process.env.RANDOM_BRANCH_NAME;
+
             await createPullRequest({
-            context,
-            github,
-            core,
-            baseBranch: '${{ env.BASE_BRANCH }}',
-            branchName: 'nagash77-patch-2',
-            description: 'Bot created PR',
-            body: 'This PR was auto-generated to update the version(s) of Chrome for driver tests',
-            addToProjectBoard: true
+              context,
+              github,
+              core,
+              baseBranch: '${{ env.BASE_BRANCH }}',
+              branchName: randomBranchName,
+              description: 'Bot created PR',
+              body: 'This PR was auto-generated to update the version(s) of Chrome for driver tests',
+              addToProjectBoard: true
             })
-     
