@@ -40,7 +40,7 @@ jobs:
               github,
               core,
               baseBranch: '${{ env.BASE_BRANCH }}',
-              branchName: randomBranchName,
+              branchName: ${{ steps.random-branch-name.outputs.branch_name }},
               description: 'Bot created PR',
               body: 'This PR was auto-generated to update the version(s) of Chrome for driver tests',
               addToProjectBoard: true
