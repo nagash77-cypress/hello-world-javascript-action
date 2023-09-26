@@ -19,22 +19,28 @@ jobs:
         with:
           node-version: '20'
       - name: Create Branch
+        id: create-branch-name
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.ADD_TO_TRIAGE_BOARD_TOKEN }}
+          script: |
+            const randomString = Math.random().toString(36).substring(2, 10);
+
+            core.setOutput('branchName', randomString)
+      - name: Create Branch
         id: create-branch
         uses: actions/github-script@v6
         env:
           BASE_BRANCH: develop
         with:
           github-token: ${{ secrets.ADD_TO_TRIAGE_BOARD_TOKEN }}
-          script: |
-            const randomString = Math.random().toString(36).substring(2, 10);
+          run: |
 
             # Create a new branch based on the current state of 'develop'
-            git checkout -b "$randomString"
+            git checkout -b "${{ steps.create-branch-name.outputs.branchName }}"
   
             # Push the new branch to the repository
-            git push origin "$randomString"
-
-            core.setOutput('branchName', randomString)
+            git push origin "${{ steps.create-branch-name.outputs.branchName }}"
 
       - name: Create Pull Request
         id: create-pr
