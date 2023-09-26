@@ -26,6 +26,8 @@ jobs:
       - name: Create Pull Request
         id: create-pr
         uses: actions/github-script@v6
+        env:
+          BASE_BRANCH: develop
         with:
           github-token: ${{ secrets.ADD_TO_TRIAGE_BOARD_TOKEN }}
           script: |
