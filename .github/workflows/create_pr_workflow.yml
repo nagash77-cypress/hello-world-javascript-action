@@ -8,12 +8,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-        with:
-          repository: 'nagash77-cypress/hello-world-javascript-action'
-          ref: 'develop'
-
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
@@ -34,6 +28,11 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.ADD_TO_TRIAGE_BOARD_TOKEN }}
         with:
           branch: ${{ steps.create-branch-name.outputs.branchName }}
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          repository: 'nagash77-cypress/hello-world-javascript-action'
+          ref: '${{ steps.create-branch-name.outputs.branchName }}'
 
       - name: Empty Commit
         run: |
