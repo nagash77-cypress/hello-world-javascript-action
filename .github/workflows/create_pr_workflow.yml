@@ -37,18 +37,6 @@ jobs:
             branchName: 'nagash77-patch-2',
             description: 'Bot created PR',
             body: 'This PR was auto-generated to update the version(s) of Chrome for driver tests',
+            addToProjectBoard: true
             })
-      - name: add issue to e2e project
-        env:
-          GITHUB_TOKEN: ${{ secrets.ADD_TO_TRIAGE_BOARD_TOKEN }}
-          ISSUE_ID: ${{ steps.create-pr.outputs.pr }}
-          PROJECT_ID: 2
-        run: |
-          gh api graphql -f query='
-            mutation($project:ID!, $issue:ID!) {
-              addProjectV2ItemById(input: {projectId: $project, contentId: $issue}) {
-                item {
-                  id
-                }
-              }
-            }' -f project=$PROJECT_ID -f issue=$ISSUE_ID
+     

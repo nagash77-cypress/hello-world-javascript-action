@@ -1,4 +1,4 @@
-const createPullRequest = async ({ context, github, core, baseBranch, branchName, description, body, reviewers }) => {
+const createPullRequest = async ({ context, github, core, baseBranch, branchName, description, body, reviewers, addToProjectBoard }) => {
   
   
   console.log("repo owner - " + context.repo.owner );
@@ -23,6 +23,29 @@ const createPullRequest = async ({ context, github, core, baseBranch, branchName
       pull_number: number,
       reviewers,
     })
+  }
+
+  //add to firewatch board
+  if (addToProjectBoard) {
+    const addToProjectBoardQuery = `
+          mutation ($project_id: ID!, $item_id: ID!) {
+            addProjectV2ItemById(input: {contentId: $item_id, projectId: $project_id}) {
+              clientMutationId
+              item {
+                id
+              }
+            }
+          }`
+          
+    const addToProjectBoardQueryVars = {
+      project_id: 9,
+      item_id: number,
+    }
+
+    await github.graphql(
+      addToProjectBoardQuery,
+      addToProjectBoardQueryVars,
+    )
   }
 
   core.setOutput('pr', number)
