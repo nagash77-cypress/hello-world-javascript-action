@@ -29,18 +29,11 @@ jobs:
             core.setOutput('branchName', randomString)
       - name: Create Branch
         id: create-branch
-        uses: actions/github-script@v6
+        uses: peterjgrainger/action-create-branch@v2.2.0
         env:
-          BASE_BRANCH: develop
+          GITHUB_TOKEN: ${{ secrets.ADD_TO_TRIAGE_BOARD_TOKEN }}
         with:
-          github-token: ${{ secrets.ADD_TO_TRIAGE_BOARD_TOKEN }}
-          run: |
-
-            # Create a new branch based on the current state of 'develop'
-            git checkout -b "${{ steps.create-branch-name.outputs.branchName }}"
-  
-            # Push the new branch to the repository
-            git push origin "${{ steps.create-branch-name.outputs.branchName }}"
+          branch: ${{ steps.create-branch-name.outputs.branchName }}
 
       - name: Create Pull Request
         id: create-pr
