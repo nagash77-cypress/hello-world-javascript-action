@@ -33,8 +33,6 @@ jobs:
           script: |
             const { createPullRequest } = require('./scripts/create-pull-request.js')
 
-            const randomBranchName = process.env.INPUT_BRANCH_NAME;
-
             await createPullRequest({
               context,
               github,
