@@ -40,7 +40,7 @@ jobs:
           git config --global user.email "you@example.com"
           git config --global user.name "Your Name"
           git commit --allow-empty -m "Empty commit"
-          git push
+          git push origin ${{ steps.create-branch-name.outputs.branchName }} --set-upstream
 
       - name: Create Pull Request
         id: create-pr
