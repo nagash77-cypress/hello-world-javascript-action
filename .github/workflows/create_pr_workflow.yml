@@ -19,9 +19,6 @@ jobs:
         with:
           node-version: '16'
 
-      - name: Generate Random Branch Name
-        id: random-branch-name
-        run: echo "::set-output name=branch_name::random-branch-$(date +%s)"
 
       - name: Create Pull Request
         id: create-pr
@@ -33,12 +30,14 @@ jobs:
           script: |
             const { createPullRequest } = require('./scripts/create-pull-request.js')
 
+            const randomString = Math.random().toString(36).substring(2, 10);
+
             await createPullRequest({
               context,
               github,
               core,
               baseBranch: '${{ env.BASE_BRANCH }}',
-              branchName: ${{ steps.random-branch-name.outputs.branch_name }},
+              branchName: randomString,
               description: 'Bot created PR',
               body: 'This PR was auto-generated to update the version(s) of Chrome for driver tests',
               addToProjectBoard: true
