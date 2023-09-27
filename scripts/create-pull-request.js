@@ -29,18 +29,18 @@ const createPullRequest = async ({ context, github, core, baseBranch, branchName
   if (addToProjectBoard) {
 
     const getProjectV2NodeIdQuery = `
-          query ($org: String!, $project_id: Int!, $repo: String!, $issueNumber: Int!) {
-            organization(login: $org) {
-              projectV2(number: $project_id) {
-                id
-              }
-            }
+      query ($org: String!, $project_id: Int!, $repo: String!, $issueNumber: Int!) {
+        organization(login: $org) {
+          projectV2(number: $project_id) {
+            id
           }
-          repository(owner: $org, name: $repo) {
-            issue(number: $issueNumber) {
-              id
-            }
-          }`
+        }
+        repository(owner: $org, name: $repo) {
+          issue(number: $issueNumber) {
+            id
+          }
+        }
+      }`
 
     const getProjectV2NodeIdQueryVars = {
         org: context.repo.owner,
