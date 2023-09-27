@@ -27,6 +27,28 @@ const createPullRequest = async ({ context, github, core, baseBranch, branchName
 
   //add to firewatch board
   if (addToProjectBoard) {
+
+    const getProjectV2NodeIdQuery = `
+          query ($login: String!, $item_id: Int!) {
+            organization(login: $login) {
+              projectV2(number: $item_id) {
+                id
+              }
+            }
+          }`
+
+    const getProjectV2NodeIdQueryVars = {
+        login: context.repo.owner,
+        item_id: number,
+    }
+
+    let projectBoardNodeId = await github.graphql(
+      getProjectV2NodeIdQuery,
+      getProjectV2NodeIdQueryVars,
+    )
+
+    console.log(projectBoardNodeId)
+
     const addToProjectBoardQuery = `
           mutation ($project_id: ID!, $item_id: ID!) {
             addProjectV2ItemById(input: {contentId: $item_id, projectId: $project_id}) {
