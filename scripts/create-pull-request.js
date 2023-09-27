@@ -60,7 +60,7 @@ const createPullRequest = async ({ context, github, core, baseBranch, branchName
           }`
 
     const addToProjectBoardQueryVars = {
-      project_id: 1,
+      project_id: projectBoardNodeId.organization.projectV2.id,
       item_id: number,
     }
 
