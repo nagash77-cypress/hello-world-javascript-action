@@ -36,7 +36,7 @@ const createPullRequest = async ({ context, github, core, baseBranch, branchName
           }
         }
         repository(owner: $org, name: $repo) {
-          issue(number: $issueNumber) {
+          pullRequest(number: $issueNumber) {
             id
           }
         }
