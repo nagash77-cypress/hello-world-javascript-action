@@ -68,7 +68,7 @@ const createPullRequest = async ({ context, github, core, baseBranch, branchName
 
     const addToProjectBoardQueryVars = {
       project_id: projectBoardNodeId.organization.projectV2.id,
-      item_id: projectBoardNodeId.repository.issue.id,
+      item_id: projectBoardNodeId.repository.pullRequest.id,
     }
 
     await github.graphql(
