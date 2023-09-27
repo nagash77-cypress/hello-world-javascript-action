@@ -43,7 +43,7 @@ const createPullRequest = async ({ context, github, core, baseBranch, branchName
           }`
 
     const getProjectV2NodeIdQueryVars = {
-        login: context.repo.owner,
+        org: context.repo.owner,
         project_id: 1,
         repo: context.repo.repo,
         issueNumber: number,
