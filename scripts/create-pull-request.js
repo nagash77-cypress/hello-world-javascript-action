@@ -29,17 +29,24 @@ const createPullRequest = async ({ context, github, core, baseBranch, branchName
   if (addToProjectBoard) {
 
     const getProjectV2NodeIdQuery = `
-          query ($login: String!, $project_id: Int!) {
-            organization(login: $login) {
+          query ($org: String!, $project_id: Int!, $repo: String!, $issueNumber: Int!) {
+            organization(login: $org) {
               projectV2(number: $project_id) {
                 id
               }
+            }
+          }
+          repository(owner: $org, name: $repo) {
+            issue(number: $issueNumber) {
+              id
             }
           }`
 
     const getProjectV2NodeIdQueryVars = {
         login: context.repo.owner,
         project_id: 1,
+        repo: context.repo.repo,
+        issueNumber: number,
     }
 
     let projectBoardNodeId = await github.graphql(
@@ -61,7 +68,7 @@ const createPullRequest = async ({ context, github, core, baseBranch, branchName
 
     const addToProjectBoardQueryVars = {
       project_id: projectBoardNodeId.organization.projectV2.id,
-      item_id: number,
+      item_id: projectBoardNodeId.repository.issue.id,
     }
 
     await github.graphql(
