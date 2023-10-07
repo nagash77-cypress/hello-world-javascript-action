@@ -47,7 +47,7 @@ jobs:
       GITHUB_TOKEN: ${{ secrets.ADD_TO_TRIAGE_BOARD_TOKEN }}
     needs: check-collaborator
     steps:
-      - uses: actions/add-to-project@v0.4.0
+      - uses: actions/add-to-project@v0.5.0
         # only add issues/prs from outside contributors to the project
         if: ${{ inputs.check-if-collaborator == 'false' || needs.check-collaborator.outputs.is-collaborator == 'false' }}
         with:
